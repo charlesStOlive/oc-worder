@@ -2,7 +2,6 @@
 
 use BackendAuth;
 use Model;
-use \Waka\Worder\Classes\WordProcessor;
 
 /**
  * Document Model
@@ -91,7 +90,7 @@ class Document extends Model
     public function afterCreate()
     {
         if (BackendAuth::getUser()) {
-            $wp = new WordProcessor($this->id);
+            $wp = new \Waka\Worder\Classes\WordProcessor2($this->id);
             $wp->checkTags();
         }
 

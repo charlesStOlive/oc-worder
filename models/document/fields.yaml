@@ -29,6 +29,11 @@ fields:
     model_functions:
             label: Créer des collections à partir des fonctions du modèle
             type: functionslist
+            span: auto
+    images@update:
+            label: Injecter des images à partir du modèle
+            type: imageslist
+            span: auto
 
     scopes:
         label: waka.worder::lang.document.scopes.title

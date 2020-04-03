@@ -14,11 +14,11 @@ class WordCreator2 extends WordProcessor2
 
     public function prepareCreatorVars($dataSourceId)
     {
+        //trace_log("prepareCreatorVars");
         $this->dataSourceModel = $this->linkModelSource($dataSourceId);
         $this->dotedValues = $this->document->data_source->getDotedValues($dataSourceId);
-        $this->listImages = $this->wakamail->data_source->getPicturesUrl($dataSourceId, $this->document->images);
-        $this->fncs = $this->document->data_source->getFunctionsCollections($this->dataSourceId, $this->model_functions);
-        // $getAllPicturesFromDataSource = [];
+        $this->listImages = $this->document->data_source->getPicturesUrl($dataSourceId, $this->document->images);
+        $this->fncs = $this->document->data_source->getFunctionsCollections($this->dataSourceId, $this->document->model_functions);
         // $getAllPicturesFromDataSource['IMAGE'] = $this->document->data_source->getAllPictures($dataSourceId);
 
         //trace_log($this->listImages);
@@ -43,25 +43,34 @@ class WordCreator2 extends WordProcessor2
     {
         $this->prepareCreatorVars($dataSourceId);
         $originalTags = $this->checkTags();
+        //trace_log($originalTags);
 
         //Traitement des champs simples
+        //trace_log("Traitement des champs simples");
         foreach ($originalTags['injections'] as $injection) {
             $value = $this->dotedValues[$injection];
             $this->templateProcessor->setValue($injection, $value);
         }
 
-        // foreach ($originalTags['IMAGE'] as $imagekey) {
-        //     $url = $this->getUrlFromImageKey($imagekey);
-        //     // $tag = $this->getWordImageKey($imagekey);
-        //     // $key = $this->cleanWordKey($tag);
-        //     // $url = $this->decryptKeyedImage($key, $this->dataSourceModel);
-        //     if ($url) {
-        //         $this->templateProcessor->setImageValue($imagekey, $url);
-        //     }
-        // }
+        //Traitement des image
+        //trace_log("Traitement des images");
+        foreach ($originalTags['IMAGE'] as $imagekey) {
+            $parts = explode(".", $imagekey);
+            $key = array_pop($parts);
+            $objImage = $this->listImages[$key] ?? null;
 
-        //trace_log('traitement des fncs');
+            if ($objImage) {
+                $objWord = [
+                    'path' => $objImage['url'],
+                    'width' => $objImage['width'] . 'px',
+                    'height' => $objImage['width'] . 'px',
+                ];
+                $this->templateProcessor->setImageValue($imagekey, $objWord);
+            }
+        }
+
         //Préparation des resultat de toutes les fonbctions
+        //trace_log('traitement des fncs');
 
         $data = $this->fncs;
         // Pour chazque fonctions dans le word
@@ -100,13 +109,14 @@ class WordCreator2 extends WordProcessor2
                         $path = $functionRow[$subTag['varName'] . '.path'];
                         $width = $functionRow[$subTag['varName'] . '.width'];
                         $height = $functionRow[$subTag['varName'] . '.height'];
-                        $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'mm', 'height' => $height . 'mm'], 1);
+                        $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
                     }
                 }
                 $i++;
 
             }
         }
+        //trace_log("tout est pret");
         $name = str_slug($this->document->name . '-' . $this->dataSourceModel->name);
         $coin = $this->templateProcessor->saveAs($name . '.docx');
         return response()->download($name . '.docx')->deleteFileAfterSend(true);
