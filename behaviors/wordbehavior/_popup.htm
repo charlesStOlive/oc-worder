@@ -1,0 +1,42 @@
+<?= Form::open() ?>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Tester le document</h4>
+        </div>
+        <div class="modal-body">
+            <select class="form-control custom-select" name="documentId">
+                <option value="" disabled selected>--Choose a document--</option>
+                <?php foreach($options as $key => $value)  { ?>
+                <option value="<?=$key?>"><?=$value?></option>
+                <?php } ?>
+            </select>
+            <?php if(isset($relations)) {
+                foreach($relations as $relation)  { ?>
+            <div class="m-t-md">
+                <select class="form-control custom-select m-t-md" name="<?=$relation['param']?>">
+                    <option value="" disabled selected>--Choisir parmis les <?=$relation['name']?>--</option>
+                    <?php foreach($relation['options'] as $key => $value)  { ?>
+                    <option value="<?=$key?>"><?=$value?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <?php }
+            } ?>
+        </div>
+        <div class="modal-footer m-t">
+            <button type="submit" data-request="onWordBehaviorPopupValidation"
+                data-request-data="redirect:0, modelId:'<?=$modelId?>'" data-hotkey="ctrl+s, cmd+s"
+                class="btn btn-primary">
+                Valider
+            </button>
+            <button type="button" class="btn btn-default" data-dismiss="popup">
+                Terminer
+            </button>
+        </div>
+    </div>
+</div>
+
+<?= Form::close() ?>

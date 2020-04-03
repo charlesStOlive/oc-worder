@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Document
+
+# Model Form Field configuration
+form: $/waka/worder/models/document/fields.yaml
+
+# Model Class name
+modelClass: Waka\Worder\Models\Document
+
+# Default redirect location
+defaultRedirect: waka/worder/documents
+
+# Create page
+create:
+    title: Create Document
+    redirect: waka/worder/documents/update/:id
+    redirectClose: waka/worder/documents
+
+# Update page
+update:
+    title: Edit Document
+    redirect: waka/worder/documents
+    redirectClose: waka/worder/documents
+
+# Preview page
+preview:
+    title: Preview Document
