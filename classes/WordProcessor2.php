@@ -97,12 +97,15 @@ class WordProcessor2
                     //trace_log("On est inside un bloc");
                     $subParts = explode('.', $tag);
                     $fncName = array_shift($subParts);
-                    $varName = array_shift($subParts);
-                    $image = array_shift($subParts);
 
-                    $subBlocType = array_shift($subParts);
+                    $image = array_values(array_slice($subParts, -1))[0];
                     $tagType = $image == 'IMAGE' ? true : false;
-                    $subBlocTag = implode('.', $subParts);
+                    if ($tagType) {
+                        array_pop($subParts);
+                    }
+
+                    $varName = implode('.', $subParts);
+
                     $subTag = [
                         'image' => $tagType,
                         'tag' => $tag,
