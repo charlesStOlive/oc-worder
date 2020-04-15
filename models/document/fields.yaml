@@ -26,7 +26,7 @@ fields:
         span: auto
         disabled: true
     
-    model_functions:
+    model_functions@update:
             label: Créer des collections à partir des fonctions du modèle
             type: functionslist
             span: auto
@@ -35,7 +35,7 @@ fields:
             type: imageslist
             span: auto
 
-    scopes:
+    scopes@update:
         label: waka.worder::lang.document.scopes.title
         type: nestedform
         form:
