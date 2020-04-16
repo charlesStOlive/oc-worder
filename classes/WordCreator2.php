@@ -63,8 +63,11 @@ class WordCreator2 extends WordProcessor2
                 $objWord = [
                     'path' => $objImage['url'],
                     'width' => $objImage['width'] . 'px',
-                    'height' => $objImage['width'] . 'px',
+                    'height' => $objImage['height'] . 'px',
+                    'ratio' => true,
                 ];
+                trace_log($imagekey);
+                trace_log($objWord);
                 $this->templateProcessor->setImageValue($imagekey, $objWord);
             }
         }
