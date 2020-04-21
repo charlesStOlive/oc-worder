@@ -48,7 +48,7 @@ class WordProcessor2
         $this->templateProcessor = new TemplateProcessor($document_path);
         // tous les champs qui ne sont pas des blocs ou des fonctions devront avoir le deatasourceName
         $this->dataSourceName = snake_case($document->data_source->model);
-        $this->fncFormatAccepted = ['fnc', 'IMAGE', $this->dataSourceName];
+        $this->fncFormatAccepted = ['fnc', 'IMG', $this->dataSourceName];
     }
     /**
      *
@@ -99,7 +99,7 @@ class WordProcessor2
                     $fncName = array_shift($subParts);
 
                     $image = array_values(array_slice($subParts, -1))[0];
-                    $tagType = $image == 'IMAGE' ? true : false;
+                    $tagType = $image == 'IMG' ? true : false;
                     if ($tagType) {
                         array_pop($subParts);
                     }
@@ -138,7 +138,7 @@ class WordProcessor2
                 }
 
                 //si le tag commence par imagekey
-                if ($fncFormat == 'IMAGE') {
+                if ($fncFormat == 'IMG') {
                     array_push($imageKeys, $tag);
                     continue;
                 }
@@ -158,7 +158,7 @@ class WordProcessor2
         return [
             'fncs' => $fncs,
             'injections' => $injections,
-            'IMAGE' => $imageKeys,
+            'IMG' => $imageKeys,
         ];
     }
     /**

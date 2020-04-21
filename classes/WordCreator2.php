@@ -19,7 +19,6 @@ class WordCreator2 extends WordProcessor2
         $this->dotedValues = $this->document->data_source->getDotedValues($dataSourceId);
         $this->listImages = $this->document->data_source->getPicturesUrl($dataSourceId, $this->document->images);
         $this->fncs = $this->document->data_source->getFunctionsCollections($this->dataSourceId, $this->document->model_functions);
-        // $getAllPicturesFromDataSource['IMAGE'] = $this->document->data_source->getAllPictures($dataSourceId);
 
         //trace_log($this->listImages);
     }
@@ -54,7 +53,7 @@ class WordCreator2 extends WordProcessor2
 
         //Traitement des image
         //trace_log("Traitement des images");
-        foreach ($originalTags['IMAGE'] as $imagekey) {
+        foreach ($originalTags['IMG'] as $imagekey) {
             $parts = explode(".", $imagekey);
             $key = array_pop($parts);
             $objImage = $this->listImages[$key] ?? null;

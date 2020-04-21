@@ -27,6 +27,8 @@ class Documents extends Controller
     public $reorderConfig = 'config_reorder.yaml';
     public $contextContent;
 
+    public $sidebarAttributes;
+
     public function __construct()
     {
         parent::__construct();
@@ -35,6 +37,17 @@ class Documents extends Controller
         BackendMenu::setContext('October.System', 'system', 'settings');
         SettingsManager::setContext('Waka.Worder', 'documents');
 
+        $this->sidebarAttributes = new \Waka\Utils\Widgets\SidebarAttributes($this);
+        $this->sidebarAttributes->alias = 'SideBarAttributes';
+        $this->sidebarAttributes->type = 'word';
+        $this->sidebarAttributes->bindToController();
+
+    }
+
+    public function update($id)
+    {
+        $this->bodyClass = 'compact-container';
+        return $this->asExtension('FormController')->update($id);
     }
 
     public function onTestList()
