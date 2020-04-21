@@ -60,7 +60,7 @@ class WordCreator2 extends WordProcessor2
 
             if ($objImage) {
                 $objWord = [
-                    'path' => $objImage['url'],
+                    'path' => $objImage['path'],
                     'width' => $objImage['width'] . 'px',
                     'height' => $objImage['height'] . 'px',
                     'ratio' => true,
