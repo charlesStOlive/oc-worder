@@ -111,15 +111,15 @@ class Plugin extends PluginBase
     {
         return [
             'waka.worder.admin.super' => [
-                'tab' => 'Waka',
-                'label' => 'Administrateur de Worder',
+                'tab' => 'Waka - Worder',
+                'label' => 'Super Administrateur de Worder',
             ],
-            'waka.worder.admin' => [
-                'tab' => 'Waka',
+            'waka.worder.admin.base' => [
+                'tab' => 'Waka - Worder',
                 'label' => 'Administrateur de Worder',
             ],
             'waka.worder.user' => [
-                'tab' => 'Waka',
+                'tab' => 'Waka - Worder',
                 'label' => 'Utilisateur de Worder',
             ],
         ];
@@ -144,7 +144,7 @@ class Plugin extends PluginBase
                 'category' => Lang::get('waka.worder::lang.menu.settings_category'),
                 'icon' => 'icon-file-word-o',
                 'url' => Backend::url('waka/worder/documents'),
-                'permissions' => ['waka.worder.admin'],
+                'permissions' => ['waka.worder.admin.*'],
                 'order' => 1,
             ],
             // 'bloc_types' => [
