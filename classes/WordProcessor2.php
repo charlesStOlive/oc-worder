@@ -48,7 +48,8 @@ class WordProcessor2
         $this->templateProcessor = new TemplateProcessor($document_path);
         // tous les champs qui ne sont pas des blocs ou des fonctions devront avoir le deatasourceName
         $this->dataSourceName = snake_case($document->data_source->model);
-        $this->fncFormatAccepted = ['fnc', 'IMG', $this->dataSourceName];
+        $this->fncFormatAccepted = ['FNC', 'IMG', $this->dataSourceName];
+        $this->ModelVarArray = $this->document->data_source->getDotedValues();
     }
     /**
      *
@@ -94,20 +95,21 @@ class WordProcessor2
             } else {
                 // si on est dans un bloc on enregistre les subpart dans le bloc.
                 if ($insideBlock) {
-                    //trace_log("On est inside un bloc");
-                    $subParts = explode('.', $tag);
-                    $fncName = array_shift($subParts);
-
-                    $image = array_values(array_slice($subParts, -1))[0];
-                    $tagType = $image == 'IMG' ? true : false;
-                    if ($tagType) {
-                        array_pop($subParts);
+                    $tagType = null;
+                    $tagWithoutType = $tag;
+                    $tagTypeExist = str_contains($tag, '*');
+                    if ($tagTypeExist) {
+                        $checkTag = explode('*', $tag);
+                        $tagType = array_pop($checkTag);
+                        $tagWithoutType = $checkTag[0];
                     }
-
+                    //trace_log("On est inside un bloc");
+                    $subParts = explode('.', $tagWithoutType);
+                    $fncName = array_shift($subParts);
                     $varName = implode('.', $subParts);
 
                     $subTag = [
-                        'image' => $tagType,
+                        'tagType' => $tagType,
                         'tag' => $tag,
                         'varName' => $varName,
                         'fncName' => $fncName,
@@ -122,7 +124,6 @@ class WordProcessor2
                 }
                 //trace_log($tag);
                 $fncFormat = array_shift($parts);
-                //trace_log("blocformat : " . $fncFormat);
 
                 if (!in_array($fncFormat, $this->fncFormatAccepted)) {
                     $this->recordInform('problem', Lang::get('waka.worder::lang.word.processor.bad_tag') . ' : ' . implode(", ", $this->fncFormatAccepted) . ' => ' . $tag);
@@ -130,9 +131,22 @@ class WordProcessor2
                 }
                 // si le tag commence par le nom de la source
                 if ($fncFormat == $this->dataSourceName) {
-                    $tagOK = $this->checkInjection($tag);
+                    $tagWithoutType = $tag;
+                    $tagType = null;
+                    $tagTypeExist = str_contains($tag, '*');
+                    if ($tagTypeExist) {
+                        $checkTag = explode('*', $tag);
+                        $tagType = array_pop($checkTag);
+                        $tagWithoutType = $checkTag[0];
+                    }
+                    $tagOK = $this->checkInjection($tagWithoutType);
                     if ($tagOK) {
-                        array_push($injections, $tag);
+                        $tagObj = [
+                            'tagType' => $tagType,
+                            'varName' => $tagWithoutType,
+                            'tag' => $tag,
+                        ];
+                        array_push($injections, $tagObj);
                     }
                     continue;
                 }
@@ -166,8 +180,8 @@ class WordProcessor2
      */
     public function checkInjection($tag)
     {
-        $ModelVarArray = $this->document->data_source->getDotedValues();
-        if (!array_key_exists($tag, $ModelVarArray)) {
+
+        if (!array_key_exists($tag, $this->ModelVarArray)) {
             $this->recordInform('problem', Lang::get('waka.worder::lang.word.processor.field_not_existe') . ' : ' . $tag);
             return false;
         } else {

@@ -1,5 +1,7 @@
 <?php namespace Waka\Worder\Classes;
 
+use System\Helpers\DateTime as DateTimeHelper;
+
 class WordCreator2 extends WordProcessor2
 {
     use \Waka\Utils\Classes\Traits\ConvertPx;
@@ -19,14 +21,8 @@ class WordCreator2 extends WordProcessor2
         $this->dotedValues = $this->document->data_source->getDotedValues($dataSourceId);
         $this->listImages = $this->document->data_source->getPicturesUrl($dataSourceId, $this->document->images);
         $this->fncs = $this->document->data_source->getFunctionsCollections($this->dataSourceId, $this->document->model_functions);
-
         //trace_log($this->listImages);
     }
-    // public function setAdditionalParams($additionalParams)
-    // {
-    //     if ($additionalParams) {
-    //         $this->additionalParams = $additionalParams;
-    //     }
     // }
     private function linkModelSource($dataSourceId)
     {
@@ -47,8 +43,12 @@ class WordCreator2 extends WordProcessor2
         //Traitement des champs simples
         //trace_log("Traitement des champs simples");
         foreach ($originalTags['injections'] as $injection) {
-            $value = $this->dotedValues[$injection];
-            $this->templateProcessor->setValue($injection, $value);
+            // $injection ['tagType', 'varName', 'tag']
+            $value = $this->dotedValues[$injection['varName']];
+            if ($injection['tagType'] != null) {
+                $value = $this->transformValue($value, $injection['tagType']);
+            }
+            $this->templateProcessor->setValue($injection['tag'], $value);
         }
 
         //Traitement des image
@@ -77,8 +77,8 @@ class WordCreator2 extends WordProcessor2
         $data = $this->fncs;
         // Pour chazque fonctions dans le word
         foreach ($originalTags['fncs'] as $wordFnc) {
-            // trace_log("-------------------------------");
-            // trace_log($wordFnc);
+            trace_log("-------------------------------");
+            trace_log($wordFnc);
 
             $functionName = $wordFnc['code'];
             // trace_log($functionName);
@@ -89,7 +89,7 @@ class WordCreator2 extends WordProcessor2
 
             //Préparation du clone block
             $countFunctionRows = count($functionRows);
-            $fncTag = 'fnc.' . $functionName;
+            $fncTag = 'FNC.' . $functionName;
             $this->templateProcessor->cloneBlock($fncTag, $countFunctionRows, true, true);
             $i = 1; //i permet de creer la cla #i lors du clone row
 
@@ -100,18 +100,25 @@ class WordCreator2 extends WordProcessor2
                 foreach ($wordFnc['subTags'] as $subTag) {
                     //trace_log('**subtag***');
                     //trace_log($subTag);
-                    if (!$subTag['image']) {
-                        $tag = $subTag['tag'] . '#' . $i;
-                        //trace_log("c'est une value tag : " . $tag);
-                        $value = $functionRow[$subTag['varName']];
-                        $this->templateProcessor->setValue($tag, $value, 1);
-                    } else {
-                        $tag = $subTag['tag'] . '#' . $i;
+                    $tagType = $subTag['tagType'] ?? null;
+
+                    $tag = $subTag['tag'] . '#' . $i;
+
+                    if ($tagType == 'IMG') {
+
                         //trace_log("c'est une image tag : " . $tag);
                         $path = $functionRow[$subTag['varName'] . '.path'];
                         $width = $functionRow[$subTag['varName'] . '.width'];
                         $height = $functionRow[$subTag['varName'] . '.height'];
                         $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
+
+                    } else {
+                        //trace_log("c'est une value tag : " . $tag);
+                        $value = $functionRow[$subTag['varName']];
+                        if ($tagType) {
+                            $value = $this->transformValue($value, $tagType);
+                        }
+                        $this->templateProcessor->setValue($tag, $value, 1);
                     }
                 }
                 $i++;
@@ -159,23 +166,29 @@ class WordCreator2 extends WordProcessor2
         }
 
     }
+    public function transformValue($value, $type)
+    {
+        switch ($type) {
+            case 'numeric':
+                return number_format($value, 0, ',', ' ');
+                break;
+            case 'euro':
+                return number_format($value, 2, ',', ' ') . ' €';
+                break;
+            case 'euro_int':
+                return number_format($value, 0, ',', ' ') . ' €';
+                break;
+            case 'date':
+                $value = DateTimeHelper::makeCarbon($value, false);
+                $backendTimeZone = \Backend\Models\Preference::get('timezone');
+                $value->setTimezone($backendTimeZone);
+                $value->setTime(0, 0, 0);
+                $value->setTimezone(\Config::get('app.timezone'));
+                return $value->format('d/m/Y');
+                break;
+        }
 
-    // public function getDotedValues()
-    // {
-    //     $array = [];
-    //     // if ($this->additionalParams) {
-    //     //     if (count($this->additionalParams)) {
-    //     //         $rel = $this->document->data_source->getDotedRelationValues($this->dataSourceId, $this->additionalParams);
-    //     //         //trace_log($rel);
-    //     //         $array = array_merge($array, $rel);
-    //     //         //trace_log($array);
-    //     //     }
-    //     // }
-    //     $rel = $this->document->data_source->getDotedValues($this->dataSourceId);
-    //     //trace_log($rel);
-    //     $array = array_merge($array, $rel);
+    }
 
-    //     //trace_log($array);
-    //     return $array;
     // }
 }
