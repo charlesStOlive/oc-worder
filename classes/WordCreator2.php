@@ -65,8 +65,8 @@ class WordCreator2 extends WordProcessor2
                     'height' => $objImage['height'] . 'px',
                     'ratio' => true,
                 ];
-                trace_log($imagekey);
-                trace_log($objWord);
+                //trace_log($imagekey);
+                //trace_log($objWord);
                 $this->templateProcessor->setImageValue($imagekey, $objWord);
             }
         }
@@ -77,8 +77,8 @@ class WordCreator2 extends WordProcessor2
         $data = $this->fncs;
         // Pour chazque fonctions dans le word
         foreach ($originalTags['fncs'] as $wordFnc) {
-            trace_log("-------------------------------");
-            trace_log($wordFnc);
+            //trace_log("-------------------------------");
+            //trace_log($wordFnc);
 
             $functionName = $wordFnc['code'];
             // trace_log($functionName);
