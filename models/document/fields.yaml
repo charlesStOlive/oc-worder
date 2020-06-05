@@ -6,7 +6,7 @@ fields:
     title@update:
         type: informfield
         valueFrom: name
-    name@create:
+    name:
         label: waka.worder::lang.document.name
     path:
         label: waka.worder::lang.document.path
@@ -29,11 +29,9 @@ fields:
     model_functions@update:
             label: Créer des collections à partir des fonctions du modèle
             type: functionslist
-            span: auto
     images@update:
             label: Injecter des images à partir du modèle
             type: imageslist
-            span: auto
 
     scopes@update:
         label: waka.worder::lang.document.scopes.title
