@@ -43,12 +43,26 @@ class WordCreator2 extends WordProcessor2
         //Traitement des champs simples
         //trace_log("Traitement des champs simples");
         foreach ($originalTags['injections'] as $injection) {
-            // $injection ['tagType', 'varName', 'tag']
+
             $value = $this->dotedValues[$injection['varName']];
-            if ($injection['tagType'] != null) {
-                $value = $this->transformValue($value, $injection['tagType']);
+
+            if ($injection['tagType'] != 'CB') {
+                $ck;
+                if ($value) {
+                    $ck = '$/waka/worder/assets/images/check.gif';
+                } else {
+                    $ck = '$/waka/worder/assets/images/uncheck.gif';
+                }
+                trace_log($ck);
+                $checkBox = ['path' => plugins_path() . $ck, 'width' => '10px', 'height' => '10px'];
+                $this->templateProcessor->setImageValue($injection['tag'], [$objWord]);
+            } else {
+                if ($injection['tagType'] != null) {
+                    $value = $this->transformValue($value, $injection['tagType']);
+                }
+                $this->templateProcessor->setValue($injection['tag'], $value);
             }
-            $this->templateProcessor->setValue($injection['tag'], $value);
+
         }
 
         //Traitement des image
