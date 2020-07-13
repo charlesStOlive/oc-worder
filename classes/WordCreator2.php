@@ -21,6 +21,7 @@ class WordCreator2 extends WordProcessor2
         $this->dotedValues = $this->document->data_source->getDotedValues($dataSourceId);
         $this->listImages = $this->document->data_source->getPicturesUrl($dataSourceId, $this->document->images);
         $this->fncs = $this->document->data_source->getFunctionsCollections($this->dataSourceId, $this->document->model_functions);
+
         //trace_log($this->listImages);
     }
     // }
@@ -46,16 +47,16 @@ class WordCreator2 extends WordProcessor2
 
             $value = $this->dotedValues[$injection['varName']];
 
-            if ($injection['tagType'] != 'CB') {
+            if ($injection['tagType'] == 'CB') {
                 $ck;
                 if ($value) {
-                    $ck = '$/waka/worder/assets/images/check.gif';
+                    $ck = '/waka/worder/assets/images/check.gif';
                 } else {
-                    $ck = '$/waka/worder/assets/images/uncheck.gif';
+                    $ck = '/waka/worder/assets/images/uncheck.gif';
                 }
                 trace_log($ck);
                 $checkBox = ['path' => plugins_path() . $ck, 'width' => '10px', 'height' => '10px'];
-                $this->templateProcessor->setImageValue($injection['tag'], [$objWord]);
+                $this->templateProcessor->setImageValue($injection['tag'], $checkBox);
             } else {
                 if ($injection['tagType'] != null) {
                     $value = $this->transformValue($value, $injection['tagType']);

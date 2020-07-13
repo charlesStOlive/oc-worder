@@ -48,7 +48,7 @@ class WordProcessor2
         $this->templateProcessor = new TemplateProcessor($document_path);
         // tous les champs qui ne sont pas des blocs ou des fonctions devront avoir le deatasourceName
         $this->dataSourceName = snake_case($document->data_source->model);
-        $this->fncFormatAccepted = ['FNC', 'IMG', $this->dataSourceName];
+        $this->fncFormatAccepted = ['FNC', 'IMG', 'info', $this->dataSourceName];
         $this->ModelVarArray = $this->document->data_source->getDotedValues();
     }
     /**
@@ -130,7 +130,7 @@ class WordProcessor2
                     continue;
                 }
                 // si le tag commence par le nom de la source
-                if ($fncFormat == $this->dataSourceName) {
+                if ($fncFormat == $this->dataSourceName || $fncFormat == 'info') {
                     $tagWithoutType = $tag;
                     $tagType = null;
                     $tagTypeExist = str_contains($tag, '*');
