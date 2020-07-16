@@ -1,43 +1,26 @@
 <?php namespace Waka\Worder\Classes;
 
+use App;
 use System\Helpers\DateTime as DateTimeHelper;
 
 class WordCreator2 extends WordProcessor2
 {
     use \Waka\Utils\Classes\Traits\ConvertPx;
 
-    private $dataSourceModel;
+    private $modelSource;
     private $dataSourceId;
     private $listImages;
-    //private $additionalParams;
-    //private $dataSourceAdditionalParams;
 
     use \Waka\Cloudis\Classes\Traits\CloudisKey;
 
     public function prepareCreatorVars($dataSourceId)
     {
         //trace_log("prepareCreatorVars");
-        $this->dataSourceModel = $this->linkModelSource($dataSourceId);
+        $this->modelSource = $this->linkModelSource($dataSourceId);
         $this->dotedValues = $this->document->data_source->getDotedValues($dataSourceId);
         $this->listImages = $this->document->data_source->getPicturesUrl($dataSourceId, $this->document->images);
         $this->fncs = $this->document->data_source->getFunctionsCollections($this->dataSourceId, $this->document->model_functions);
 
-        //trace_log($this->listImages);
-    }
-    // }
-    private function linkModelSource($dataSourceId)
-    {
-        $this->dataSourceId = $dataSourceId;
-        // si vide on puise dans le test
-        if (!$this->dataSourceId) {
-            $this->dataSourceId = $this->document->data_source->test_id;
-        }
-        //on enregistre le modèle
-        return $this->document->data_source->modelClass::find($this->dataSourceId);
-    }
-    public function renderWord($dataSourceId)
-    {
-        $this->prepareCreatorVars($dataSourceId);
         $originalTags = $this->checkTags();
         //trace_log($originalTags);
 
@@ -54,7 +37,7 @@ class WordCreator2 extends WordProcessor2
                 } else {
                     $ck = '/waka/worder/assets/images/uncheck.gif';
                 }
-                trace_log($ck);
+                //trace_log($ck);
                 $checkBox = ['path' => plugins_path() . $ck, 'width' => '10px', 'height' => '10px'];
                 $this->templateProcessor->setImageValue($injection['tag'], $checkBox);
             } else {
@@ -140,47 +123,50 @@ class WordCreator2 extends WordProcessor2
 
             }
         }
+
+        //trace_log($this->listImages);
+    }
+    // }
+    private function linkModelSource($dataSourceId)
+    {
+        $this->dataSourceId = $dataSourceId;
+        // si vide on puise dans le test
+        if (!$this->dataSourceId) {
+            $this->dataSourceId = $this->document->data_source->test_id;
+        }
+        //on enregistre le modèle
+        return $this->document->data_source->modelClass::find($this->dataSourceId);
+    }
+    public function renderWord($dataSourceId)
+    {
+        $this->prepareCreatorVars($dataSourceId);
+
         //trace_log("tout est pret");
-        $name = str_slug($this->document->name . '-' . $this->dataSourceModel->name);
-        $coin = $this->templateProcessor->saveAs($name . '.docx');
+        $name = str_slug($this->document->name . '-' . $this->modelSource->name);
+        $this->templateProcessor->saveAs($name . '.docx');
+        //trace_log(get_class($coin));
         return response()->download($name . '.docx')->deleteFileAfterSend(true);
     }
 
-    public function getUrlFromImageKey($imageKey)
+    public function renderCloud($dataSourceId)
     {
-        $imageKey_array = explode(':', $imageKey);
-        $idAndCrop = $imageKey_array[0];
+        $this->prepareCreatorVars($dataSourceId);
 
-        $idAndCrop_array = explode('**', $idAndCrop);
-        $id = $idAndCrop_array[0];
-        $crop = $idAndCrop_array[1] ?? 'fill';
+        //trace_log("tout est pret");
+        $name = str_slug($this->document->name . '-' . $this->modelSource->name);
+        $filePath = $this->templateProcessor->save();
+        $output = \File::get($filePath);
 
-        $nameOrId = $this->listImages[$id] ?? null;
+        $folderOrg = new \Waka\Lot\Classes\FolderOrganisation();
+        $folders = $folderOrg->getFolder($this->modelSource);
 
-        if (!$nameOrId) {
-            return null;
-        }
+        $cloudSystem = App::make('cloudSystem');
+        $lastFolderDir = $cloudSystem->createDirFromArray($folders);
 
-        $width = $imageKey_array[1] ?? '165mm';
-        $height = $imageKey_array[2] ?? '165mm';
-
-        $is_montage = is_numeric($nameOrId);
-
-        $width = $this->convertStringToPx($width);
-        $height = $this->convertStringToPx($height);
-
-        //trace_log("width : " . $width);
-        //trace_log("height : " . $height);
-
-        $options = ['width' => $width, 'height' => $height, 'crop' => $crop];
-
-        if ($is_montage) {
-            return \Waka\Cloudis\Models\Montage::find($nameOrId)->getCloudiUrl($this->dataSourceId);
-        } else {
-            return \Cloudder::secureShow($nameOrId, $options);
-        }
+        \Storage::cloud()->put($lastFolderDir['path'] . '/' . $name . '.docx', $output);
 
     }
+
     public function transformValue($value, $type)
     {
         switch ($type) {

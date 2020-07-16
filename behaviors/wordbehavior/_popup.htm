@@ -7,8 +7,9 @@
             <h4 class="modal-title">Tester le document</h4>
         </div>
         <div class="modal-body">
+            <!-- <input type="hidden" name="modelClassName" value="" /> -->
             <select class="form-control custom-select" name="documentId">
-                <option value="" disabled selected>--Choose a document--</option>
+                <option value="" disabled selected>--Choisissez un document--</option>
                 <?php foreach($options as $key => $value)  { ?>
                 <option value="<?=$key?>"><?=$value?></option>
                 <?php } ?>
@@ -27,6 +28,13 @@
             } ?>
         </div>
         <div class="modal-footer m-t">
+            <?php if (Config('waka.crsm::cloud.controller.word.show')) : ?>
+            <button type="submit" data-request="onCloudWordValidation"
+                data-request-data="redirect:0, modelId:'<?=$modelId?>'" data-hotkey="ctrl+s, cmd+s"
+                data-popup-load-indicator class="btn btn-primary">
+                Enregistrer dans le cloud
+            </button>
+            <?php endif ?>
             <button type="submit" data-request="onWordBehaviorPopupValidation"
                 data-request-data="redirect:0, modelId:'<?=$modelId?>'" data-hotkey="ctrl+s, cmd+s"
                 class="btn btn-primary">
