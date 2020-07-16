@@ -157,7 +157,7 @@ class WordCreator2 extends WordProcessor2
         $filePath = $this->templateProcessor->save();
         $output = \File::get($filePath);
 
-        $folderOrg = new \Waka\Lot\Classes\FolderOrganisation();
+        $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
         $folders = $folderOrg->getFolder($this->modelSource);
 
         $cloudSystem = App::make('cloudSystem');
