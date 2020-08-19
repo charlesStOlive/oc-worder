@@ -13,4 +13,5 @@
     <a href="<?= Backend::url('waka/worder/documents/reorder') ?>" class="btn btn-default oc-icon-bars">
         <?= e(trans('waka.utils::lang.global.reorder')) ?>
     </a>
+    <?= $this->fireViewEvent('popup.list.tools', ['word']) ?>
 </div>
