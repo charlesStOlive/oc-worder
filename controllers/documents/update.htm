@@ -3,11 +3,9 @@
 
 <?= Form::open(['class' => 'layout']) ?>
 
-<div class="form-buttons">
-    <?= $this->fireViewEvent('backend.update.duplicate') ?>
-    <?= $this->fireViewEvent('backend.top.update') ?>
-    <?= $this->fireViewEvent('backend.crsm.updateView') ?>
-</div>
+<?= $this->fireViewEvent('backend.update.tools') ?>
+<?= $this->fireViewEvent('backend.top.update') ?>
+<?= $this->fireViewEvent('backend.crsm.updateView') ?>
 
 <div class="layout-row">
     <?= $this->formRender() ?>
