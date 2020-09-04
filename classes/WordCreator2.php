@@ -2,6 +2,7 @@
 
 use App;
 use System\Helpers\DateTime as DateTimeHelper;
+use Waka\Utils\Classes\WakaDate;
 
 class WordCreator2 extends WordProcessor2
 {
@@ -40,9 +41,11 @@ class WordCreator2 extends WordProcessor2
                 //trace_log($ck);
                 $checkBox = ['path' => plugins_path() . $ck, 'width' => '10px', 'height' => '10px'];
                 $this->templateProcessor->setImageValue($injection['tag'], $checkBox);
+
             } else {
                 if ($injection['tagType'] != null) {
                     $value = $this->transformValue($value, $injection['tagType']);
+
                 }
                 $this->templateProcessor->setValue($injection['tag'], $value);
             }
@@ -94,7 +97,6 @@ class WordCreator2 extends WordProcessor2
             //Parcours des lignes renvoyé par la fonctions
             foreach ($functionRows as $functionRow) {
                 $functionRow = array_dot($functionRow);
-                //trace_log($functionRow);
                 foreach ($wordFnc['subTags'] as $subTag) {
                     //trace_log('**subtag***');
                     //trace_log($subTag);
@@ -113,7 +115,7 @@ class WordCreator2 extends WordProcessor2
                     } else {
                         //trace_log("c'est une value tag : " . $tag);
                         $value = $functionRow[$subTag['varName']];
-                        if ($tagType) {
+                        if ($tagType && $value) {
                             $value = $this->transformValue($value, $tagType);
                         }
                         $this->templateProcessor->setValue($tag, $value, 1);
@@ -169,24 +171,20 @@ class WordCreator2 extends WordProcessor2
 
     public function transformValue($value, $type)
     {
-        switch ($type) {
-            case 'numeric':
-                return number_format($value, 0, ',', ' ');
-                break;
-            case 'euro':
-                return number_format($value, 2, ',', ' ') . ' €';
-                break;
-            case 'euro_int':
-                return number_format($value, 0, ',', ' ') . ' €';
-                break;
-            case 'date':
-                $value = DateTimeHelper::makeCarbon($value, false);
-                $backendTimeZone = \Backend\Models\Preference::get('timezone');
-                $value->setTimezone($backendTimeZone);
-                $value->setTime(0, 0, 0);
-                $value->setTimezone(\Config::get('app.timezone'));
-                return $value->format('d/m/Y');
-                break;
+
+        if ($type == 'numeric') {
+            return number_format($value, 0, ',', ' ');
+        }
+        if ($type == 'euro') {
+            return number_format($value, 2, ',', ' ') . ' €';
+        }
+        if ($type == 'euro_int') {
+            return number_format($value, 0, ',', ' ') . ' €';
+        }
+        if (starts_with($type, 'date')) {
+            $date = new WakaDate();
+            $value = DateTimeHelper::makeCarbon($value, false);
+            return $date->localeDate($value, $type);
         }
 
     }
