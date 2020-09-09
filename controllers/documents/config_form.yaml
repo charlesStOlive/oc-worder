@@ -16,13 +16,13 @@ defaultRedirect: waka/worder/documents
 
 # Create page
 create:
-    title: Create Document
+    title: Créer document
     redirect: waka/worder/documents/update/:id
     redirectClose: waka/worder/documents
 
 # Update page
 update:
-    title: Edit Document
+    title: Editer un document
     redirect: waka/worder/documents
     redirectClose: waka/worder/documents
 
