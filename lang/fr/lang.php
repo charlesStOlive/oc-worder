@@ -91,6 +91,10 @@ return [
             'document_not_exist' => " La source du document n'a pas été trouvé",
             'errors' => "Ce document à des erreurs, veuillez les corriger.",
             'success' => "Le systhème n'a pas trouvé d'erreurs. Pensez à verifier votre document après édition",
+
+        ],
+        'error' => [
+            'no_image' => "L'image ou le montage n'existe pas",
         ],
     ],
     'contents' => [

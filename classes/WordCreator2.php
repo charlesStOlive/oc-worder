@@ -1,6 +1,7 @@
 <?php namespace Waka\Worder\Classes;
 
 use App;
+use Lang;
 use System\Helpers\DateTime as DateTimeHelper;
 use Waka\Utils\Classes\WakaDate;
 
@@ -68,6 +69,11 @@ class WordCreator2 extends WordProcessor2
                 ];
                 //trace_log($imagekey);
                 //trace_log($objWord);
+                if ($objImage['path'] ?? false) {
+                    $this->templateProcessor->setImageValue($imagekey, $objWord);
+                } else {
+                    $this->templateProcessor->setValue($imagekey, Lang::get("waka.worder::lang.word.error.no_image"), 1);
+                }
                 $this->templateProcessor->setImageValue($imagekey, $objWord);
             }
         }
@@ -108,9 +114,14 @@ class WordCreator2 extends WordProcessor2
 
                         //trace_log("c'est une image tag : " . $tag);
                         $path = $functionRow[$subTag['varName'] . '.path'];
-                        $width = $functionRow[$subTag['varName'] . '.width'];
-                        $height = $functionRow[$subTag['varName'] . '.height'];
-                        $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
+                        $path = $functionRow[$subTag['varName'] . '.path'] ?? false;
+                        $width = $functionRow[$subTag['varName'] . '.width'] ?? false;
+                        $height = $functionRow[$subTag['varName'] . '.height'] ?? false;
+                        if ($path) {
+                            $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
+                        } else {
+                            $this->templateProcessor->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
+                        }
 
                     } else {
                         //trace_log("c'est une value tag : " . $tag);
