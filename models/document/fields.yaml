@@ -32,19 +32,15 @@ fields:
     images@update:
             label: Injecter des images à partir du modèle
             type: imageslist
-    scope_type: 
-            label: waka.utils::lang.scopes.type
-            type: dropdown
-            options:
-                none: Auncun
-                all: Toutes les conditions devront être vrais
-                one: Une seul condition doit être vrai
+    is_scope: 
+            label: waka.utils::lang.scopes.is_scope
+            type: checkbox
     scopes:
         type: scopeslist
         trigger:
             action: hide
-            field: scope_type
-            condition: value[none]
+            field: is_scope
+            condition: unchecked
 
     # scopes@update:
     #     label: waka.worder::lang.document.scopes.title
