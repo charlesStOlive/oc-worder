@@ -125,8 +125,8 @@ class WordCreator2 extends WordProcessor2
 
                     } else {
                         //trace_log("c'est une value tag : " . $tag);
-                        $value = $functionRow[$subTag['varName']];
-                        if ($tagType && $value) {
+                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
+                        if ($tagType && $value != "Inconnu") {
                             $value = $this->transformValue($value, $tagType);
                         }
                         $this->templateProcessor->setValue($tag, $value, 1);
