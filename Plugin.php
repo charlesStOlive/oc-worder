@@ -141,11 +141,11 @@ class Plugin extends PluginBase
             'documents' => [
                 'label' => Lang::get('waka.worder::lang.menu.documents'),
                 'description' => Lang::get('waka.worder::lang.menu.documents_description'),
-                'category' => Lang::get('waka.worder::lang.menu.settings_category'),
+                'category' => Lang::get('waka.utils::lang.menu.settings_category_model'),
                 'icon' => 'icon-file-word-o',
                 'url' => Backend::url('waka/worder/documents'),
                 'permissions' => ['waka.worder.admin.*'],
-                'order' => 1,
+                'order' => 10,
             ],
             // 'bloc_types' => [
             //     'label' => Lang::get('waka.worder::lang.menu.bloc_type'),
