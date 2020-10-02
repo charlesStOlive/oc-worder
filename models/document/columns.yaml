@@ -19,10 +19,9 @@ columns:
     name:
         label: waka.worder::lang.document.name
         searchable: true
-    data_src:
-        label: waka.worder::lang.document.data_source
-        relation: data_source
-        select: name
+    data_source_id:
+        label: waka.utils::lang.datasource.title
+        type: datasource
     is_scope:
         label: waka.utils::lang.scopes.is_scope
         type: switch

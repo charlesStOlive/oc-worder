@@ -23,19 +23,6 @@ class WordBehavior extends ControllerBehavior
      * METHODES
      */
 
-    // public function getDataSourceFromModel(String $model)
-    // {
-    //     $modelClassDecouped = explode('\\', $model);
-    //     $modelClassName = array_pop($modelClassDecouped);
-    //     return \Waka\Utils\Models\DataSource::where('model', '=', $modelClassName)->first();
-    // }
-
-    // public function getModel($model, $modelId)
-    // {
-    //     $myModel = $model::find($modelId);
-    //     return $myModel;
-    // }
-
     /**
      * LOAD DES POPUPS
      */
