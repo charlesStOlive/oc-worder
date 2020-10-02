@@ -2,6 +2,7 @@
 
 use Backend\Classes\ControllerBehavior;
 use Redirect;
+use Waka\Utils\Classes\DataSource;
 use Waka\Worder\Classes\WordCreator2;
 use Waka\Worder\Classes\WordProcessor2;
 use Waka\Worder\Models\Document;
@@ -22,18 +23,18 @@ class WordBehavior extends ControllerBehavior
      * METHODES
      */
 
-    public function getDataSourceFromModel(String $model)
-    {
-        $modelClassDecouped = explode('\\', $model);
-        $modelClassName = array_pop($modelClassDecouped);
-        return \Waka\Utils\Models\DataSource::where('model', '=', $modelClassName)->first();
-    }
+    // public function getDataSourceFromModel(String $model)
+    // {
+    //     $modelClassDecouped = explode('\\', $model);
+    //     $modelClassName = array_pop($modelClassDecouped);
+    //     return \Waka\Utils\Models\DataSource::where('model', '=', $modelClassName)->first();
+    // }
 
-    public function getModel($model, $modelId)
-    {
-        $myModel = $model::find($modelId);
-        return $myModel;
-    }
+    // public function getModel($model, $modelId)
+    // {
+    //     $myModel = $model::find($modelId);
+    //     return $myModel;
+    // }
 
     /**
      * LOAD DES POPUPS
@@ -43,14 +44,11 @@ class WordBehavior extends ControllerBehavior
         $model = post('model');
         $modelId = post('modelId');
 
-        $dataSource = $this->getDataSourceFromModel($model);
-        $options = $dataSource->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
+        $ds = new DataSource($model, 'class');
+        $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
-        //$this->vars['modelClassName'] = $model;
-
-        // $this->vars['dataSrcId'] = $dataSource->id;
 
         return $this->makePartial('$/waka/worder/behaviors/wordbehavior/_popup.htm');
     }
@@ -59,8 +57,8 @@ class WordBehavior extends ControllerBehavior
         $model = post('model');
         $modelId = post('modelId');
 
-        $dataSource = $this->getDataSourceFromModel($model);
-        $options = $dataSource->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
+        $ds = new DataSource($model, 'class');
+        $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;

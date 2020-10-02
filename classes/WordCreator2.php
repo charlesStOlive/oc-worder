@@ -10,18 +10,16 @@ class WordCreator2 extends WordProcessor2
     use \Waka\Utils\Classes\Traits\ConvertPx;
 
     private $modelSource;
-    private $dataSourceId;
+    private $modelId;
     private $listImages;
 
     use \Waka\Cloudis\Classes\Traits\CloudisKey;
 
-    public function prepareCreatorVars($dataSourceId)
+    public function prepareCreatorVars($modelId)
     {
-        //trace_log("prepareCreatorVars");
-        $this->modelSource = $this->linkModelSource($dataSourceId);
-        $this->dotedValues = $this->document->data_source->getDotedValues($dataSourceId);
-        $this->listImages = $this->document->data_source->getPicturesUrl($dataSourceId, $this->document->images);
-        $this->fncs = $this->document->data_source->getFunctionsCollections($this->dataSourceId, $this->document->model_functions);
+        $this->dotedValues = $this->dataSource->getDotedValues($modelId);
+        $this->listImages = $this->dataSource->getPicturesUrl($modelId, $this->document->images);
+        $this->fncs = $this->dataSource->getFunctionsCollections($modelId, $this->document->model_functions);
 
         $originalTags = $this->checkTags();
         //trace_log($originalTags);
@@ -139,34 +137,23 @@ class WordCreator2 extends WordProcessor2
 
         //trace_log($this->listImages);
     }
-    // }
-    private function linkModelSource($dataSourceId)
+    public function renderWord($modelId)
     {
-        $this->dataSourceId = $dataSourceId;
-        // si vide on puise dans le test
-        if (!$this->dataSourceId) {
-            $this->dataSourceId = $this->document->data_source->test_id;
-        }
-        //on enregistre le modèle
-        return $this->document->data_source->modelClass::find($this->dataSourceId);
-    }
-    public function renderWord($dataSourceId)
-    {
-        $this->prepareCreatorVars($dataSourceId);
+        $this->prepareCreatorVars($modelId);
 
         //trace_log("tout est pret");
-        $name = str_slug($this->document->name . '-' . $this->modelSource->name);
+        $name = str_slug($this->document->name . '-' . $this->dataSource->name);
         $this->templateProcessor->saveAs($name . '.docx');
         //trace_log(get_class($coin));
         return response()->download($name . '.docx')->deleteFileAfterSend(true);
     }
 
-    public function renderCloud($dataSourceId)
+    public function renderCloud($modelId)
     {
-        $this->prepareCreatorVars($dataSourceId);
+        $this->prepareCreatorVars($modelId);
 
         //trace_log("tout est pret");
-        $name = str_slug($this->document->name . '-' . $this->modelSource->name);
+        $name = str_slug($this->document->name . '-' . $this->dataSource->modelName);
         $filePath = $this->templateProcessor->save();
         $output = \File::get($filePath);
 
