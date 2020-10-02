@@ -5,6 +5,7 @@ use Flash;
 use Lang;
 use Redirect;
 use Storage;
+use Waka\Utils\Classes\DataSource;
 use Waka\Worder\Models\Document;
 use \PhpOffice\PhpWord\TemplateProcessor;
 
@@ -18,6 +19,7 @@ class WordProcessor2
     //public $AllBlocs;
     public $increment;
     public $fncFormatAccepted;
+    public $dataSource;
     public $dataSourceName;
     public $sector;
     public $apiBlocs;
@@ -35,21 +37,17 @@ class WordProcessor2
         $this->increment = 1;
         $this->nbErrors = 0;
         $this->document_id = $document_id;
-        //$this->bloc_types = BlocType::get(['id', 'code']);
-        //$this->AllBlocs = Bloc::get(['id', 'document_id', 'code', 'name']);
         //
-        $document = Document::find($document_id);
-
-        //trace_log($document_id);
-        $this->document = $document;
+        $this->document = Document::find($document_id);
+        $this->dataSource = new DataSource($this->document->data_source_id, 'id');
         //
         $document_path = $this->getPath($this->document);
-
+        //
         $this->templateProcessor = new TemplateProcessor($document_path);
         // tous les champs qui ne sont pas des blocs ou des fonctions devront avoir le deatasourceName
-        $this->dataSourceName = snake_case($document->data_source->model);
+        $this->dataSourceName = snake_case($this->dataSource->name);
         $this->fncFormatAccepted = ['FNC', 'IMG', 'info', $this->dataSourceName];
-        $this->ModelVarArray = $this->document->data_source->getDotedValues();
+        $this->ModelVarArray = $this->dataSource->getDotedValues();
     }
     /**
      *

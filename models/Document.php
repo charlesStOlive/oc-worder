@@ -77,7 +77,7 @@ class Document extends Model
     public $hasOne = [];
     public $hasMany = [];
     public $belongsTo = [
-        'data_source' => ['Waka\Utils\Models\DataSource'],
+        //'data_source' => ['Waka\Utils\Models\DataSource'],
     ];
     public $belongsToMany = [];
     public $morphTo = [];
@@ -101,14 +101,11 @@ class Document extends Model
         }
 
     }
-    //
-    public function listContacts()
+    /**
+     * LISTS
+     */
+    public function listDataSource()
     {
-        return \Waka\Crsm\Models\Contact::lists('name', 'id');
-    }
-
-    public function getList()
-    {
-
+        return \Waka\Utils\Classes\DataSourceList::lists();
     }
 }
