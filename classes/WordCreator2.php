@@ -9,7 +9,6 @@ class WordCreator2 extends WordProcessor2
 {
     use \Waka\Utils\Classes\Traits\ConvertPx;
 
-    private $modelSource;
     private $modelId;
     private $listImages;
 
@@ -158,7 +157,7 @@ class WordCreator2 extends WordProcessor2
         $output = \File::get($filePath);
 
         $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
-        $folders = $folderOrg->getFolder($this->modelSource);
+        $folders = $folderOrg->getFolder($this->dataSource->model);
 
         $cloudSystem = App::make('cloudSystem');
         $lastFolderDir = $cloudSystem->createDirFromArray($folders);
