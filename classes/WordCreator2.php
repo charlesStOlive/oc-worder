@@ -123,7 +123,7 @@ class WordCreator2 extends WordProcessor2
                     } else {
                         //trace_log("c'est une value tag : " . $tag);
                         $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
-                        if ($tagType && $value != "Inconnu") {
+                        if ($tagType) {
                             $value = $this->transformValue($value, $tagType);
                         }
                         $this->templateProcessor->setValue($tag, $value, 1);
@@ -168,6 +168,9 @@ class WordCreator2 extends WordProcessor2
 
     public function transformValue($value, $type)
     {
+        if($value == 'Inconnu') {
+            $value = 0;
+        }
 
         if ($type == 'numeric') {
             return number_format($value, 0, ',', ' ');
@@ -178,10 +181,12 @@ class WordCreator2 extends WordProcessor2
         if ($type == 'euro_int') {
             return number_format($value, 0, ',', ' ') . ' €';
         }
-        if (starts_with($type, 'date')) {
+        if (starts_with($type, 'date')  && $value) {
             $date = new WakaDate();
             $value = DateTimeHelper::makeCarbon($value, false);
             return $date->localeDate($value, $type);
+        } else {
+            return 'Inconnu';
         }
 
     }
