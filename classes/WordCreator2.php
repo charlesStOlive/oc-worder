@@ -40,6 +40,8 @@ class WordCreator2 extends WordProcessor2
                 $checkBox = ['path' => plugins_path() . $ck, 'width' => '10px', 'height' => '10px'];
                 $this->templateProcessor->setImageValue($injection['tag'], $checkBox);
 
+            } else if ($injection['tagType'] == 'HTM') {
+                $this->templateProcessor->setHtmlValue($injection['tag'], $value);
             } else {
                 if ($injection['tagType'] != null) {
                     $value = $this->transformValue($value, $injection['tagType']);
@@ -168,7 +170,7 @@ class WordCreator2 extends WordProcessor2
 
     public function transformValue($value, $type)
     {
-        if($value == 'Inconnu') {
+        if ($value == 'Inconnu') {
             $value = 0;
         }
 
@@ -181,7 +183,7 @@ class WordCreator2 extends WordProcessor2
         if ($type == 'euro_int') {
             return number_format($value, 0, ',', ' ') . ' €';
         }
-        if (starts_with($type, 'date')  && $value) {
+        if (starts_with($type, 'date') && $value) {
             $date = new WakaDate();
             $value = DateTimeHelper::makeCarbon($value, false);
             return $date->localeDate($value, $type);
