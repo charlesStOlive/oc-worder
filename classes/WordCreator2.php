@@ -12,12 +12,12 @@ class WordCreator2 extends WordProcessor2
     private $modelId;
     private $listImages;
 
-    use \Waka\Cloudis\Classes\Traits\CloudisKey;
+    //use \Waka\Cloudis\Classes\Traits\CloudisKey;
 
     public function prepareCreatorVars($modelId)
     {
         $this->dotedValues = $this->dataSource->getDotedValues($modelId);
-        $this->listImages = $this->dataSource->wimages->getPicturesUrl($modelId, $this->document->images);
+        $this->listImages = $this->dataSource->wimages->getPicturesUrl($this->document->images);
         $this->fncs = $this->dataSource->getFunctionsCollections($modelId, $this->document->model_functions);
 
         $originalTags = $this->checkTags();
