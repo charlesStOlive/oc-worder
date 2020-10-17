@@ -17,7 +17,7 @@ class WordCreator2 extends WordProcessor2
     public function prepareCreatorVars($modelId)
     {
         $this->dotedValues = $this->dataSource->getDotedValues($modelId);
-        $this->listImages = $this->dataSource->getPicturesUrl($modelId, $this->document->images);
+        $this->listImages = $this->dataSource->wimages->getPicturesUrl($modelId, $this->document->images);
         $this->fncs = $this->dataSource->getFunctionsCollections($modelId, $this->document->model_functions);
 
         $originalTags = $this->checkTags();
