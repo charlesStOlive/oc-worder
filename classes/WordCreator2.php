@@ -183,6 +183,18 @@ class WordCreator2 extends WordProcessor2
         if ($type == 'euro_int') {
             return number_format($value, 0, ',', ' ') . ' €';
         }
+        if (starts_with($type, 'percent') && $value) {
+            $operators = explode("::", $type);
+            $percent = $operators[1];
+            $value = $value * $percent / 100;
+            return number_format($value, 2, ',', ' ') . ' €';
+        }
+        if (starts_with($type, 'multiply') && $value) {
+            $operators = explode("::", $type);
+            $multiply = $operators[1];
+            $value = $value * $multiply;
+            return number_format($value, 2, ',', ' ') . ' €';
+        }
         if (starts_with($type, 'date') && $value) {
             $date = new WakaDate();
             $value = DateTimeHelper::makeCarbon($value, false);
