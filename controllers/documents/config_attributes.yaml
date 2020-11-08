@@ -1,0 +1,20 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Document
+
+# Model Class name
+modelClass: Waka\Worder\Models\Document
+
+
+type: word
+text_info: "Cliquez sur un bouton pour copier la valeur dans le presse papier"
+
+
+
+
+
+
+

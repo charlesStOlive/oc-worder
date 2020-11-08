@@ -10,19 +10,20 @@ use System\Classes\SettingsManager;
 class Documents extends Controller
 {
     public $implement = [
+        'waka.Utils.Behaviors.SideBarAttributesBehavior',
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
         'Backend.Behaviors.ReorderController',
         'Waka.Informer.Behaviors.PopupInfo',
         'Waka.Worder.Behaviors.WordBehavior',
         'Waka.Utils.Behaviors.DuplicateModel',
-        'waka.Utils.Behaviors.SideBarAttributesBehavior',
+
     ];
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
     public $duplicateConfig = 'config_duplicate.yaml';
-    public $sidebarInfoConfig = '$/waka/crsm/config/config_documents_attributes.yaml';
+    public $sidebarAttributesConfig = 'config_attributes.yaml';
 
     public $reorderConfig = 'config_reorder.yaml';
     public $contextContent;
