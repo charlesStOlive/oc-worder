@@ -1,6 +1,5 @@
 1.0.1:
     - create_documents_table.php
-    - seed_tables.php
 1.1.0:
     - 'ajout du champ is_scope'
     - create_documents_table_u110.php
