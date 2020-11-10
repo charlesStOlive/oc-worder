@@ -6,3 +6,6 @@
 1.1.1:
     - 'Nettoyage des aniens scopes'
     - clean_scopes.php
+1.1.2:
+    - 'Ajout du name construction'
+    - create_documents_table_u112.php

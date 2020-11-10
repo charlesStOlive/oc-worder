@@ -50,6 +50,7 @@ return [
         'data_source' => ' Sources des données',
         'download' => 'Télécharger un exemple',
         'check' => 'Vérifier',
+        "name_construction" => "Construction du nom du fichier",
         'scopes' => [
             'title' => "limiter le document pour une cible",
             'prompt' => 'Ajouter une nouvelle limites',

@@ -26,6 +26,9 @@ fields:
         span: auto
         disabled: true
     
+    name_construction:
+        label: waka.worder::lang.document.name_construction
+    
     model_functions@update:
             label: Créer des collections à partir des fonctions du modèle
             type: functionslist

@@ -16,6 +16,7 @@ class WordCreator2 extends WordProcessor2
 
     public function prepareCreatorVars($modelId)
     {
+        $this->values = $this->dataSource->getValues($modelId);
         $this->dotedValues = $this->dataSource->getDotedValues($modelId);
         $this->listImages = $this->dataSource->wimages->getPicturesUrl($this->document->images);
         $this->fncs = $this->dataSource->getFunctionsCollections($modelId, $this->document->model_functions);
@@ -41,7 +42,7 @@ class WordCreator2 extends WordProcessor2
                 $this->templateProcessor->setImageValue($injection['tag'], $checkBox);
 
             } else if ($injection['tagType'] == 'HTM') {
-                $this->templateProcessor->setHtmlValue($injection['tag'], $value);
+                $this->templateProcessor->setHtm > lValue($injection['tag'], $value);
             } else {
                 if ($injection['tagType'] != null) {
                     $value = $this->transformValue($value, $injection['tagType']);
@@ -49,7 +50,6 @@ class WordCreator2 extends WordProcessor2
                 }
                 $this->templateProcessor->setValue($injection['tag'], $value);
             }
-
         }
 
         //Traitement des image
@@ -112,12 +112,16 @@ class WordCreator2 extends WordProcessor2
                     if ($tagType == 'IMG') {
 
                         //trace_log("c'est une image tag : " . $tag);
-                        $path = $functionRow[$subTag['varName'] . '.path'];
+                        // $path = $functionRow[$subTag['varName'] . '.path'];
                         $path = $functionRow[$subTag['varName'] . '.path'] ?? false;
                         $width = $functionRow[$subTag['varName'] . '.width'] ?? false;
                         $height = $functionRow[$subTag['varName'] . '.height'] ?? false;
                         if ($path) {
-                            $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
+                            if (!$width && !$height) {
+                                $this->templateProcessor->setImageValue($tag, $path);
+                            } else {
+                                $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
+                            }
                         } else {
                             $this->templateProcessor->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
                         }
@@ -140,13 +144,27 @@ class WordCreator2 extends WordProcessor2
     }
     public function renderWord($modelId)
     {
+        //Préparation du fichier et template processor
         $this->prepareCreatorVars($modelId);
 
-        //trace_log("tout est pret");
-        $name = str_slug($this->document->name . '-' . $this->dataSource->name);
+        $name = $this->createTwigStrName();
+
         $this->templateProcessor->saveAs($name . '.docx');
         //trace_log(get_class($coin));
         return response()->download($name . '.docx')->deleteFileAfterSend(true);
+    }
+
+    public function createTwigStrName()
+    {
+        if (!$this->document->name_construction) {
+            return str_slug($this->document->name . '-' . $this->dataSource->name);
+        }
+        $modelName = strtolower($this->dataSource->name);
+        $vars = [
+            $modelName => $this->values,
+        ];
+        $nameConstruction = \Twig::parse($this->document->name_construction, $vars);
+        return str_slug($nameConstruction);
     }
 
     public function renderCloud($modelId)
