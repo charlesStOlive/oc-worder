@@ -123,7 +123,11 @@ class WordCreator2 extends WordProcessor2
                                 $this->templateProcessor->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
                             }
                         } else {
-                            $this->templateProcessor->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
+                            // trace_log('pas de path');
+                            //$this->templateProcessor->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
+                            // trace_log($tag); // deleteblock ne fonctionne pas nlanc à la place
+                            // $this->templateProcessor->deleteBlock($tag);
+                            $this->templateProcessor->setValue($tag, "", 1);
                         }
 
                     } else {
