@@ -34,20 +34,20 @@ class WordProcessor2
     }
     public function prepareVars($document_id)
     {
-        $this->increment = 1;
-        $this->nbErrors = 0;
+        $this->increment   = 1;
+        $this->nbErrors    = 0;
         $this->document_id = $document_id;
         //
-        $this->document = Document::find($document_id);
+        $this->document   = Document::find($document_id);
         $this->dataSource = new DataSource($this->document->data_source_id, 'id');
         //
         $document_path = $this->getPath($this->document);
         //
         $this->templateProcessor = new TemplateProcessor($document_path);
         // tous les champs qui ne sont pas des blocs ou des fonctions devront avoir le deatasourceName
-        $this->dataSourceName = snake_case($this->dataSource->name);
+        $this->dataSourceName    = snake_case($this->dataSource->name);
         $this->fncFormatAccepted = ['FNC', 'IMG', 'info', $this->dataSourceName];
-        $this->ModelVarArray = $this->dataSource->getDotedValues();
+        $this->ModelVarArray     = $this->dataSource->getDotedValues();
     }
     /**
      *
@@ -66,13 +66,13 @@ class WordProcessor2
     {
         $this->deleteInform();
         //tablaux de tags pour les blocs, les injections et les rows
-        $fncs = [];
-        $injections = [];
-        $imageKeys = [];
+        $fncs        = [];
+        $injections  = [];
+        $imageKeys   = [];
         $insideBlock = false;
 
         $fnc_code = [];
-        $subTags = [];
+        $subTags  = [];
         //trace_log($tags);
         foreach ($tags as $tag) {
             // Si un / est détécté c'est une fin de bloc. on enregistre les données du bloc mais pas le tag
@@ -87,28 +87,28 @@ class WordProcessor2
                 //trace_log("---------------------FIN----Inside bloc-------------------");
                 //reinitialisation du fnc_code et des subtags
                 $fnc_code = [];
-                $subTags = [];
+                $subTags  = [];
                 //passage au tag suivant
                 continue;
             } else {
                 // si on est dans un bloc on enregistre les subpart dans le bloc.
                 if ($insideBlock) {
-                    $tagType = null;
+                    $tagType        = null;
                     $tagWithoutType = $tag;
-                    $tagTypeExist = str_contains($tag, '*');
+                    $tagTypeExist   = str_contains($tag, '*');
                     if ($tagTypeExist) {
-                        $checkTag = explode('*', $tag);
-                        $tagType = array_pop($checkTag);
+                        $checkTag       = explode('*', $tag);
+                        $tagType        = array_pop($checkTag);
                         $tagWithoutType = $checkTag[0];
                     }
                     //trace_log("On est inside un bloc");
                     $subParts = explode('.', $tagWithoutType);
-                    $fncName = array_shift($subParts);
-                    $varName = implode('.', $subParts);
+                    $fncName  = array_shift($subParts);
+                    $varName  = implode('.', $subParts);
 
                     $subTag = [
                         'tagType' => $tagType,
-                        'tag' => $tag,
+                        'tag'     => $tag,
                         'varName' => $varName,
                         'fncName' => $fncName,
                     ];
@@ -117,24 +117,27 @@ class WordProcessor2
                 }
                 $parts = explode('.', $tag);
                 if (count($parts) <= 1) {
-                    $this->recordInform('problem', Lang::get('waka.worder::lang.word.processor.bad_format') . ' : ' . $tag);
+                    $error = Lang::get('waka.worder::lang.word.processor.bad_format') . ' : ' . $tag;
+                    $this->recordInform('problem', $error);
                     continue;
                 }
                 //trace_log($tag);
                 $fncFormat = array_shift($parts);
 
                 if (!in_array($fncFormat, $this->fncFormatAccepted)) {
-                    $this->recordInform('problem', Lang::get('waka.worder::lang.word.processor.bad_tag') . ' : ' . implode(", ", $this->fncFormatAccepted) . ' => ' . $tag);
+                    $frAccepted = implode(", ", $this->fncFormatAccepted);
+                    $error      = Lang::get('waka.worder::lang.word.processor.bad_tag') . ' : ' . $frAccepted . ' => ' . $tag;
+                    $this->recordInform('problem', $error);
                     continue;
                 }
                 // si le tag commence par le nom de la source
                 if ($fncFormat == $this->dataSourceName || $fncFormat == 'info') {
                     $tagWithoutType = $tag;
-                    $tagType = null;
-                    $tagTypeExist = str_contains($tag, '*');
+                    $tagType        = null;
+                    $tagTypeExist   = str_contains($tag, '*');
                     if ($tagTypeExist) {
-                        $checkTag = explode('*', $tag);
-                        $tagType = array_pop($checkTag);
+                        $checkTag       = explode('*', $tag);
+                        $tagType        = array_pop($checkTag);
                         $tagWithoutType = $checkTag[0];
                     }
                     $tagOK = $this->checkInjection($tagWithoutType);
@@ -142,7 +145,7 @@ class WordProcessor2
                         $tagObj = [
                             'tagType' => $tagType,
                             'varName' => $tagWithoutType,
-                            'tag' => $tag,
+                            'tag'     => $tag,
                         ];
                         array_push($injections, $tagObj);
                     }
@@ -157,20 +160,20 @@ class WordProcessor2
                 $fnc_code['code'] = array_shift($parts);
                 //trace_log("nouvelle fonction : " . $fnc_code['code']);
                 if (!$fnc_code) {
-                    $this->recordInform('warning', Lang::get('waka.worder::lang.word.processor.bad_format') . ' : ' . $tag);
+                    $txt = Lang::get('waka.worder::lang.word.processor.bad_format') . ' : ' . $tag;
+                    $this->recordInform('warning', $txt);
                     continue;
                 } else {
                     // on commence un bloc
                     $insideBlock = true;
                     //trace_log("-------------------------Inside bloc-------------------");
                 }
-
             }
         }
         return [
-            'fncs' => $fncs,
+            'fncs'       => $fncs,
             'injections' => $injections,
-            'IMG' => $imageKeys,
+            'IMG'        => $imageKeys,
         ];
     }
     /**
@@ -180,7 +183,8 @@ class WordProcessor2
     {
 
         if (!array_key_exists($tag, $this->ModelVarArray)) {
-            $this->recordInform('problem', Lang::get('waka.worder::lang.word.processor.field_not_existe') . ' : ' . $tag);
+            $txt = Lang::get('waka.worder::lang.word.processor.field_not_existe') . ' : ' . $tag;
+            $this->recordInform('problem', $txt);
             return false;
         } else {
             return true;
@@ -210,9 +214,9 @@ class WordProcessor2
             $fncCode = $wordFnc['code'] ?? false;
             if (!$fncCode) {
                 $this->recordInform('problem', Lang::get("Une fonction n'a pas de code"));
-            } else if (!in_array($wordFnc['code'], $docFncsCodes)) {
-                //array_push($docFncs, ['functionCode' => $wordFnc, 'ready' => false, 'name' => "auto " . $wordFnc . " 1"]);
-                $this->recordInform('problem', "La fonction " . $wordFnc['code'] . " dans le document word n'est pas déclaré, veuillez la créer");
+            } elseif (!in_array($wordFnc['code'], $docFncsCodes)) {
+                $txt = "La fonction " . $wordFnc['code'] . " du word n'est pas déclaré, veuillez la créer";
+                $this->recordInform('problem', $txt);
                 $i++;
             }
         }

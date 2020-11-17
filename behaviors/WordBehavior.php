@@ -1,4 +1,6 @@
-<?php namespace Waka\Worder\Behaviors;
+<?php
+
+namespace Waka\Worder\Behaviors;
 
 use Backend\Classes\ControllerBehavior;
 use Redirect;
@@ -28,10 +30,10 @@ class WordBehavior extends ControllerBehavior
      */
     public function onLoadWordBehaviorPopupForm()
     {
-        $model = post('model');
+        $model   = post('model');
         $modelId = post('modelId');
 
-        $ds = new DataSource($model, 'class');
+        $ds      = new DataSource($model, 'class');
         $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
 
         $this->vars['options'] = $options;
@@ -41,10 +43,10 @@ class WordBehavior extends ControllerBehavior
     }
     public function onLoadWordBehaviorContentForm()
     {
-        $model = post('model');
+        $model   = post('model');
         $modelId = post('modelId');
 
-        $ds = new DataSource($model, 'class');
+        $ds      = new DataSource($model, 'class');
         $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
 
         $this->vars['options'] = $options;
@@ -62,11 +64,10 @@ class WordBehavior extends ControllerBehavior
         if ($errors) {
             throw new \ValidationException(['error' => $errors]);
         }
-        $docId = post('documentId');
+        $docId   = post('documentId');
         $modelId = post('modelId');
 
         return Redirect::to('/backend/waka/worder/documents/makeword/?docId=' . $docId . '&modelId=' . $modelId);
-
     }
 
     public function onCloudWordValidation()
@@ -75,13 +76,12 @@ class WordBehavior extends ControllerBehavior
         if ($errors) {
             throw new \ValidationException(['error' => $errors]);
         }
-        $docId = post('documentId');
+        $docId   = post('documentId');
         $modelId = post('modelId');
         //$modelClassName = post('modelClassName');
 
         $wc = new WordCreator2($docId);
         return $wc->renderCloud($modelId);
-
     }
     /**
      * Validations
@@ -89,7 +89,7 @@ class WordBehavior extends ControllerBehavior
     public function CheckValidation($inputs)
     {
         $rules = [
-            'modelId' => 'required',
+            'modelId'    => 'required',
             'documentId' => 'required',
         ];
 
@@ -106,14 +106,14 @@ class WordBehavior extends ControllerBehavior
      */
     public function onLoadWordBehaviorForm()
     {
-        $id = post('id');
-        $wp = new WordProcessor2($id);
+        $id   = post('id');
+        $wp   = new WordProcessor2($id);
         $tags = $wp->checkTags();
         return Redirect::to('/backend/waka/worder/documents/makeword/?docId=' . $id);
     }
     public function makeword()
     {
-        $docId = post('docId');
+        $docId   = post('docId');
         $modelId = post('modelId');
 
         $wc = new WordCreator2($docId);
@@ -129,11 +129,11 @@ class WordBehavior extends ControllerBehavior
 
     public function createWordBehaviorWidget()
     {
-        $config = $this->makeConfig('$/waka/worder/models/document/fields_for_test.yaml');
-        $config->alias = 'wordBehaviorformWidget';
+        $config            = $this->makeConfig('$/waka/worder/models/document/fields_for_test.yaml');
+        $config->alias     = 'wordBehaviorformWidget';
         $config->arrayName = 'wordBehavior_array';
-        $config->model = new Document();
-        $widget = $this->makeWidget('Backend\Widgets\Form', $config);
+        $config->model     = new Document();
+        $widget            = $this->makeWidget('Backend\Widgets\Form', $config);
         $widget->bindToController();
         return $widget;
     }

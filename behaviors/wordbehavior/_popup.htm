@@ -3,13 +3,19 @@
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-hidden="true">&times;</button>
             <h4 class="modal-title">Tester le document</h4>
         </div>
         <div class="modal-body">
             <!-- <input type="hidden" name="modelClassName" value="" /> -->
-            <select class="form-control custom-select" name="documentId">
-                <option value="" disabled selected>--Choisissez un document--</option>
+            <select class="form-control custom-select"
+                    name="documentId">
+                <option value=""
+                        disabled
+                        selected>--Choisissez un document--</option>
                 <?php foreach($options as $key => $value)  { ?>
                 <option value="<?=$key?>"><?=$value?></option>
                 <?php } ?>
@@ -17,8 +23,11 @@
             <?php if(isset($relations)) {
                 foreach($relations as $relation)  { ?>
             <div class="m-t-md">
-                <select class="form-control custom-select m-t-md" name="<?=$relation['param']?>">
-                    <option value="" disabled selected>--Choisir parmis les <?=$relation['name']?>--</option>
+                <select class="form-control custom-select m-t-md"
+                        name="<?=$relation['param']?>">
+                    <option value=""
+                            disabled
+                            selected>--Choisir parmis les <?=$relation['name']?>--</option>
                     <?php foreach($relation['options'] as $key => $value)  { ?>
                     <option value="<?=$key?>"><?=$value?></option>
                     <?php } ?>
@@ -29,18 +38,25 @@
         </div>
         <div class="modal-footer m-t">
             <?php if (Config('waka.wconfig::cloud.controller.word.show')) : ?>
-            <button type="submit" data-request="onCloudWordValidation"
-                data-request-data="redirect:0, modelId:'<?=$modelId?>'" data-hotkey="ctrl+s, cmd+s"
-                data-popup-load-indicator class="btn btn-primary">
+            <button type="submit"
+                    data-request="onCloudWordValidation"
+                    data-request-data="redirect:0, modelId:'<?=$modelId?>'"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-popup-load-indicator
+                    class="btn btn-primary">
                 Enregistrer dans le cloud
             </button>
             <?php endif ?>
-            <button type="submit" data-request="onWordBehaviorPopupValidation"
-                data-request-data="redirect:0, modelId:'<?=$modelId?>'" data-hotkey="ctrl+s, cmd+s"
-                class="btn btn-primary">
+            <button type="submit"
+                    data-request="onWordBehaviorPopupValidation"
+                    data-request-data="redirect:0, modelId:'<?=$modelId?>'"
+                    data-hotkey="ctrl+s, cmd+s"
+                    class="btn btn-primary">
                 Valider
             </button>
-            <button type="button" class="btn btn-default" data-dismiss="popup">
+            <button type="button"
+                    class="btn btn-default"
+                    data-dismiss="popup">
                 Terminer
             </button>
         </div>
