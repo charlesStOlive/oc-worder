@@ -43,6 +43,10 @@ class WordCreator2 extends WordProcessor2
                 $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
                 //set html supporte une fonction clean qui permet de supprimer les paragraphes avec espaces. cas des listes UL/LI
                 $this->templateProcessor->setHtmlValue($injection['tag'], $value, true);
+            } elseif ($injection['tagType'] == 'MD') {
+                $value = Markdown::parse($value);
+                $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
+                $this->templateProcessor->setHtmlValue($injection['tag'], $value, true);
             } else {
                 if ($injection['tagType'] != null) {
                     $value = $this->transformValue($value, $injection['tagType']);
@@ -128,6 +132,15 @@ class WordCreator2 extends WordProcessor2
                             // $this->templateProcessor->deleteBlock($tag);
                             $this->templateProcessor->setValue($tag, "", 1);
                         }
+                    } elseif ($tagType == 'HTM') {
+                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
+                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
+                        $this->templateProcessor->setHtmlValue($tag, $value, 1);
+                    } elseif ($tagType == 'MD') {
+                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
+                        $value = \Markdown::parse($value);
+                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
+                        $this->templateProcessor->setHtmlValue($tag, $value, 1);
                     } else {
                         //trace_log("c'est une value tag : " . $tag);
                         $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
@@ -192,7 +205,7 @@ class WordCreator2 extends WordProcessor2
             $value = 0;
         }
 
-        if ($type == 'numeric') {
+        if ($type == 'number') {
             return number_format($value, 0, ',', ' ');
         }
         if ($type == 'euro') {
@@ -200,6 +213,9 @@ class WordCreator2 extends WordProcessor2
         }
         if ($type == 'euro_int') {
             return number_format($value, 0, ',', ' ') . ' €';
+        }
+        if ($type == 'workflow') {
+            return $this->$dataSource->getWorkflowState();
         }
         if (starts_with($type, 'percent') && $value) {
             $operators = explode("::", $type);
