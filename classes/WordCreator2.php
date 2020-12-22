@@ -44,7 +44,7 @@ class WordCreator2 extends WordProcessor2
                 //set html supporte une fonction clean qui permet de supprimer les paragraphes avec espaces. cas des listes UL/LI
                 $this->templateProcessor->setHtmlValue($injection['tag'], $value, true);
             } elseif ($injection['tagType'] == 'MD') {
-                $value = Markdown::parse($value);
+                $value = \Markdown::parse($value);
                 $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
                 $this->templateProcessor->setHtmlValue($injection['tag'], $value, true);
             } else {
@@ -138,6 +138,7 @@ class WordCreator2 extends WordProcessor2
                         $this->templateProcessor->setHtmlValue($tag, $value, 1);
                     } elseif ($tagType == 'MD') {
                         $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
+                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
                         $value = \Markdown::parse($value);
                         $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
                         $this->templateProcessor->setHtmlValue($tag, $value, 1);

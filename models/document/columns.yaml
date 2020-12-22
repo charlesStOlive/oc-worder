@@ -19,7 +19,7 @@ columns:
     name:
         label: waka.worder::lang.document.name
         searchable: true
-    data_source_id:
+    data_source:
         label: waka.utils::lang.datasource.title
         type: datasource
     is_scope:

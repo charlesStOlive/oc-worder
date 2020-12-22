@@ -39,7 +39,7 @@ class WordProcessor2
         $this->document_id = $document_id;
         //
         $this->document   = Document::find($document_id);
-        $this->dataSource = new DataSource($this->document->data_source_id, 'id');
+        $this->dataSource = new DataSource($this->document->data_source);
         //
         $document_path = $this->getPath($this->document);
         //

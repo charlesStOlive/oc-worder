@@ -38,7 +38,7 @@ class Document extends Model
      */
     public $rules = [
         'path' => 'required',
-        'data_source_id' => 'required',
+        'data_source' => 'required',
         'name' => 'required',
     ];
 

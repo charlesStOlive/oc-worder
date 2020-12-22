@@ -15,7 +15,7 @@ class CreateDocumentsTable extends Migration
             $table->string('slug');
 
             $table->string('path');
-            $table->integer('data_source_id')->unsigned()->nullable();
+            $table->string('data_source')->nullable();
 
             $table->text('scopes')->nullable();
             $table->text('model_functions')->nullable();
