@@ -206,7 +206,11 @@ class WordCreator2 extends WordProcessor2
             $value = 0;
         }
 
-        if ($type == 'number') {
+        if ($type == 'float') {
+            return number_format($value, 2, ',', ' ');
+        }
+
+        if ($type == 'number' || 'numercic') {
             return number_format($value, 0, ',', ' ');
         }
         if ($type == 'euro') {
