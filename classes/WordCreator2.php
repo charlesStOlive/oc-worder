@@ -210,7 +210,7 @@ class WordCreator2 extends WordProcessor2
             return number_format($value, 2, ',', ' ');
         }
 
-        if ($type == 'number' || 'numercic') {
+        if ($type == 'number' || $type == 'numercic') {
             return number_format($value, 0, ',', ' ');
         }
         if ($type == 'euro') {
