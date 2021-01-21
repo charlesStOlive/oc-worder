@@ -182,7 +182,7 @@ class WordCreator2 extends WordProcessor2
         return str_slug($nameConstruction);
     }
 
-    public function renderCloud($modelId)
+    public function renderCloud($modelId, $lot = false)
     {
         $this->prepareCreatorVars($modelId);
 
@@ -191,11 +191,16 @@ class WordCreator2 extends WordProcessor2
         $filePath = $this->templateProcessor->save();
         $output = \File::get($filePath);
 
-        $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
-        $folders = $folderOrg->getFolder($this->dataSource->model);
-
         $cloudSystem = App::make('cloudSystem');
-        $lastFolderDir = $cloudSystem->createDirFromArray($folders);
+
+        $lastFolderDir = null;
+        if ($lot) {
+            $lastFolderDir = $cloudSystem->createDirFromArray(['lots']);
+        } else {
+            $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
+            $folders = $folderOrg->getFolder($this->dataSource->model);
+            $lastFolderDir = $cloudSystem->createDirFromArray($folders);
+        }
 
         \Storage::cloud()->put($lastFolderDir['path'] . '/' . $name . '.docx', $output);
     }
