@@ -184,11 +184,15 @@ class WordCreator2 extends WordProcessor2
 
     public function renderCloud($modelId, $lot = false)
     {
+        //trace_log("render cloud");
         $this->prepareCreatorVars($modelId);
 
         //trace_log("tout est pret");
         $name = $this->createTwigStrName();
+        //trace_log($name);
+        $filePath = null;
         $filePath = $this->templateProcessor->save();
+        //trace_log($filePath);
         $output = \File::get($filePath);
 
         $cloudSystem = App::make('cloudSystem');
