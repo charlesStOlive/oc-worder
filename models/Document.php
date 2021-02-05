@@ -12,6 +12,7 @@ class Document extends Model
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\SoftDelete;
     use \October\Rain\Database\Traits\Sortable;
+    use \Waka\Utils\Classes\Traits\DataSourceHelpers;
     //
     use \Waka\Informer\Classes\Traits\InformerTrait;
 
@@ -104,8 +105,5 @@ class Document extends Model
     /**
      * LISTS
      */
-    public function listDataSource()
-    {
-        return \Waka\Utils\Classes\DataSourceList::lists();
-    }
+
 }

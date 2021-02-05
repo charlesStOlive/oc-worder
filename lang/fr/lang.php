@@ -51,6 +51,7 @@ return [
         'download' => 'Télécharger un exemple',
         'check' => 'Vérifier',
         "name_construction" => "Construction du nom du fichier",
+        "test_id" => "ID de test",
         'scopes' => [
             'title' => "limiter le document pour une cible",
             'prompt' => 'Ajouter une nouvelle limites',

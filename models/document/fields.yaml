@@ -44,6 +44,11 @@ fields:
             action: hide
             field: is_scope
             condition: unchecked
+    test_id: 
+            label: waka.worder::lang.document.test_id
+            type: dropdown
+            placeholder: waka.utils::lang.global.placeholder
+            options: listDataSourceTarget
 
     # scopes@update:
     #     label: waka.worder::lang.document.scopes.title
