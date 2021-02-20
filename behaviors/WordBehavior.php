@@ -122,7 +122,6 @@ class WordBehavior extends ControllerBehavior
     {
         $docId = post('docId');
         $modelId = post('modelId');
-
         $wc = new WordCreator2($docId);
         return $wc->renderWord($modelId);
     }

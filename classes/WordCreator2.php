@@ -157,18 +157,6 @@ class WordCreator2 extends WordProcessor2
 
         //trace_log($this->listImages);
     }
-    public function renderWord($modelId)
-    {
-        //Préparation du fichier et template processor
-        $this->prepareCreatorVars($modelId);
-
-        $name = $this->createTwigStrName();
-
-        $this->templateProcessor->saveAs($name . '.docx');
-        //trace_log(get_class($coin));
-        return response()->download($name . '.docx')->deleteFileAfterSend(true);
-    }
-
     public function createTwigStrName()
     {
         if (!$this->document->name_construction) {
@@ -180,6 +168,27 @@ class WordCreator2 extends WordProcessor2
         ];
         $nameConstruction = \Twig::parse($this->document->name_construction, $vars);
         return str_slug($nameConstruction);
+    }
+
+    public function renderWord($modelId)
+    {
+        //Préparation du fichier et template processor
+        $this->prepareCreatorVars($modelId);
+        $name = $this->createTwigStrName();
+        $this->templateProcessor->saveAs($name);
+        return response()->download($name)->deleteFileAfterSend(true);
+    }
+
+    public function renderTemp($modelId)
+    {
+        $this->prepareCreatorVars($modelId);
+        $name = $this->createTwigStrName();
+        trace_log("nom : " . $name);
+        $filePath = null;
+        $filePath = $this->templateProcessor->save();
+        $output = \File::get($filePath);
+        \Storage::put('temp/' . $name . '.docx', $output);
+        return 'temp/' . $name . '.docx';
     }
 
     public function renderCloud($modelId, $lot = false)
