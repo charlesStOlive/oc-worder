@@ -20,7 +20,7 @@
             <?php } ?>
         </select>
     </div>
-    <?php if (Config('waka.wconfig::cloud.controller.word.show') && $this->user->hasAccess('waka.cloud.create_file')) : ?>
+    <?php if (Config('wcli.wconfig::cloud.controller.word.show') && $this->user->hasAccess('waka.cloud.create_file')) : ?>
     <button type="submit"
             data-request="onCloudWordValidation"
             data-request-data="redirect:0, modelId:'<?=$modelId?>'"
