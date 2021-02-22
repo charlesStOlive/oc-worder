@@ -183,7 +183,7 @@ class WordCreator2 extends WordProcessor2
     {
         $this->prepareCreatorVars($modelId);
         $name = $this->createTwigStrName();
-        trace_log("nom : " . $name);
+        //trace_log("nom : " . $name);
         $filePath = null;
         $filePath = $this->templateProcessor->save();
         $output = \File::get($filePath);
