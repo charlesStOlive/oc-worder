@@ -1,10 +1,8 @@
 <?php namespace Waka\Worder;
 
 use Backend;
-use Event;
 use Lang;
 use System\Classes\PluginBase;
-use View;
 
 /**
  * Worder Plugin Information File
@@ -58,33 +56,31 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
-        Event::listen('backend.update.prod', function ($controller) {
-            if (get_class($controller) == 'Waka\Worder\Controllers\Documents') {
-                return;
-            }
+        // \Event::listen('backend.update.prod', function ($controller) {
+        //     if (get_class($controller) == 'Waka\Worder\Controllers\Documents') {
+        //         return;
+        //     }
 
-            if (in_array('Waka.Worder.Behaviors.WordBehavior', $controller->implement)) {
-                $data = [
-                    'model' => $modelClass = str_replace('\\', '\\\\', get_class($controller->formGetModel())),
-                    'modelId' => $controller->formGetModel()->id,
-                ];
-                return View::make('waka.worder::publishWord')->withData($data);;
-            }
-        });
-        Event::listen('popup.actions.prod', function ($controller, $model, $id) {
-            if (get_class($controller) == 'Waka\Worder\Controllers\Documents') {
-                return;
-            }
+        //     $data = [
+        //         'model' => $modelClass = str_replace('\\', '\\\\', get_class($controller->formGetModel())),
+        //         'modelId' => $controller->formGetModel()->id,
+        //     ];
+        //     return \View::make('waka.worder::publishWord')->withData($data);;
 
-            if (in_array('Waka.Worder.Behaviors.WordBehavior', $controller->implement)) {
-                //trace_log("Laligne 1 est ici");
-                $data = [
-                    'model' => str_replace('\\', '\\\\', $model),
-                    'modelId' => $id,
-                ];
-                return View::make('waka.worder::publishWordContent')->withData($data);;
-            }
-        });
+        // });
+        // \Event::listen('popup.actions.prod', function ($controller, $model, $id) {
+        //     if (get_class($controller) == 'Waka\Worder\Controllers\Documents') {
+        //         return;
+        //     }
+
+        //     //trace_log("Laligne 1 est ici");
+        //     $data = [
+        //         'model' => str_replace('\\', '\\\\', $model),
+        //         'modelId' => $id,
+        //     ];
+        //     return \View::make('waka.worder::publishWordContent')->withData($data);;
+
+        // });
 
     }
 

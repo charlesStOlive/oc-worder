@@ -1,7 +1,6 @@
 <?php namespace Waka\Worder\Models;
 
 use App;
-use BackendAuth;
 use Model;
 
 /**
@@ -96,10 +95,10 @@ class Document extends Model
 
     public function afterCreate()
     {
-        if (BackendAuth::getUser()) {
-            $wp = new \Waka\Worder\Classes\WordProcessor2($this->id);
-            $wp->checkTags();
-        }
+        // if (BackendAuth::getUser()) {
+        //     $wp = new \Waka\Worder\Classes\WordProcessor2($this->id);
+        //     $wp->checkTags();
+        // }
 
     }
     /**

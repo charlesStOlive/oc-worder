@@ -45,6 +45,7 @@ return [
         'datasource_accepted_comment' => 'Vide si fonctionne avec tous les modèles',
     ],
     'document' => [
+        'title' => "Créer un document Word",
         'name' => 'Nom',
         'path' => 'Fichier source',
         'data_source' => ' Sources des données',

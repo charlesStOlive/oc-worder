@@ -16,14 +16,14 @@ class WordQueueCreator
         $productorId = $data['productorId'];
         $lot = $data['lot'] ?? false;
 
+        $word = WordCreator::find($productorId);
+
         foreach ($listIds as $modelId) {
-            //trace_log($lot);
-            $word = new WordCreator2($productorId);
             $word->renderCloud($modelId, $lot);
         }
 
         if ($job) {
-            Event::fire('job.end.email', [$job]);
+            Event::fire('job.end.word', [$job]);
             $job->delete();
         }
 

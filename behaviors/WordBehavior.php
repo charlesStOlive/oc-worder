@@ -5,8 +5,7 @@ namespace Waka\Worder\Behaviors;
 use Backend\Classes\ControllerBehavior;
 use Redirect;
 use Waka\Utils\Classes\DataSource;
-use Waka\Worder\Classes\WordCreator2;
-use Waka\Worder\Classes\WordProcessor2;
+use Waka\Worder\Classes\WordCreator;
 use Waka\Worder\Models\Document;
 
 class WordBehavior extends ControllerBehavior
@@ -30,10 +29,10 @@ class WordBehavior extends ControllerBehavior
      */
     public function onLoadWordBehaviorPopupForm()
     {
-        $model = post('model');
+        $modelClass = post('modelClass');
         $modelId = post('modelId');
 
-        $ds = new DataSource($model, 'class');
+        $ds = new DataSource($modelClass, 'class');
         $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
 
         $this->vars['options'] = $options;
@@ -43,10 +42,10 @@ class WordBehavior extends ControllerBehavior
     }
     public function onLoadWordBehaviorContentForm()
     {
-        $model = post('model');
+        $modelClass = post('modelClass');
         $modelId = post('modelId');
 
-        $ds = new DataSource($model, 'class');
+        $ds = new DataSource($modelClass, 'class');
         $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
 
         $this->vars['options'] = $options;
@@ -64,25 +63,12 @@ class WordBehavior extends ControllerBehavior
         if ($errors) {
             throw new \ValidationException(['error' => $errors]);
         }
-        $docId = post('documentId');
+        $productorId = post('productorId');
         $modelId = post('modelId');
 
-        return Redirect::to('/backend/waka/worder/documents/makeword/?docId=' . $docId . '&modelId=' . $modelId);
+        return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
     }
 
-    public function onCloudWordValidation()
-    {
-        $errors = $this->CheckValidation(\Input::all());
-        if ($errors) {
-            throw new \ValidationException(['error' => $errors]);
-        }
-        $docId = post('documentId');
-        $modelId = post('modelId');
-        //$modelClassName = post('modelClassName');
-
-        $wc = new WordCreator2($docId);
-        return $wc->renderCloud($modelId);
-    }
     /**
      * Validations
      */
@@ -90,7 +76,7 @@ class WordBehavior extends ControllerBehavior
     {
         $rules = [
             'modelId' => 'required',
-            'documentId' => 'required',
+            'productorId' => 'required',
         ];
 
         $validator = \Validator::make($inputs, $rules);
@@ -106,31 +92,28 @@ class WordBehavior extends ControllerBehavior
      */
     public function onLoadWordBehaviorForm()
     {
-        $id = post('id');
-        $wp = new WordProcessor2($id);
-        $tags = $wp->checkTags();
+        $productorId = post('productorId');
         $documentTestId = Document::find($id)->test_id;
         if ($documentTestId) {
             $modelId = $documentTestId;
-            return Redirect::to('/backend/waka/worder/documents/makeword/?docId=' . $id . '&modelId=' . $modelId);
+            //trace_log($modelId);
+            return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
         } else {
-            return Redirect::to('/backend/waka/worder/documents/makeword/?docId=' . $id);
+            throw new \ValidationException(['error' => "Choisissez un modèle de test"]);
         }
 
     }
     public function makeword()
     {
-        $docId = post('docId');
+        $productorId = post('productorId');
         $modelId = post('modelId');
-        $wc = new WordCreator2($docId);
-        return $wc->renderWord($modelId);
+        return WordCreator::find($productorId)->renderWord($modelId);
     }
 
     public function onLoadWordCheck()
     {
-        $id = post('id');
-        $wp = new WordProcessor2($id);
-        return $wp->checkDocument();
+        $productorId = post('productorId');
+        return WordCreator::find($productorId)->checkDocument();
     }
 
     public function createWordBehaviorWidget()

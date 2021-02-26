@@ -19,29 +19,45 @@
 
 <div class="form-buttons">
     <div class="loading-indicator-container">
-        <button type="submit" data-request="onSave" data-request-data="redirect:0" data-hotkey="ctrl+s, cmd+s"
-            data-load-indicator="Saving Document..." class="btn btn-primary">
+        <button type="submit"
+                data-request="onSave"
+                data-request-data="redirect:0"
+                data-hotkey="ctrl+s, cmd+s"
+                data-load-indicator="Saving Document..."
+                class="btn btn-primary">
             <?= e(trans('waka.utils::lang.global.save')) ?>
         </button>
-        <button type="button" data-request="onLoadWordCheck" data-request-data="id:<?=$this->params[0]?>"
-            data-load-indicator="Checking Document..." class="btn btn-default">
+        <button type="button"
+                data-request="onLoadWordCheck"
+                data-request-data="id:<?=$this->params[0]?>"
+                data-load-indicator="Checking Document..."
+                class="btn btn-default">
             <?= e(trans('waka.worder::lang.document.check')) ?>
         </button>
-        <button type="button" data-request="onLoadWordBehaviorForm"
-            data-request-data="redirect:0, id:<?=$this->params[0]?>" class="btn btn-default">
+        <button type="button"
+                data-request="onLoadWordBehaviorForm"
+                data-request-data="redirect:0, id:<?=$this->params[0]?>"
+                class="btn btn-default">
             <?= e(trans('waka.worder::lang.document.download')) ?>
         </button>
-        <button type="button" data-request="onSave" data-request-data="close:1" data-hotkey="ctrl+enter, cmd+enter"
-            data-load-indicator="Saving Document..." class="btn btn-default">
+        <button type="button"
+                data-request="onSave"
+                data-request-data="close:1"
+                data-hotkey="ctrl+enter, cmd+enter"
+                data-load-indicator="Saving Document..."
+                class="btn btn-default">
             <?= e(trans('waka.utils::lang.global.save_close')) ?>
         </button>
-        <?= $this->fireViewEvent('backend.update.prod') ?>
-        <button type="button" class="oc-icon-trash-o btn-icon danger pull-right" data-request="onDelete"
-            data-load-indicator="Deleting Document..." data-request-confirm="Delete this document?">
+        <?= $this->fireViewEvent('backend.update.prod.word') ?>
+        <button type="button"
+                class="oc-icon-trash-o btn-icon danger pull-right"
+                data-request="onDelete"
+                data-load-indicator="Deleting Document..."
+                data-request-confirm="Delete this document?">
         </button>
         <span class="btn-text">
             or <a
-                href="<?= Backend::url('waka/worder/documents') ?>"><?= e(trans('waka.utils::lang.global.cancel')) ?></a>
+               href="<?= Backend::url('waka/worder/documents') ?>"><?= e(trans('waka.utils::lang.global.cancel')) ?></a>
         </span>
     </div>
 </div>
@@ -51,7 +67,8 @@
 <?php else: ?>
 
 <p class="flash-message static error"><?= e($this->fatalError) ?></p>
-<p><a href="<?= Backend::url('waka/worder/documents') ?>" class="btn btn-default">Return to documents list</a></p>
+<p><a href="<?= Backend::url('waka/worder/documents') ?>"
+       class="btn btn-default">Return to documents list</a></p>
 
 <?php endif ?>
 <?php Block::endPut() ?>
