@@ -2,7 +2,7 @@
 return [
     'btns' => [
         'word' => [
-            'label' => 'Word base',
+            'label' => 'Créer word',
             'class' => 'btn-secondary',
             'ajaxCaller' => 'onLoadWordBehaviorPopupForm',
             'ajaxInlineCaller' => 'onLoadWordBehaviorContentForm',
