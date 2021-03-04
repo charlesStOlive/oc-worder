@@ -39,7 +39,6 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-
     }
 
     public function registerFormWidgets(): array
@@ -81,7 +80,6 @@ class Plugin extends PluginBase
         //     return \View::make('waka.worder::publishWordContent')->withData($data);;
 
         // });
-
     }
 
     public function bootPackages()
@@ -163,7 +161,6 @@ class Plugin extends PluginBase
     public function registerNavigation()
     {
         return [];
-
     }
     public function registerSettings()
     {

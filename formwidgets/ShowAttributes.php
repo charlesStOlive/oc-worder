@@ -93,6 +93,5 @@ class ShowAttributes extends FormWidgetBase
     {
         //$this->prepareVars();
         return $this->makePartial('popup');
-
     }
 }

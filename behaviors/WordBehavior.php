@@ -101,7 +101,6 @@ class WordBehavior extends ControllerBehavior
         } else {
             throw new \ValidationException(['error' => "Choisissez un modèle de test"]);
         }
-
     }
     public function makeword()
     {

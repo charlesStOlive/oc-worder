@@ -57,7 +57,6 @@ class WordCreator extends \October\Rain\Extension\Extendable
         $document_path = storage_path('app/media' . self::$document->path);
         self::$templateProcessor = new TemplateProcessor($document_path);
         //trace_log(self::$templateProcessor);
-
     }
     public function getProductor()
     {

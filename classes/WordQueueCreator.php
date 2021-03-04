@@ -26,6 +26,5 @@ class WordQueueCreator
             Event::fire('job.end.word', [$job]);
             $job->delete();
         }
-
     }
 }

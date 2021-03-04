@@ -36,7 +36,6 @@ class Documents extends Controller
 
         BackendMenu::setContext('October.System', 'system', 'settings');
         SettingsManager::setContext('Waka.Worder', 'documents');
-
     }
 
     public function update($id)
@@ -164,5 +163,4 @@ class Documents extends Controller
 
     //     });
     // }
-
 }

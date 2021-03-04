@@ -90,7 +90,6 @@ class Document extends Model
 
     public function beforeSave()
     {
-
     }
 
     public function afterCreate()
@@ -99,10 +98,8 @@ class Document extends Model
         //     $wp = new \Waka\Worder\Classes\WordProcessor2($this->id);
         //     $wp->checkTags();
         // }
-
     }
     /**
      * LISTS
      */
-
 }

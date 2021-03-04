@@ -9,6 +9,5 @@ class CleanScopes extends Seeder
     public function run()
     {
         Document::where('scopes', '<>', null)->update(['scopes' => null]);
-
     }
 }
