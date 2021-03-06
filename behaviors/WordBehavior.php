@@ -33,7 +33,7 @@ class WordBehavior extends ControllerBehavior
         $modelId = post('modelId');
 
         $ds = new DataSource($modelClass, 'class');
-        $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
+        $options = $ds->getProductorOptions('Waka\Worder\Models\Document', $modelId);
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
@@ -46,15 +46,13 @@ class WordBehavior extends ControllerBehavior
         $modelId = post('modelId');
 
         $ds = new DataSource($modelClass, 'class');
-        $options = $ds->getPartialOptions($modelId, 'Waka\Worder\Models\Document');
+        $options = $ds->getProductorOptions('Waka\Worder\Models\Document', $modelId);
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
         //$this->vars['modelClassName'] = $model;
 
-        return [
-            '#popupActionContent' => $this->makePartial('$/waka/worder/behaviors/wordbehavior/_content.htm'),
-        ];
+        return ['#popupActionContent' => $this->makePartial('$/waka/worder/behaviors/wordbehavior/_content.htm')];
     }
 
     public function onWordBehaviorPopupValidation()
