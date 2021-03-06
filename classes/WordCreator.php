@@ -292,19 +292,36 @@ class WordCreator extends \October\Rain\Extension\Extendable
     /**
      * Partie liée à la création de document
      */
+    public function setModelId($modelId)
+    {
+        $this->modelId = $modelId;
+        $dataSourceId = $this->getProductor()->data_source;
+        $this->ds = new DataSource($dataSourceId);
+        $this->ds->instanciateModel($modelId);
+        return $this;
+    }
 
-    public function renderWord($modelId)
+    public function setModelTest()
+    {
+        $this->modelId = $this->getProductor()->test_id;
+        $dataSourceId = $this->getProductor()->data_source;
+        $this->ds = new DataSource($dataSourceId);
+        $this->ds->instanciateModel($modelId);
+        return $this;
+    }
+
+    public function renderWord()
     {
         //Préparation du fichier et template processor
-        $this->prepareCreatorVars($modelId);
+        $this->prepareCreatorVars();
         $name = $this->createTwigStrName();
         $this->getTemplateProcessor()->saveAs($name . '.docx');
         return response()->download($name . '.docx')->deleteFileAfterSend(true);
     }
 
-    public function renderTemp($modelId)
+    public function renderTemp()
     {
-        $this->prepareCreatorVars($modelId);
+        $this->prepareCreatorVars();
         $name = $this->createTwigStrName();
         $filePath = $this->getTemplateProcessor()->save();
         $output = \File::get($filePath);
@@ -312,10 +329,10 @@ class WordCreator extends \October\Rain\Extension\Extendable
         return 'temp/' . $name . '.docx';
     }
 
-    public function renderCloud($modelId, $lot = false)
+    public function renderCloud($lot = false)
     {
         //trace_log("render cloud");
-        $this->prepareCreatorVars($modelId);
+        $this->prepareCreatorVars();
         $name = $this->createTwigStrName();
 
         $filePath = $this->getTemplateProcessor()->save();
@@ -336,12 +353,12 @@ class WordCreator extends \October\Rain\Extension\Extendable
     /**
      *
      */
-    public function prepareCreatorVars($modelId)
+    public function prepareCreatorVars()
     {
-        $this->values = $this->getDs()->getValues($modelId);
-        $dotedValues = $this->getDs()->getDotedValues($modelId);
+        $this->values = $this->getDs()->getValues($this->modelId);
+        $dotedValues = $this->getDs()->getDotedValues($this->modelId);
         $listImages = $this->getDs()->wimages->getPicturesUrl($this->getProductor()->images);
-        $fncs = $this->getDs()->getFunctionsCollections($modelId, $this->getProductor()->model_functions);
+        $fncs = $this->getDs()->getFunctionsCollections($this->modelId, $this->getProductor()->model_functions);
 
         $originalTags = $this->checkTags();
         //trace_log($originalTags);

@@ -104,7 +104,7 @@ class WordBehavior extends ControllerBehavior
     {
         $productorId = post('productorId');
         $modelId = post('modelId');
-        return WordCreator::find($productorId)->renderWord($modelId);
+        return WordCreator::find($productorId)->setModelId($modelId)->renderWord();
     }
 
     public function onLoadWordCheck()
