@@ -88,22 +88,24 @@ class WordBehavior extends ControllerBehavior
     /**
      * Cette fonction est utilisé lors du test depuis le controller document.
      */
-    public function onLoadWordBehaviorForm()
-    {
-        $productorId = post('productorId');
-        $documentTestId = Document::find($id)->test_id;
-        if ($documentTestId) {
-            $modelId = $documentTestId;
-            //trace_log($modelId);
-            return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
-        } else {
-            throw new \ValidationException(['error' => "Choisissez un modèle de test"]);
-        }
-    }
+    // public function onLoadWordBehaviorForm()
+    // {
+    //     $productorId = post('productorId');
+    //     $documentTestId = Document::find($id)->test_id;
+    //     if ($documentTestId) {
+    //         $modelId = $documentTestId;
+    //         //trace_log($modelId);
+    //         return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
+    //     } else {
+    //         throw new \ValidationException(['error' => "Choisissez un modèle de test"]);
+    //     }
+    // }
     public function makeword()
     {
         $productorId = post('productorId');
         $modelId = post('modelId');
+        trace_log($modelId);
+        
         return WordCreator::find($productorId)->setModelId($modelId)->renderWord();
     }
 

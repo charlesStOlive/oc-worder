@@ -19,6 +19,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
     public static $templateProcessor;
 
     public $values;
+    public $modelId;
     //public $bloc_types;
     //public $AllBlocs;
     public $increment;
@@ -290,23 +291,19 @@ class WordCreator extends \October\Rain\Extension\Extendable
     }
 
     /**
-     * Partie liée à la création de document
+     * ********************************Partie liée à la création de document**********************************
      */
     public function setModelId($modelId)
     {
         $this->modelId = $modelId;
-        $dataSourceId = $this->getProductor()->data_source;
-        $this->ds = new DataSource($dataSourceId);
-        $this->ds->instanciateModel($modelId);
+        $this->getDs()->instanciateModel($modelId);
         return $this;
     }
 
     public function setModelTest()
     {
         $this->modelId = $this->getProductor()->test_id;
-        $dataSourceId = $this->getProductor()->data_source;
-        $this->ds = new DataSource($dataSourceId);
-        $this->ds->instanciateModel($modelId);
+        $this->getDs()->instanciateModel($modelId);
         return $this;
     }
 
@@ -321,6 +318,8 @@ class WordCreator extends \October\Rain\Extension\Extendable
 
     public function renderTemp()
     {
+        // reinitialisation du template processor si il y a une boucle !
+        $this->setTemplateProcessor();
         $this->prepareCreatorVars();
         $name = $this->createTwigStrName();
         $filePath = $this->getTemplateProcessor()->save();
@@ -331,12 +330,15 @@ class WordCreator extends \October\Rain\Extension\Extendable
 
     public function renderCloud($lot = false)
     {
-        //trace_log("render cloud");
+        // reinitialisation du template processor si il y a une boucle !
+        $this->setTemplateProcessor();
         $this->prepareCreatorVars();
         $name = $this->createTwigStrName();
 
-        $filePath = $this->getTemplateProcessor()->save();
+        $filePath = $this->getTemplateProcessor()->save($name);
+        trace_log($filePath);
         $output = \File::get($filePath);
+        trace_log("ok apres output");
         $cloudSystem = \App::make('cloudSystem');
 
         $lastFolderDir = null;
@@ -344,10 +346,28 @@ class WordCreator extends \October\Rain\Extension\Extendable
             $lastFolderDir = $cloudSystem->createDirFromArray(['lots']);
         } else {
             $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
+            trace_log($this->getDs()->model->name);
             $folders = $folderOrg->getFolder($this->getDs()->model);
+            trace_log($folders);
             $lastFolderDir = $cloudSystem->createDirFromArray($folders);
         }
         \Storage::cloud()->put($lastFolderDir['path'] . '/' . $name . '.docx', $output);
+    }
+
+    public function checkScopes()
+    {
+        //trace_log('checkScopes');
+        if (!$this->modelId && !$this->getDs()->model) {
+            //trace_log("modelId pas instancie");
+            throw new \SystemException("Le modelId n a pas ete instancié");
+        }
+        $scope = new \Waka\Utils\Classes\Scopes($this->getProductor(), $this->getDs()->model);
+        //trace_log('scope calcule');
+        if ($scope->checkScopes()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -355,6 +375,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
      */
     public function prepareCreatorVars()
     {
+        trace_log("Model ID dans prepareCreator var : ".$this->modelId);
         $this->values = $this->getDs()->getValues($this->modelId);
         $dotedValues = $this->getDs()->getDotedValues($this->modelId);
         $listImages = $this->getDs()->wimages->getPicturesUrl($this->getProductor()->images);
