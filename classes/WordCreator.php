@@ -10,6 +10,7 @@ use Waka\Utils\Classes\DataSource;
 use Waka\Utils\Classes\WakaDate;
 use Waka\Worder\Models\Document;
 use \PhpOffice\PhpWord\TemplateProcessor;
+use Waka\Utils\Classes\TmpFiles;
 
 class WordCreator extends \October\Rain\Extension\Extendable
 {
@@ -324,8 +325,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
         $name = $this->createTwigStrName();
         $filePath = $this->getTemplateProcessor()->save();
         $output = \File::get($filePath);
-        \Storage::put('temp/' . $name . '.docx', $output);
-        return 'temp/' . $name . '.docx';
+        return TmpFiles::createDirectory()->putFile($name . '.docx', $output);
     }
 
     public function renderCloud($lot = false)
