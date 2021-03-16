@@ -336,9 +336,9 @@ class WordCreator extends \October\Rain\Extension\Extendable
         $name = $this->createTwigStrName();
 
         $filePath = $this->getTemplateProcessor()->save($name);
-        trace_log($filePath);
+        //trace_log($filePath);
         $output = \File::get($filePath);
-        trace_log("ok apres output");
+        //trace_log("ok apres output");
         $cloudSystem = \App::make('cloudSystem');
 
         $lastFolderDir = null;
@@ -346,9 +346,9 @@ class WordCreator extends \October\Rain\Extension\Extendable
             $lastFolderDir = $cloudSystem->createDirFromArray(['lots']);
         } else {
             $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
-            trace_log($this->getDs()->model->name);
+            //trace_log($this->getDs()->model->name);
             $folders = $folderOrg->getFolder($this->getDs()->model);
-            trace_log($folders);
+            //trace_log($folders);
             $lastFolderDir = $cloudSystem->createDirFromArray($folders);
         }
         \Storage::cloud()->put($lastFolderDir['path'] . '/' . $name . '.docx', $output);
@@ -375,7 +375,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
      */
     public function prepareCreatorVars()
     {
-        trace_log("Model ID dans prepareCreator var : ".$this->modelId);
+        //trace_log("Model ID dans prepareCreator var : ".$this->modelId);
         $this->values = $this->getDs()->getValues($this->modelId);
         $dotedValues = $this->getDs()->getDotedValues($this->modelId);
         $listImages = $this->getDs()->wimages->getPicturesUrl($this->getProductor()->images);

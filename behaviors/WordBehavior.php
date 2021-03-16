@@ -104,7 +104,7 @@ class WordBehavior extends ControllerBehavior
     {
         $productorId = post('productorId');
         $modelId = post('modelId');
-        trace_log($modelId);
+        //trace_log($modelId);
         
         return WordCreator::find($productorId)->setModelId($modelId)->renderWord();
     }
