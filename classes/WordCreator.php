@@ -70,7 +70,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
     }
     public function getDsName()
     {
-        return snake_case($this->getDs()->name);
+        return $this->getDs()->code;
     }
     public function getFncAccepted()
     {
@@ -519,7 +519,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
     public function createTwigStrName()
     {
         if (!$this->getProductor()->name_construction) {
-            return str_slug($this->getProductor()->name . '-' . $this->getDs()->name);
+            return str_slug($this->getProductor()->name . '-' . $this->getDsName());
         }
         $modelName = strtolower($this->getDsName());
         $vars = [
