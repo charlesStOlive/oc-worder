@@ -88,18 +88,18 @@ class WordBehavior extends ControllerBehavior
     /**
      * Cette fonction est utilisé lors du test depuis le controller document.
      */
-    // public function onLoadWordBehaviorForm()
-    // {
-    //     $productorId = post('productorId');
-    //     $documentTestId = Document::find($id)->test_id;
-    //     if ($documentTestId) {
-    //         $modelId = $documentTestId;
-    //         //trace_log($modelId);
-    //         return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
-    //     } else {
-    //         throw new \ValidationException(['error' => "Choisissez un modèle de test"]);
-    //     }
-    // }
+    public function onLoadWordBehaviorForm()
+    {
+        $productorId = post('productorId');
+        $documentTestId = Document::find($productorId)->test_id;
+        if ($documentTestId) {
+            $modelId = $documentTestId;
+            //trace_log($modelId);
+            return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
+        } else {
+            throw new \ValidationException(['error' => "Choisissez un modèle de test"]);
+        }
+    }
     public function makeword()
     {
         $productorId = post('productorId');
@@ -112,7 +112,12 @@ class WordBehavior extends ControllerBehavior
     public function onLoadWordCheck()
     {
         $productorId = post('productorId');
-        return WordCreator::find($productorId)->checkDocument();
+        $productor = WordCreator::find($productorId);
+        $modelTest = $productor->getProductor()->test_id;
+        if(!$modelTest) {
+            throw new \ValidationException(['test_id' => "Le modèle de test n'est pas renseigné ou n'existe plus"]);
+        }
+        return $productor->setModelId($modelTest)->checkDocument();
     }
 
     public function createWordBehaviorWidget()

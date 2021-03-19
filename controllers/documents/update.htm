@@ -29,14 +29,14 @@
         </button>
         <button type="button"
                 data-request="onLoadWordCheck"
-                data-request-data="id:<?=$this->params[0]?>"
+                data-request-data="productorId:<?=$this->params[0]?>"
                 data-load-indicator="Checking Document..."
                 class="btn btn-default">
             <?= e(trans('waka.worder::lang.document.check')) ?>
         </button>
         <button type="button"
                 data-request="onLoadWordBehaviorForm"
-                data-request-data="redirect:0, id:<?=$this->params[0]?>"
+                data-request-data="redirect:0, productorId:<?=$this->params[0]?>"
                 class="btn btn-default">
             <?= e(trans('waka.worder::lang.document.download')) ?>
         </button>
