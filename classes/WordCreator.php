@@ -70,6 +70,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
     }
     public function getDsName()
     {
+        trace_log($this->getDs());
         return $this->getDs()->code;
     }
     public function getFncAccepted()
@@ -150,7 +151,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
                     $this->recordInform('problem', $error);
                     continue;
                 }
-                //trace_log($tag);
+                trace_log($tag);
                 $fncFormat = array_shift($parts);
 
                 if (!in_array($fncFormat, $this->getFncAccepted())) {
@@ -160,7 +161,9 @@ class WordCreator extends \October\Rain\Extension\Extendable
                     continue;
                 }
                 // si le tag commence par le nom de la source
+
                 if ($fncFormat == $this->getDsName() || $fncFormat == 'info') {
+                    trace_log('le tag commence par le nom de la source');
                     $tagWithoutType = $tag;
                     $tagType = null;
                     $tagTypeExist = str_contains($tag, '*');
@@ -170,6 +173,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
                         $tagWithoutType = $checkTag[0];
                     }
                     $tagOK = $this->checkInjection($tagWithoutType);
+                    trace_log("tagOk : ".$tagOK);
                     if ($tagOK) {
                         $tagObj = [
                             'tagType' => $tagType,
@@ -211,6 +215,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
     public function checkInjection($tag)
     {
         $modelVarArray = $this->getDs()->getDotedValues();
+        trace_log($modelVarArray);
         if (!array_key_exists($tag, $modelVarArray)) {
             $txt = Lang::get('waka.worder::lang.word.processor.field_not_existe') . ' : ' . $tag;
             $this->recordInform('problem', $txt);
