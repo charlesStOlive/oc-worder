@@ -70,12 +70,12 @@ class WordCreator extends \October\Rain\Extension\Extendable
     }
     public function getDsName()
     {
-        trace_log($this->getDs());
+        //trace_log($this->getDs());
         return $this->getDs()->code;
     }
     public function getFncAccepted()
     {
-        return ['FNC', 'IMG', 'info', $this->getDsName()];
+        return ['FNC', 'IMG', 'info', 'ds'];
     }
     public function getTemplateProcessor()
     {
@@ -151,7 +151,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
                     $this->recordInform('problem', $error);
                     continue;
                 }
-                trace_log($tag);
+                //trace_log($tag);
                 $fncFormat = array_shift($parts);
 
                 if (!in_array($fncFormat, $this->getFncAccepted())) {
@@ -162,8 +162,8 @@ class WordCreator extends \October\Rain\Extension\Extendable
                 }
                 // si le tag commence par le nom de la source
 
-                if ($fncFormat == $this->getDsName() || $fncFormat == 'info') {
-                    trace_log('le tag commence par le nom de la source');
+                if ($fncFormat == 'ds' || $fncFormat == 'info') {
+                    //trace_log('le tag commence par le nom de la source');
                     $tagWithoutType = $tag;
                     $tagType = null;
                     $tagTypeExist = str_contains($tag, '*');
@@ -173,7 +173,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
                         $tagWithoutType = $checkTag[0];
                     }
                     $tagOK = $this->checkInjection($tagWithoutType);
-                    trace_log("tagOk : ".$tagOK);
+                    //trace_log("tagOk : ".$tagOK);
                     if ($tagOK) {
                         $tagObj = [
                             'tagType' => $tagType,
@@ -214,8 +214,8 @@ class WordCreator extends \October\Rain\Extension\Extendable
      */
     public function checkInjection($tag)
     {
-        $modelVarArray = $this->getDs()->getDotedValues();
-        trace_log($modelVarArray);
+        $modelVarArray = $this->getDs()->getDotedValues(null, 'ds');
+        //trace_log($modelVarArray);
         if (!array_key_exists($tag, $modelVarArray)) {
             $txt = Lang::get('waka.worder::lang.word.processor.field_not_existe') . ' : ' . $tag;
             $this->recordInform('problem', $txt);
@@ -382,7 +382,8 @@ class WordCreator extends \October\Rain\Extension\Extendable
     {
         //trace_log("Model ID dans prepareCreator var : ".$this->modelId);
         $this->values = $this->getDs()->getValues($this->modelId);
-        $dotedValues = $this->getDs()->getDotedValues($this->modelId);
+        $dotedValues = $this->getDs()->getDotedValues($this->modelId, 'ds');
+        //trace_log($dotedValues);
         $listImages = $this->getDs()->wimages->getPicturesUrl($this->getProductor()->images);
         $fncs = $this->getDs()->getFunctionsCollections($this->modelId, $this->getProductor()->model_functions);
 
@@ -526,9 +527,8 @@ class WordCreator extends \October\Rain\Extension\Extendable
         if (!$this->getProductor()->name_construction) {
             return str_slug($this->getProductor()->name . '-' . $this->getDsName());
         }
-        $modelName = strtolower($this->getDsName());
         $vars = [
-            $modelName => $this->values,
+            'ds' => $this->values,
         ];
         $nameConstruction = \Twig::parse($this->getProductor()->name_construction, $vars);
         return str_slug($nameConstruction);
