@@ -4,7 +4,7 @@ use October\Rain\Database\Schema\Blueprint;
 use October\Rain\Database\Updates\Migration;
 use Schema;
 
-class CreateDocumentsTableU112 extends Migration
+class CreateDocumentsTableU113 extends Migration
 {
     public function up()
     {
