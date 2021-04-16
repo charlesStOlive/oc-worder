@@ -346,17 +346,15 @@ class WordCreator extends \October\Rain\Extension\Extendable
         //trace_log("ok apres output");
         $cloudSystem = \App::make('cloudSystem');
 
-        $lastFolderDir = null;
+        $path = [];
         if ($lot) {
-            $lastFolderDir = $cloudSystem->createDirFromArray(['lots']);
+            $path = 'lots';
         } else {
             $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
-            //trace_log($this->getDs()->model->name);
-            $folders = $folderOrg->getFolder($this->getDs()->model);
-            //trace_log($folders);
-            $lastFolderDir = $cloudSystem->createDirFromArray($folders);
+            $path = $folderOrg->getPath($this->getDs()->model);
         }
-        \Storage::cloud()->put($lastFolderDir['path'] . '/' . $name . '.docx', $output);
+        trace_log($path.'/'.$name.'.docx');
+        $cloudSystem->put($path.'/'.$name.'.docx', $output);
     }
 
     public function checkScopes()
