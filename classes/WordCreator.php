@@ -353,7 +353,7 @@ class WordCreator extends \October\Rain\Extension\Extendable
             $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
             $path = $folderOrg->getPath($this->getDs()->model);
         }
-        trace_log($path.'/'.$name.'.docx');
+        //trace_log($path.'/'.$name.'.docx');
         $cloudSystem->put($path.'/'.$name.'.docx', $output);
     }
 
