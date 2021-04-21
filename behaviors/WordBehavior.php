@@ -38,7 +38,13 @@ class WordBehavior extends ControllerBehavior
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
 
-        return $this->makePartial('$/waka/worder/behaviors/wordbehavior/_popup.htm');
+        if($options) {
+            return $this->makePartial('$/waka/worder/behaviors/wordbehavior/_popup.htm');
+        } else {
+            return $this->makePartial('$/waka/utils/views/_popup_no_model.htm');
+        }
+
+        
     }
     public function onLoadWordBehaviorContentForm()
     {
@@ -52,7 +58,13 @@ class WordBehavior extends ControllerBehavior
         $this->vars['modelId'] = $modelId;
         //$this->vars['modelClassName'] = $model;
 
-        return ['#popupActionContent' => $this->makePartial('$/waka/worder/behaviors/wordbehavior/_content.htm')];
+        if($options) {
+            return ['#popupActionContent' => $this->makePartial('$/waka/worder/behaviors/wordbehavior/_content.htm')];
+        } else {
+            return ['#popupActionContent' => $this->makePartial('$/waka/utils/views/_content_no_model.htm')];
+        }
+
+        
     }
 
     public function onWordBehaviorPopupValidation()
