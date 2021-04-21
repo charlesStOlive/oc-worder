@@ -505,6 +505,13 @@ class WordCreator extends \October\Rain\Extension\Extendable
                         $value = \Markdown::parse($value);
                         $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
                         $this->getTemplateProcessor()->setHtmlValue($tag, $value, 1);
+                    } elseif ($tagType == 'TXT') {
+                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
+                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
+                        $value = \Markdown::parse($value);
+                        $value = strip_tags($value);
+                        // $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
+                        $this->getTemplateProcessor()->setValue($tag, $value, 1);
                     } else {
                         //trace_log("c'est une value tag : " . $tag);
                         $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
