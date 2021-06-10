@@ -12,7 +12,7 @@ use Waka\Worder\Models\Document;
 use \PhpOffice\PhpWord\TemplateProcessor;
 use Waka\Utils\Classes\TmpFiles;
 
-class WordCreator extends \October\Rain\Extension\Extendable
+class WordCreator extends \Winter\Storm\Extension\Extendable
 {
 
     public static $document;

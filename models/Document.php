@@ -8,14 +8,14 @@ use Model;
  */
 class Document extends Model
 {
-    use \October\Rain\Database\Traits\Validation;
-    use \October\Rain\Database\Traits\SoftDelete;
-    use \October\Rain\Database\Traits\Sortable;
+    use \Winter\Storm\Database\Traits\Validation;
+    use \Winter\Storm\Database\Traits\SoftDelete;
+    use \Winter\Storm\Database\Traits\Sortable;
     use \Waka\Utils\Classes\Traits\DataSourceHelpers;
     //
     use \Waka\Informer\Classes\Traits\InformerTrait;
 
-    use \October\Rain\Database\Traits\Sluggable;
+    use \Winter\Storm\Database\Traits\Sluggable;
     protected $slugs = ['slug' => 'name'];
 
     /**
