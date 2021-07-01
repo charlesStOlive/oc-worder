@@ -7,12 +7,14 @@ use Redirect;
 use Waka\Utils\Classes\DataSource;
 use Waka\Worder\Classes\WordCreator;
 use Waka\Worder\Models\Document;
+use Session;
 
 class WordBehavior extends ControllerBehavior
 {
     use \Waka\Utils\Classes\Traits\StringRelation;
 
     protected $wordBehaviorWidget;
+    protected $askDataWidget;
 
     public function __construct($controller)
     {
@@ -37,6 +39,7 @@ class WordBehavior extends ControllerBehavior
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
+        $this->vars['modelClass'] = $modelClass;
 
         if($options) {
             return $this->makePartial('$/waka/worder/behaviors/wordbehavior/_popup.htm');
@@ -50,13 +53,14 @@ class WordBehavior extends ControllerBehavior
     {
         $modelClass = post('modelClass');
         $modelId = post('modelId');
+        
 
         $ds = new DataSource($modelClass, 'class');
         $options = $ds->getProductorOptions('Waka\Worder\Models\Document', $modelId);
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
-        //$this->vars['modelClassName'] = $model;
+        $this->vars['modelClass'] = $modelClass;
 
         if($options) {
             return ['#popupActionContent' => $this->makePartial('$/waka/worder/behaviors/wordbehavior/_content.htm')];
@@ -67,14 +71,31 @@ class WordBehavior extends ControllerBehavior
         
     }
 
+    public function onSelectWord() {
+        $productorId = post('productorId');
+        $modelClass = post('modelClass');
+        $modelId = post('modelId');
+        $wakaPdf = Document::find($productorId);
+        $ds = new DataSource($modelClass, 'class');
+        $asks = $ds->getProductorAsks('Waka\Worder\Models\Document',$productorId, $modelId);
+        $askDataWidget = $this->createAskDataWidget();
+        $askDataWidget->addFields($asks);
+        $this->vars['askDataWidget'] = $askDataWidget;
+        return [
+            '#askDataWidget' => $this->makePartial('$/waka/utils/models/ask/_widget_ask_data.htm')
+        ];
+    }
+
     public function onWordBehaviorPopupValidation()
     {
+        $datas = post();
         $errors = $this->CheckValidation(\Input::all());
         if ($errors) {
             throw new \ValidationException(['error' => $errors]);
         }
         $productorId = post('productorId');
         $modelId = post('modelId');
+        Session::put('word_asks_'.$modelId, $datas['asks_array'] ?? []);
 
         return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
     }
@@ -117,8 +138,8 @@ class WordBehavior extends ControllerBehavior
         $productorId = post('productorId');
         $modelId = post('modelId');
         //trace_log($modelId);
-        
-        return WordCreator::find($productorId)->setModelId($modelId)->renderWord();
+        $asks = Session::pull('word_asks_'.$modelId);
+        return WordCreator::find($productorId)->setModelId($modelId)->setAsksResponse($asks)->renderWord();
     }
 
     public function onLoadWordCheck()
@@ -138,6 +159,17 @@ class WordBehavior extends ControllerBehavior
         $config->alias = 'wordBehaviorformWidget';
         $config->arrayName = 'wordBehavior_array';
         $config->model = new Document();
+        $widget = $this->makeWidget('Backend\Widgets\Form', $config);
+        $widget->bindToController();
+        return $widget;
+    }
+
+    public function createAskDataWidget()
+    {
+        $config = $this->makeConfig('$/waka/utils/models/ask/empty_fields.yaml');
+        $config->alias = 'askDataformWidget';
+        $config->arrayName = 'asks_array';
+        $config->model = new \Waka\Utils\Models\Ask();
         $widget = $this->makeWidget('Backend\Widgets\Form', $config);
         $widget->bindToController();
         return $widget;

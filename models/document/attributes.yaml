@@ -1,26 +1,19 @@
 # ===================================
-#  List Column Definitions
+#  Form Field Definitions
 # ===================================
 
-columns:
+icon: icon-info
+attributes:
     name:
         label: waka.worder::document.name
-        searchable: true
     slug:
         label: waka.worder::document.slug
-        searchable: true
-    path:
-        label: waka.worder::document.path
-        searchable: true
     data_source:
         label: waka.worder::document.data_source
-        type: datasource
+    name_construction:
+        label: waka.worder::document.name_construction
     is_scope:
         label: waka.worder::document.is_scope
-        type: switch
     updated_at:
         label: waka.utils::lang.global.updated_at
-        type: timetense
-    sort_order:
-        label: waka.utils::lang.global.sort_order
-        invisible: true
+        type: date-medium

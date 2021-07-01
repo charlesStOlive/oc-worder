@@ -3,7 +3,7 @@
 # ===================================
 
 # Record name
-name: Document
+name: waka.worder::document.form_name
 
 # Model Form Field configuration
 form: $/waka/worder/models/document/fields.yaml
@@ -16,16 +16,17 @@ defaultRedirect: waka/worder/documents
 
 # Create page
 create:
-    title: Créer document
+    title: waka.worder::document.create
     redirect: waka/worder/documents/update/:id
     redirectClose: waka/worder/documents
+    form: $/waka/worder/models/document/fields_create.yaml
 
 # Update page
 update:
-    title: Editer un document
-    redirect: waka/worder/documents
+    title: waka.worder::document.update
+    redirect: waka/worder/documents/update/:id
     redirectClose: waka/worder/documents
 
 # Preview page
 preview:
-    title: Preview Document
+    title: waka.worder::document.preview_name

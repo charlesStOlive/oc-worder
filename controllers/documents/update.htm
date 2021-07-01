@@ -1,81 +1,29 @@
+<!-- Primary content -->
 <?php Block::put('breadcrumb') ?>
-<ul>
-    <li><a href="<?= Backend::url('system/settings/') ?>">Réglages</a></li>
-    <li><a href="<?= Backend::url('waka/worder/documents') ?>">Modèles Word</a></li>
-    <li><?= e($this->pageTitle) ?></li>
-</ul>
+<?=$this->btnsWidget->renderBreadcrump()?>
 <?php Block::endPut() ?>
 <?php Block::put('form-contents') ?>
 <?php if (!$this->fatalError): ?>
 
 <?= Form::open(['class' => 'layout']) ?>
 
-<?= $this->fireViewEvent('backend.update.tools') ?>
-<?= $this->fireViewEvent('backend.top.update') ?>
-
 <div class="layout-row">
     <?= $this->formRender() ?>
 </div>
-
 <div class="form-buttons">
     <div class="loading-indicator-container">
-        <button type="submit"
-                data-request="onSave"
-                data-request-data="redirect:0"
-                data-hotkey="ctrl+s, cmd+s"
-                data-load-indicator="Saving Document..."
-                class="btn btn-primary">
-            <?= e(trans('waka.utils::lang.global.save')) ?>
-        </button>
-        <button type="button"
-                data-request="onLoadWordCheck"
-                data-request-data="productorId:<?=$this->params[0]?>"
-                data-load-indicator="Checking Document..."
-                class="btn btn-default">
-            <?= e(trans('waka.worder::lang.document.check')) ?>
-        </button>
-        <button type="button"
-                data-request="onLoadWordBehaviorForm"
-                data-request-data="redirect:0, productorId:<?=$this->params[0]?>"
-                class="btn btn-default">
-            <?= e(trans('waka.worder::lang.document.download')) ?>
-        </button>
-        <button type="button"
-                data-request="onSave"
-                data-request-data="close:1"
-                data-hotkey="ctrl+enter, cmd+enter"
-                data-load-indicator="Saving Document..."
-                class="btn btn-default">
-            <?= e(trans('waka.utils::lang.global.save_close')) ?>
-        </button>
-        <?= $this->fireViewEvent('backend.update.prod.word') ?>
-        <button type="button"
-                class="oc-icon-trash-o btn-icon danger pull-right"
-                data-request="onDelete"
-                data-load-indicator="Deleting Document..."
-                data-request-confirm="Delete this document?">
-        </button>
-        <span class="btn-text">
-            or <a
-               href="<?= Backend::url('waka/worder/documents') ?>"><?= e(trans('waka.utils::lang.global.cancel')) ?></a>
-        </span>
+        <?= $this->btnsWidget->renderBar('update') ?>
     </div>
 </div>
-
-<?= Form::close() ?>
-
-<?php else: ?>
-
-<p class="flash-message static error"><?= e($this->fatalError) ?></p>
-<p><a href="<?= Backend::url('waka/worder/documents') ?>"
-       class="btn btn-default">Return to documents list</a></p>
-
-<?php endif ?>
 <?php Block::endPut() ?>
 
 <!-- Complimentary sidebar -->
-<?php Block::put('form-sidebar');?>
-<div id="sidebar_attributes"><?= $this->attributesRender() ?></div>
+<?php Block::put('form-sidebar') ?>
+<div class="hide-tabs">
+    <div id="sidebar_attributes"><?= $this->attributesRender() ?></div>
+</div>
+
+
 <?php Block::endPut() ?>
 
 <!-- Layout execution -->
@@ -84,3 +32,17 @@
 <?= $this->makeLayout('form-with-sidebar') ?>
 <?= Form::close() ?>
 <?php Block::endPut() ?>
+
+<?php else: ?>
+<div class="control-breadcrumb">
+    <?= Block::placeholder('breadcrumb') ?>
+</div>
+<div class="padded-container">
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p>
+        <a href="<?= Backend::url('backend/users') ?>"
+           class="btn btn-default"><?= e(trans('backend::lang.user.return')) ?>
+        </a>
+    </p>
+</div>
+<?php endif ?>

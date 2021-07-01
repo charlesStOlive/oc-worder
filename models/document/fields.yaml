@@ -3,91 +3,63 @@
 # ===================================
 
 fields:
-    title@update:
+    title:
+        label: waka.worder::document.title
+        span: full
         type: informfield
         valueFrom: name
-    name:
-        label: waka.worder::lang.document.name
+    slug:
+        label: waka.worder::document.slug
+        span: right
+        required: true
+        preset: name
     path:
-        label: waka.worder::lang.document.path
-        type: mediafinder
-        span: auto 
-    data_source@create:
-        label: waka.utils::lang.datasource.title
-        placeholder: waka.utils::lang.datasource.placeholder
+        label: waka.worder::document.path
+        span: left
+        required: true
+        permissions: [wcli.worder.admin.*]
+    data_source:
+        label: waka.worder::document.data_source
+        span: left
         type: dropdown
-        options: listDataSource
-        span: auto 
-    data_source@update:
-        label: waka.utils::lang.datasource.title
-        placeholder: waka.utils::lang.datasource.placeholder
-        type: dropdown
-        options: listDataSource
-        span: auto
+        placeholder: waka.utils::lang.global.placeholder
+        required: true
         disabled: true
-    
+        options: listDataSource
+        permissions: [wcli.worder.admin.*]
     name_construction:
-        label: waka.worder::lang.document.name_construction
-    
-    model_functions@update:
-            label: Créer des collections à partir des fonctions du modèle
-            type: functionslist
-    images@update:
-            label: Injecter des images à partir du modèle
-            type: imageslist
-    is_scope: 
-            label: waka.utils::lang.scopes.is_scope
-            type: switch
+        label: waka.worder::document.name_construction
+        span: auto
+    model_functions:
+        label: waka.worder::document.model_functions
+        span: full
+        type: functionslist
+    images:
+        label: waka.worder::document.images
+        span: full
+        type: imageslist
+    has_asks:
+        label: waka.worder::document.has_asks
+        span: left
+        type: switch
+    asks:
+        label: waka.worder::document.asks
+        span: full
+        type: repeater
+        groups: $/waka/utils/models/config/ask.yaml
+        trigger:
+            action: show
+            field: has_asks
+            condition: checked
+    is_scope:
+        label: waka.worder::document.is_scope
+        span: left
+        type: switch
     scopes:
+        label: waka.worder::document.scopes
+        span: full
         type: scopeslist
         trigger:
-            action: hide
+            action: show
             field: is_scope
-            condition: unchecked
-    test_id: 
-            label: waka.worder::lang.document.test_id
-            type: dropdown
-            placeholder: waka.utils::lang.global.placeholder
-            options: listDataSourceTarget
-
-    # scopes@update:
-    #     label: waka.worder::lang.document.scopes.title
-    #     type: nestedform
-    #     form:
-    #         fields:
-    #             mode: 
-    #                 type: radio
-    #                 default: [all]
-    #                 cssClass: 'inline-options'
-    #                 options:
-    #                     all: Toutes les conditions doivent être vrai
-    #                     one: Une seul condition doit être vrai
-    #             conditions:
-    #                 label: waka.worder::lang.document.scopes.conditions
-    #                 type: repeater
-    #                 prompt: waka.worder::lang.document.scopes.prompt
-    #                 span: full
-    #                 form:
-    #                     fields:
-    #                         self: 
-    #                             label: waka.worder::lang.document.scopes.self
-    #                             type: checkbox
-    #                             span: full
-    #                             default: true
-    #                         target:
-    #                             label: waka.worder::lang.document.scopes.target
-    #                             commentAbove: waka.worder::lang.document.scopes.target_com
-    #                             span: auto
-    #                             trigger:
-    #                                 action: disable
-    #                                 field: self
-    #                                 condition: checked
-    #                         ids:
-    #                             label: waka.worder::lang.document.scopes.id
-    #                             type: taglist
-    #                             mode: array
-    #                             commentAbove: waka.worder::lang.document.scopes.id_com
-    #                             span: auto
-
-    
-    
+            condition: checked

@@ -12,19 +12,16 @@ class CreateDocumentsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
-            $table->string('slug');
-
-            $table->string('path');
+            $table->string('slug')->nullable();
+            $table->string('path')->nullable();
             $table->string('data_source')->nullable();
-
-            $table->text('scopes')->nullable();
             $table->text('model_functions')->nullable();
             $table->text('images')->nullable();
-
+            $table->text('scopes')->nullable();
+            //reorder
             $table->integer('sort_order')->default(0);
-
+            //softDelete
             $table->softDeletes();
-
             $table->timestamps();
         });
     }

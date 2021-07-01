@@ -4,19 +4,21 @@ use Winter\Storm\Database\Schema\Blueprint;
 use Winter\Storm\Database\Updates\Migration;
 use Schema;
 
-class CreateDocumentsTableU113 extends Migration
+class CreateDocumentsTableU120 extends Migration
 {
     public function up()
     {
         Schema::table('waka_worder_documents', function (Blueprint $table) {
-            $table->text('test_id')->nullable();
+            $table->boolean('has_asks')->nullable();
+            $table->text('asks')->nullable();
         });
     }
 
     public function down()
     {
         Schema::table('waka_worder_documents', function (Blueprint $table) {
-            $table->dropColumn('test_id');
+            $table->dropColumn('has_asks');
+            $table->dropColumn('asks');
         });
     }
 }

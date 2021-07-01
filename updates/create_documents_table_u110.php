@@ -9,7 +9,7 @@ class CreateDocumentsTableU110 extends Migration
     public function up()
     {
         Schema::table('waka_worder_documents', function (Blueprint $table) {
-            $table->text('is_scope')->nullable();
+            $table->boolean('is_scope')->nullable();
         });
     }
 

@@ -5,38 +5,36 @@ use Backend\Classes\Controller;
 use System\Classes\SettingsManager;
 
 /**
- * Documents Back-end Controller
+ * Document Back-end Controller
  */
 class Documents extends Controller
 {
     public $implement = [
-        'waka.Utils.Behaviors.SideBarAttributesBehavior',
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-        'Backend.Behaviors.ReorderController',
-        'Waka.Informer.Behaviors.PopupInfo',
+        'Waka.Utils.Behaviors.BtnsBehavior',
+        'waka.Utils.Behaviors.SideBarAttributesBehavior',
         'Waka.Worder.Behaviors.WordBehavior',
+        'Backend.Behaviors.ReorderController',
         'Waka.Utils.Behaviors.DuplicateModel',
-
+        'Waka.Informer.Behaviors.PopupInfo',
     ];
-
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
+    public $btnsConfig = 'config_btns.yaml';
     public $duplicateConfig = 'config_duplicate.yaml';
-    public $sidebarAttributesConfig = 'config_attributes.yaml';
-
     public $reorderConfig = 'config_reorder.yaml';
-    public $contextContent;
-
-    public $sidebarAttributes;
+    public $sidebarAttributesConfig = 'config_attributes.yaml';    
+    //FIN DE LA CONFIG AUTO
 
     public function __construct()
     {
         parent::__construct();
-
         BackendMenu::setContext('October.System', 'system', 'settings');
-        SettingsManager::setContext('Waka.Worder', 'documents');
+        SettingsManager::setContext('Waka.Worder', 'Documents');
     }
+
+    //startKeep/
 
     public function update($id)
     {
@@ -51,4 +49,5 @@ class Documents extends Controller
             '#sidebar_attributes' => $this->attributesRender($this->params[0]),
         ];
     }
+        //endKeep/
 }

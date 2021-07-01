@@ -1,45 +1,53 @@
 <?php namespace Waka\Worder\Models;
 
-use App;
 use Model;
 
 /**
- * Document Model
+ * document Model
  */
+
 class Document extends Model
 {
     use \Winter\Storm\Database\Traits\Validation;
     use \Winter\Storm\Database\Traits\SoftDelete;
     use \Winter\Storm\Database\Traits\Sortable;
     use \Waka\Utils\Classes\Traits\DataSourceHelpers;
-    //
     use \Waka\Informer\Classes\Traits\InformerTrait;
 
-    use \Winter\Storm\Database\Traits\Sluggable;
-    protected $slugs = ['slug' => 'name'];
 
     /**
      * @var string The database table used by the model.
      */
     public $table = 'waka_worder_documents';
 
+
     /**
      * @var array Guarded fields
      */
-    protected $guarded = ['*'];
+    protected $guarded = ['id'];
 
     /**
      * @var array Fillable fields
      */
-    protected $fillable = [];
+    //protected $fillable = [];
 
     /**
      * @var array Validation rules for attributes
      */
     public $rules = [
+        'name' => 'required',
+        'slug' => 'required',
         'path' => 'required',
         'data_source' => 'required',
-        'name' => 'required',
+    ];
+
+    public $customMessages = [
+    ];
+
+    /**
+     * @var array attributes send to datasource for creating document
+     */
+    public $attributesToDs = [
     ];
 
     /**
@@ -50,12 +58,18 @@ class Document extends Model
     /**
      * @var array Attributes to be cast to JSON
      */
-    protected $jsonable = ['scopes', 'model_functions', 'images'];
+    protected $jsonable = [
+        'model_functions',
+        'images',
+        'asks',
+        'scopes',
+    ];
 
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())
      */
-    protected $appends = [];
+    protected $appends = [
+    ];
 
     /**
      * @var array Attributes to be removed from the API representation of the model (ex. toArray())
@@ -75,31 +89,60 @@ class Document extends Model
      * @var array Relations
      */
     public $hasOne = [];
-    public $hasMany = [];
+    public $hasMany = [
+    ];
+    public $hasOneThrough = [
+    ];
+    public $hasManyThrough = [
+    ];
     public $belongsTo = [
-        //'data_source' => ['Waka\Utils\Models\DataSource'],
     ];
-    public $belongsToMany = [];
+    public $belongsToMany = [
+    ];        
     public $morphTo = [];
-    public $morphOne = [];
-    public $morphMany = [
-        'informs' => ['Waka\Informer\Models\Inform', 'name' => 'informeable'],
+    public $morphOne = [
     ];
-    public $attachOne = [];
-    public $attachMany = [];
+    public $morphMany = [
+    ];
+    public $attachOne = [
+    ];
+    public $attachMany = [
+    ];
 
-    public function beforeSave()
+    //startKeep/
+
+    /**
+     *EVENTS
+     **/
+    public function beforeSave() 
     {
+
     }
 
-    public function afterCreate()
-    {
-        // if (BackendAuth::getUser()) {
-        //     $wp = new \Waka\Worder\Classes\WordProcessor2($this->id);
-        //     $wp->checkTags();
-        // }
-    }
+
     /**
      * LISTS
+     **/
+
+    /**
+     * GETTERS
+     **/
+
+    /**
+     * SCOPES
      */
+
+    /**
+     * SETTERS
+     */
+ 
+    /**
+     * FILTER FIELDS
+     */
+
+    /**
+     * OTHERS
+     */
+
+//endKeep/
 }

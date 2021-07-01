@@ -6,8 +6,8 @@
 # Model Class name
 modelClass: Waka\Worder\Models\Document
 
-name: Document
-title: waka.utils::lang.global.duplicate_the Montage
+name: documents
+title: waka.utils::lang.global.duplicate_theDocument
 redirect: backend/waka/worder/documents/update/
 
 duplication:
@@ -24,7 +24,7 @@ duplication:
     #Les champs qui seront modifié dans le formulaire du popup 
     fields:
         name:
-          label: Nom du document
+          label: waka.worder::document.name 
 
         # _keep:
         #   label: Dupliquer dans ce projet

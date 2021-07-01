@@ -32,6 +32,8 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     public $originalTags;
     public $nbErrors;
 
+    public $askResponse;
+
     public function __construct()
     {
         \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
@@ -73,9 +75,15 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         //trace_log($this->getDs());
         return $this->getDs()->code;
     }
+
+    public function setAsksResponse($datas = [])
+    {
+        $this->askResponse = $this->getDs()->getAsksFromData($datas, $this->getProductor()->asks);
+        return $this;
+    }
     public function getFncAccepted()
     {
-        return ['FNC', 'IMG', 'info', 'ds'];
+        return ['FNC', 'IMG', 'info', 'ds', 'asks'];
     }
     public function getTemplateProcessor()
     {
@@ -88,6 +96,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         $allTags = $this->filterTags($this->getTemplateProcessor()->getVariables());
         //trace_log($allTags);
         $create = $this->checkFunctions($allTags['fncs']);
+        $this->checkAsks($allTags['asks']);
         return $allTags;
     }
     /**
@@ -99,6 +108,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         //tablaux de tags pour les blocs, les injections et les rows
         $fncs = [];
         $injections = [];
+        $asks = [];
         $imageKeys = [];
         $insideBlock = false;
 
@@ -190,6 +200,10 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                     array_push($imageKeys, $tag);
                     continue;
                 }
+                if ($fncFormat == 'asks') {
+                    array_push($asks, $tag);
+                    continue;
+                }
                 $fnc_code['code'] = array_shift($parts);
                 //trace_log("nouvelle fonction : " . $fnc_code['code']);
                 if (!$fnc_code) {
@@ -205,6 +219,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         }
         return [
             'fncs' => $fncs,
+            'asks' => $asks,
             'injections' => $injections,
             'IMG' => $imageKeys,
         ];
@@ -222,6 +237,32 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             return false;
         } else {
             return true;
+        }
+    }
+
+    public function checkAsks($tags)
+    {
+        //trace_log('checkAsks');
+        //trace_log($tags);
+        if(!$tags) {
+            return false;
+        }
+        if($tags && !$this->getProductor()->has_asks) {
+            $txt = 'Il y a des champs asks dans le document word alors que les asks sont desactivés';
+            $this->recordInform('problem', $txt);
+            return true;
+        }
+        $docAsks = $this->getProductor()->asks;
+        $docAsksCode = array_column($docAsks, 'code');
+        //trace_log($docAsks);
+        foreach($tags as $tag) {
+            $tag = ltrim($tag, 'asks.');
+            //trace_log('tag ask: '.$tag);
+            if(!in_array($tag, $docAsksCode)) {
+                $txt = "Le champs ask dans le document n'existe pas dans le modèle. Nom du tag : " . $tag;
+                $this->recordInform('problem', $txt);
+                return true;
+            }
         }
     }
     /**
@@ -386,6 +427,12 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         $fncs = $this->getDs()->getFunctionsCollections($this->modelId, $this->getProductor()->model_functions);
 
         $originalTags = $this->checkTags();
+
+        //Traitement des asks
+        if(!$this->askResponse && $this->getProductor()->has_asks) {
+            //Si les réponses n'ont pas été instanciés on le fait manuellement maintenant. 
+            $this->setAsksResponse();
+        }
         //trace_log($originalTags);
 
         //Traitement des champs simples
@@ -409,6 +456,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                 $this->getTemplateProcessor()->setHtmlValue($injection['tag'], $value, true);
             } elseif ($injection['tagType'] == 'MD') {
                 $value = \Markdown::parse($value);
+                //trace_log($value);
                 $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
                 $this->getTemplateProcessor()->setHtmlValue($injection['tag'], $value, true);
             } else {
@@ -442,6 +490,44 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                 }
                 $this->getTemplateProcessor()->setImageValue($imagekey, $objWord);
             }
+        }
+
+        foreach ($originalTags['asks'] as $askTag) {
+            $asksArray = explode(".", $askTag);
+            $key = array_pop($asksArray);
+            $askObject = $this->askResponse[$key] ?? null;
+            //trace_log('askResponse');
+            //trace_log($this->askResponse);
+            //trace_log($key);
+            //trace_log($askObject);
+            $originalAsks = $this->getProductor()->asks;
+            $typeAsk = null;
+            foreach($originalAsks as $askorigin) {
+                if($askorigin['code'] == $key) {
+                    $typeAsk = $askorigin['_group'];
+                }
+            }
+            //trace_log($typeAsk);
+            if($typeAsk == 'image' ) {
+                $objImageWord = [
+                    'path' => $askObject['path'],
+                    'width' => $askObject['width'] . 'px',
+                    'height' => $askObject['height'] . 'px',
+                    'ratio' => true,
+                ];
+                $this->getTemplateProcessor()->setImageValue($askTag, $objImageWord);
+
+            } elseif ($typeAsk == 'richeditor') {
+                //trace_log("richEditor ".$askObject);
+                $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $askObject), ENT_QUOTES, 'UTF-8');
+                //trace_log($value);
+                $this->getTemplateProcessor()->setHtmlValue($askTag, $value, true);
+            } else {
+                $this->getTemplateProcessor()->setValue($askTag, $askObject, 1);
+            }
+            
+
+            
         }
 
         //Préparation des resultat de toutes les fonbctions
