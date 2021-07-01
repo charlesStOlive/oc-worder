@@ -3,6 +3,7 @@
 use BackendMenu;
 use Backend\Classes\Controller;
 use System\Classes\SettingsManager;
+use Waka\Worder\Models\Document;
 
 /**
  * Document Back-end Controller
@@ -48,6 +49,19 @@ class Documents extends Controller
         return [
             '#sidebar_attributes' => $this->attributesRender($this->params[0]),
         ];
+    }
+
+    public function formExtendFieldsBefore($form) {
+        if(!$this->user->hasAccess(['waka.worder.admin.super'])) {
+            //Le blocage du champs code de ask est fait dans le model wakaMail
+            $model =  Document::find($this->params[0]);
+            $countAsks = 0;
+            if($model->asks) {
+                $countAsks = count($model->asks);
+                $form->tabs['fields']['asks']['maxItems'] = $countAsks;
+                $form->tabs['fields']['asks']['minItems'] = $countAsks;
+            }
+        }
     }
         //endKeep/
 }

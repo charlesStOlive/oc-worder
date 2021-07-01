@@ -19,7 +19,7 @@ tool_bar:
     base:
         create: 
             show: true
-            permissions: []
+            permissions: ['waka.worder.admin.super']
             url: waka/worder/documents/create
         reorder: 
             show: true 
@@ -28,7 +28,7 @@ tool_bar:
  
         delete: 
             show: true
-            permissions: []
+            permissions: ['waka.worder.admin.super']
     config_btns:
             format: all
             btns:
@@ -43,10 +43,10 @@ tool_bar:
 action_bar:
     config_btns:
         format: all #unique : un seul bouton, all : tts les boutons
-        groups:
-            waka.utils::lang.prod.produce: oc-icon-file-text-o
-            waka.utils::lang.prod.send: oc-icon-external-link
-            waka.utils::lang.prod.tools: oc-icon-wrench
+        # groups:
+        #     waka.utils::lang.prod.produce: oc-icon-file-text-o
+        #     waka.utils::lang.prod.send: oc-icon-external-link
+        #     waka.utils::lang.prod.tools: oc-icon-wrench
         btns:
             duplicate:
                 config: waka.utils::btns.duplicate
