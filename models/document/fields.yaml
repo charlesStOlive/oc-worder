@@ -17,6 +17,7 @@ fields:
         label: waka.worder::document.path
         span: left
         required: true
+        type: mediafinder
         permissions: [wcli.worder.admin.*]
     data_source:
         label: waka.worder::document.data_source
@@ -27,6 +28,12 @@ fields:
         disabled: true
         options: listDataSource
         permissions: [wcli.worder.admin.*]
+    test_id: 
+        label: waka.worder::lang.document.test_id
+        type: dropdown
+        span: auto
+        placeholder: waka.utils::lang.global.placeholder
+        options: listDataSourceTarget
     name_construction:
         label: waka.worder::document.name_construction
         span: auto
