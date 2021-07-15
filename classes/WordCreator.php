@@ -661,8 +661,11 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         }
         if (starts_with($type, 'date') && $value) {
             $date = new WakaDate();
-            $value = DateTimeHelper::makeCarbon($value, false);
-            return $date->localeDate($value, $type);
+            //trace_log($type);
+            //trace_log($value);
+            $dateFinal = $date->localeDate($value, $type);
+            //trace_log($dateFinal);
+            return $dateFinal;
         } else {
             return 'Inconnu';
         }
