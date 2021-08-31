@@ -17,6 +17,8 @@ fields:
         span: left
         required: true
         permissions: [wcli.worder.admin.*]
+        type: mediafinder
+
     data_source:
         label: waka.worder::document.data_source
         span: left

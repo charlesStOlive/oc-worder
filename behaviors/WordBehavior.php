@@ -135,9 +135,8 @@ class WordBehavior extends ControllerBehavior
     }
     public function makeword()
     {
-        $productorId = post('productorId');
-        $modelId = post('modelId');
-        //trace_log($modelId);
+        $productorId = \Input::get('productorId');
+        $modelId = \Input::get('modelId');
         $asks = Session::pull('word_asks_'.$modelId);
         return WordCreator::find($productorId)->setModelId($modelId)->setAsksResponse($asks)->renderWord();
     }
