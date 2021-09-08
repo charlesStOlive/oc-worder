@@ -88,7 +88,8 @@ class Document extends Model
     /**
      * @var array Relations
      */
-    public $hasOne = [];
+    public $hasOne = [
+    ];
     public $hasMany = [
     ];
     public $hasOneThrough = [

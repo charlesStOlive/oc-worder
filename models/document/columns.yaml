@@ -15,9 +15,17 @@ columns:
     data_source:
         label: waka.worder::document.data_source
         type: datasource
+        searchable: true
+    is_lot:
+        label: waka.worder::document.is_lot
+        type: switch
+        searchable: false
+        sortable: true
     is_scope:
         label: waka.worder::document.is_scope
         type: switch
+        searchable: false
+        sortable: true
     updated_at:
         label: waka.utils::lang.global.updated_at
         type: timetense
