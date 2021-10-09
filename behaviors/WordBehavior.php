@@ -34,7 +34,7 @@ class WordBehavior extends ControllerBehavior
         $modelClass = post('modelClass');
         $modelId = post('modelId');
 
-        $ds = new DataSource($modelClass, 'class');
+        $ds = \DataSources::findByClass($modelClass);
         $options = $ds->getProductorOptions('Waka\Worder\Models\Document', $modelId);
 
         $this->vars['options'] = $options;
@@ -55,7 +55,7 @@ class WordBehavior extends ControllerBehavior
         $modelId = post('modelId');
         
 
-        $ds = new DataSource($modelClass, 'class');
+        $ds = \DataSources::findByClass($modelClass);
         $options = $ds->getProductorOptions('Waka\Worder\Models\Document', $modelId);
 
         $this->vars['options'] = $options;
@@ -76,7 +76,7 @@ class WordBehavior extends ControllerBehavior
         $modelClass = post('modelClass');
         $modelId = post('modelId');
         $wakaPdf = Document::find($productorId);
-        $ds = new DataSource($modelClass, 'class');
+        $ds = \DataSources::findByClass($modelClass);
         $asks = $ds->getProductorAsks('Waka\Worder\Models\Document',$productorId, $modelId);
         $askDataWidget = $this->createAskDataWidget();
         $askDataWidget->addFields($asks);

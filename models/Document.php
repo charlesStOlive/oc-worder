@@ -104,6 +104,16 @@ class Document extends Model
     public $morphOne = [
     ];
     public $morphMany = [
+        'rule_asks' => [
+            'Waka\Utils\Models\RuleAsk',
+            'name' => 'askeable',
+            'delete' => true
+        ],
+        'rule_fncs' => [
+            'Waka\Utils\Models\RuleFnc',
+            'name' => 'fnceable',
+            'delete' => true
+        ],
     ];
     public $attachOne = [
     ];

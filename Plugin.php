@@ -55,6 +55,7 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+        \DataSources::registerDataSources(plugins_path().'/waka/worder/config/datasources.yaml');
         // \Event::listen('backend.update.prod', function ($controller) {
         //     if (get_class($controller) == 'Waka\Worder\Controllers\Documents') {
         //         return;

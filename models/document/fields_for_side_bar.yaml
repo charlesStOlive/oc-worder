@@ -1,0 +1,29 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+fields:
+    name:
+        label: waka.worder::document.name
+        span: left
+        required: true
+    slug:
+        label: waka.worder::document.slug
+        span: right
+        required: true
+        preset: name
+    path:
+        label: waka.worder::document.path
+        span: left
+        type: mediafinder
+        required: true
+        permissions: [wcli.worder.admin.*]
+    data_source:
+        label: waka.worder::document.data_source
+        span: left
+        type: dropdown
+        placeholder: waka.utils::lang.global.placeholder
+        required: true
+        disabled: true
+        options: listDataSource
+        permissions: [wcli.worder.admin.*]
+

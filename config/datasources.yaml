@@ -1,0 +1,13 @@
+# ===================================
+#  Config des data source
+# ===================================
+datasource: 
+    document:
+        hidden: true
+        label: Document
+        class: Waka\Worder\Models\Document
+        controller: wcli/worder/documents
+        attributes: waka/worder/models/documents/attributes.yaml
+        relations:
+            layout:
+                label: Layout

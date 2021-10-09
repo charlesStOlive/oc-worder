@@ -1,78 +1,46 @@
 # ===================================
 #  Form Field Definitions
 # ===================================
-
 fields:
     title:
         label: waka.worder::document.title
         span: full
         type: informfield
         valueFrom: name
-    slug:
-        label: waka.worder::document.slug
-        span: right
-        required: true
-        preset: name
-    path:
-        label: waka.worder::document.path
-        span: left
-        type: mediafinder
-        required: true
-        permissions: [wcli.worder.admin.*]
-    data_source:
-        label: waka.worder::document.data_source
-        span: left
-        type: dropdown
-        placeholder: waka.utils::lang.global.placeholder
-        required: true
-        disabled: true
-        options: listDataSource
-        permissions: [wcli.worder.admin.*]
-    test_id:
-        label: waka.worder::document.test_id
-        span: auto
-        type: dropdown
-        placeholder: waka.utils::lang.global.placeholder
-        options: listDataSourceTarget
     name_construction:
         label: waka.worder::document.name_construction
         span: auto
-    model_functions:
-        label: waka.worder::document.model_functions
-        span: full
-        type: functionslist
-    images:
-        label: waka.worder::document.images
-        span: full
-        type: imageslist
-    has_asks:
-        label: waka.worder::document.has_asks
-        span: left
-        type: switch
-    asks:
-        label: waka.worder::document.asks
-        span: full
-        type: repeater
-        groups: $/waka/utils/models/config/ask.yaml
-        trigger:
-            action: show
-            field: has_asks
-            condition: checked
-    is_lot:
-        label: waka.worder::document.is_lot
-        span: left
-        type: switch
-        default: true
-        default: true
-    is_scope:
-        label: waka.worder::document.is_scope
-        span: left
-        type: switch
-    scopes:
-        label: waka.worder::document.scopes
-        span: full
-        type: scopeslist
-        trigger:
-            action: show
-            field: is_scope
-            condition: checked
+tabs:
+    defaultTab: waka.mailer::wakamail.tab_edit
+    icons: 
+        waka.worder::document.tab_edit: icon-pencil
+        waka.worder::document.tab_options: icon-cog
+    fields:    
+        rule_asks:
+            span: full
+            type: askbuilder
+            targetProductor: Document
+            full_access: personne
+            tab: waka.worder::document.tab_edit
+        rule_fncs:
+            span: full
+            type: fncbuilder
+            targetProductor: Document
+            full_access: personne
+            tab: waka.worder::document.tab_edit
+secondaryTabs:
+    fields:
+        # info:
+        #     type: modelinfo
+        #     mode: secondary
+        #     src: /waka/worder/models/document/fields_for_side_bar.yaml
+        infos:
+            span: full
+            type: modelinfo
+            tab: waka.worder::document.tab_infos
+            src: waka/worder/models/document/fields_for_side_bar.yaml
+        attributs:
+            span: full
+            type: attributs
+            mode: word
+            tab: waka.worder::document.tab_attributs

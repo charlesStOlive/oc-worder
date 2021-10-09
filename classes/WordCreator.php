@@ -46,7 +46,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             throw new ApplicationException(Lang::get('waka.worder::lang.word.processor.id_not_exist'));
         }
         self::$document = Document::find($document_id);
-        self::$ds = new DataSource(self::$document->data_source);
+        self::$ds = \DataSources::find(self::$document->data_source);
         self::setTemplateProcessor();
 
         return new self;
@@ -76,14 +76,9 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         return $this->getDs()->code;
     }
 
-    public function setAsksResponse($datas = [])
-    {
-        $this->askResponse = $this->getDs()->getAsksFromData($datas, $this->getProductor()->asks);
-        return $this;
-    }
     public function getFncAccepted()
     {
-        return ['FNC', 'IMG', 'info', 'ds', 'asks'];
+        return ['info', 'ds', 'asks', 'FNC'];
     }
     public function getTemplateProcessor()
     {
@@ -95,7 +90,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         $this->nbErrors = 0;
         $allTags = $this->filterTags($this->getTemplateProcessor()->getVariables());
         //trace_log($allTags);
-        $create = $this->checkFunctions($allTags['fncs']);
+        //$this->checkFunctions($allTags['fncs']);
         $this->checkAsks($allTags['asks']);
         return $allTags;
     }
@@ -183,6 +178,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                         $tagWithoutType = $checkTag[0];
                     }
                     $tagOK = $this->checkInjection($tagWithoutType);
+                    
                     //trace_log("tagOk : ".$tagOK);
                     if ($tagOK) {
                         $tagObj = [
@@ -196,12 +192,32 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                 }
 
                 //si le tag commence par imagekey
-                if ($fncFormat == 'IMG') {
-                    array_push($imageKeys, $tag);
-                    continue;
-                }
+                // if ($fncFormat == 'IMG') {
+                //     array_push($imageKeys, $tag);
+                //     continue;
+                // }
+                // if ($fncFormat == 'asks') {
+                //     array_push($asks, $tag);
+                //     continue;
+                // }
                 if ($fncFormat == 'asks') {
-                    array_push($asks, $tag);
+                    $tagWithoutType = $tag;
+                    $tagType = null;
+                    $tagTypeExist = str_contains($tag, '*');
+                    if ($tagTypeExist) {
+                        $checkTag = explode('*', $tag);
+                        $tagType = array_pop($checkTag);
+                        $tagWithoutType = $checkTag[0];
+                    }
+                    $explodedTag = explode('.', $tagWithoutType);
+                    $varName = array_pop($explodedTag);
+                    $tagObj = [
+                        'tagType' => $tagType,
+                        'varName' => $varName,
+                        'tag' => $tag,
+                    ];
+                    //trace_log($tagObj);
+                    array_push($asks, $tagObj);
                     continue;
                 }
                 $fnc_code['code'] = array_shift($parts);
@@ -240,26 +256,26 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         }
     }
 
+    public function getAsksByCode() {
+        return $this->getProductor()->rule_asks->keyBy('code');
+
+    }
+
     public function checkAsks($tags)
     {
-        //trace_log('checkAsks');
-        //trace_log($tags);
+        // trace_log('checkAsks');
+        // trace_log($tags);
         if(!$tags) {
             return false;
         }
-        if($tags && !$this->getProductor()->has_asks) {
-            $txt = 'Il y a des champs asks dans le document word alors que les asks sont desactivés';
-            $this->recordInform('problem', $txt);
-            return true;
-        }
-        $docAsks = $this->getProductor()->asks;
-        $docAsksCode = array_column($docAsks, 'code');
-        //trace_log($docAsks);
+        //Recherche des asks recuperation du code et transformation en array avec uniquement le code.
+        $docAsksCode = $this->getProductor()->rule_asks->pluck('code')->toArray();
+        //
+        //trace_log($docAsksCode);
         foreach($tags as $tag) {
-            $tag = ltrim($tag, 'asks.');
-            //trace_log('tag ask: '.$tag);
-            if(!in_array($tag, $docAsksCode)) {
-                $txt = "Le champs ask dans le document n'existe pas dans le modèle. Nom du tag : " . $tag;
+            $tagName = $tag['varName'];
+            if(!in_array($tagName, $docAsksCode)) {
+                $txt = "Le champs ask dans le document n'existe pas dans le modèle. Nom du tag : " . $tagName;
                 $this->recordInform('problem', $txt);
                 return true;
             }
@@ -268,34 +284,34 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     /**
      *
      */
-    public function checkFunctions($wordFncs)
-    {
-        if (!$wordFncs) {
-            return;
-        }
-        //trace_log($wordFncs);
-        //trace_log("check function");
-        $docFncs = $this->getProductor()->model_functions;
-        $docFncsCodes = [];
-        //si il y a deja des fonctions, on va les checker et les mettre à jour
-        if (is_countable($docFncs)) {
-            foreach ($docFncs as $docFnc) {
-                array_push($docFncsCodes, $docFnc['collectionCode']);
-            }
-        }
-        //trace_log($docFncsCodes);
-        $i = 1;
-        foreach ($wordFncs as $wordFnc) {
-            $fncCode = $wordFnc['code'] ?? false;
-            if (!$fncCode) {
-                $this->recordInform('problem', Lang::get("Une fonction n'a pas de code"));
-            } elseif (!in_array($wordFnc['code'], $docFncsCodes)) {
-                $txt = "La fonction " . $wordFnc['code'] . " du word n'est pas déclaré, veuillez la créer";
-                $this->recordInform('problem', $txt);
-                $i++;
-            }
-        }
-    }
+    // public function checkFunctions($wordFncs)
+    // {
+    //     if (!$wordFncs) {
+    //         return;
+    //     }
+    //     //trace_log($wordFncs);
+    //     //trace_log("check function");
+    //     $docFncs = $this->getProductor()->model_functions;
+    //     $docFncsCodes = [];
+    //     //si il y a deja des fonctions, on va les checker et les mettre à jour
+    //     if (is_countable($docFncs)) {
+    //         foreach ($docFncs as $docFnc) {
+    //             array_push($docFncsCodes, $docFnc['collectionCode']);
+    //         }
+    //     }
+    //     //trace_log($docFncsCodes);
+    //     $i = 1;
+    //     foreach ($wordFncs as $wordFnc) {
+    //         $fncCode = $wordFnc['code'] ?? false;
+    //         if (!$fncCode) {
+    //             $this->recordInform('problem', Lang::get("Une fonction n'a pas de code"));
+    //         } elseif (!in_array($wordFnc['code'], $docFncsCodes)) {
+    //             $txt = "La fonction " . $wordFnc['code'] . " du word n'est pas déclaré, veuillez la créer";
+    //             $this->recordInform('problem', $txt);
+    //             $i++;
+    //         }
+    //     }
+    // }
     /**
      *
      */
@@ -352,6 +368,45 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         $this->modelId = $this->getProductor()->test_id;
         $this->getDs()->instanciateModel($modelId);
         return $this;
+    }
+
+    public function setRuleAsksResponse($datas = [])
+    {
+        $askArray = [];
+        $srcmodel = $this->getDs()->getModel($this->modelId);
+        $asks = $this->getProductor()->rule_asks()->get();
+        foreach($asks as $ask) {
+            $key = $ask->getCode();
+            //trace_log($key);
+            $askResolved = $ask->resolve($srcmodel, 'word', $datas);
+            $askArray[$key] = $askResolved;
+        }
+        //trace_log($askArray); // les $this->askResponse sont prioritaire
+        return array_replace($askArray,$this->askResponse);
+        
+    }
+
+    //BEBAVIOR AJOUTE LES REPOSES ??
+    public function setAsksResponse($datas = [])
+    {
+        $this->askResponse = $this->getDs()->getAsksFromData($datas, $this->getProductor()->asks);
+        return $this;
+    }
+
+    public function setRuleFncsResponse()
+    {
+        $fncArray = [];
+        $srcmodel = $this->getDs()->getModel($this->modelId);
+        $fncs = $this->getProductor()->rule_fncs()->get();
+        foreach($fncs as $fnc) {
+            $key = $fnc->getCode();
+            //trace_log('key of the function');
+            $fncResolved = $fnc->resolve($srcmodel,$this->getDs()->code);
+            $fncArray[$key] = $fncResolved;
+        }
+        //trace_log($fncArray);
+        return $fncArray;
+        
     }
 
     public function renderWord()
@@ -420,198 +475,43 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     public function prepareCreatorVars()
     {
         //trace_log("Model ID dans prepareCreator var : ".$this->modelId);
-        $this->values = $this->getDs()->getValues($this->modelId);
+        $model = $this->getDs()->getModel($this->modelId);
+        $values = $this->getDs()->getValues();
         $dotedValues = $this->getDs()->getDotedValues($this->modelId, 'ds');
-        //trace_log($dotedValues);
-        $listImages = $this->getDs()->wimages->getPicturesUrl($this->getProductor()->images);
-        $fncs = $this->getDs()->getFunctionsCollections($this->modelId, $this->getProductor()->model_functions);
 
         $originalTags = $this->checkTags();
 
-        //Traitement des asks
-        if(!$this->askResponse && $this->getProductor()->has_asks) {
-            //Si les réponses n'ont pas été instanciés on le fait manuellement maintenant. 
-            $this->setAsksResponse();
-        }
-        //trace_log($originalTags);
-
-        //Traitement des champs simples
-        //trace_log("Traitement des champs simples");
-        foreach ($originalTags['injections'] as $injection) {
-            $value = $dotedValues[$injection['varName']];
-
-            if ($injection['tagType'] == 'CB') {
-                $ck;
-                if ($value) {
-                    $ck = '/waka/worder/assets/images/check.gif';
-                } else {
-                    $ck = '/waka/worder/assets/images/uncheck.gif';
-                }
-                //trace_log($ck);
-                $checkBox = ['path' => plugins_path() . $ck, 'width' => '10px', 'height' => '10px'];
-                $this->getTemplateProcessor()->setImageValue($injection['tag'], $checkBox);
-            } elseif ($injection['tagType'] == 'HTM') {
-                $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
-                //set html supporte une fonction clean qui permet de supprimer les paragraphes avec espaces. cas des listes UL/LI
-                $this->getTemplateProcessor()->setHtmlValue($injection['tag'], $value, true);
-            } elseif ($injection['tagType'] == 'MD') {
-                $value = \Markdown::parse($value);
-                //trace_log($value);
-                $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
-                $this->getTemplateProcessor()->setHtmlValue($injection['tag'], $value, true);
-            } else {
-                if ($injection['tagType'] != null) {
-                    $value = $this->transformValue($value, $injection['tagType']);
-                }
-                $this->getTemplateProcessor()->setValue($injection['tag'], $value);
+        //Nouveau bloc pour nouveaux asks
+        if($this->getProductor()->rule_asks()->count()) {
+            $this->askResponse = $this->setRuleAsksResponse($values);
+        } else {
+            //Injection des asks s'ils existent dans le model;
+            if(!$this->askResponse) {
+                $this->setAsksResponse($model);
             }
         }
 
-        //Traitement des image
-        //trace_log("Traitement des images");
-        foreach ($originalTags['IMG'] as $imagekey) {
-            $parts = explode(".", $imagekey);
-            $key = array_pop($parts);
-            $objImage = $listImages[$key] ?? null;
+        //$model = array_merge($model, [ 'asks' => $this->askResponse]);
 
-            if ($objImage) {
-                $objWord = [
-                    'path' => $objImage['path'],
-                    'width' => $objImage['width'] . 'px',
-                    'height' => $objImage['height'] . 'px',
-                    'ratio' => true,
-                ];
-                //trace_log($imagekey);
-                //trace_log($objWord);
-                if ($objImage['path'] ?? false) {
-                    $this->getTemplateProcessor()->setImageValue($imagekey, $objWord);
-                } else {
-                    $this->getTemplateProcessor()->setValue($imagekey, Lang::get("waka.worder::lang.word.error.no_image"));
-                }
-                $this->getTemplateProcessor()->setImageValue($imagekey, $objWord);
-            }
+        //Nouveau bloc pour les new Fncs
+        $fncs = [];
+        if($this->getProductor()->rule_fncs()->count()) {
+            $fncs = $this->setRuleFncsResponse($model);
         }
 
-        foreach ($originalTags['asks'] as $askTag) {
-            $asksArray = explode(".", $askTag);
-            $key = array_pop($asksArray);
-            $askObject = $this->askResponse[$key] ?? null;
-            //trace_log('askResponse');
-            //trace_log($this->askResponse);
-            //trace_log($key);
-            //trace_log($askObject);
-            $originalAsks = $this->getProductor()->asks;
-            $typeAsk = null;
-            foreach($originalAsks as $askorigin) {
-                if($askorigin['code'] == $key) {
-                    $typeAsk = $askorigin['_group'];
-                }
-            }
-            //trace_log($typeAsk);
-            if($typeAsk == 'image' ) {
-                $objImageWord = [
-                    'path' => $askObject['path'],
-                    'width' => $askObject['width'] . 'px',
-                    'height' => $askObject['height'] . 'px',
-                    'ratio' => true,
-                ];
-                $this->getTemplateProcessor()->setImageValue($askTag, $objImageWord);
+        $wordResolver = new WordResolver($this->getTemplateProcessor());
+        //
+        $wordDsTags = $originalTags['injections'];
+        $datas = $dotedValues;
+        $wordResolver->resolveRows($wordDsTags, $datas);
+        //
+        $wordAsks = $originalTags['asks'];
+        $wordResolver->resolveAsks($wordAsks, $this->askResponse);
 
-            } elseif ($typeAsk == 'richeditor') {
-                //trace_log("richEditor ".$askObject);
-                $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $askObject), ENT_QUOTES, 'UTF-8');
-                //trace_log($value);
-                $this->getTemplateProcessor()->setHtmlValue($askTag, $value, true);
-            } else {
-                $this->getTemplateProcessor()->setValue($askTag, $askObject, 1);
-            }
-            
+        $wordFncs = $originalTags['fncs'];
+        $wordResolver->resolveFncs($wordFncs, $fncs);
 
-            
-        }
-
-        //Préparation des resultat de toutes les fonbctions
-        //trace_log('traitement des fncs');
-
-        // Pour chazque fonctions dans le word
-        foreach ($originalTags['fncs'] as $wordFnc) {
-            //trace_log("-------------------------------");
-            //trace_log($wordFnc);
-
-            $functionName = $wordFnc['code'];
-            //trace_log($functionName);
-
-            $functionRows = $fncs[$functionName];
-            //trace_log('-- functionRows --');
-            //trace_log($functionRows);
-
-            //Préparation du clone block
-            $countFunctionRows = count($functionRows);
-            $fncTag = 'FNC.' . $functionName;
-            $this->getTemplateProcessor()->cloneBlock($fncTag, $countFunctionRows, true, true);
-            $i = 1; //i permet de creer la cla #i lors du clone row
-
-            //Parcours des lignes renvoyé par la fonctions
-            foreach ($functionRows as $functionRow) {
-                $functionRow = array_dot($functionRow);
-                foreach ($wordFnc['subTags'] as $subTag) {
-                    //trace_log('**subtag***');
-                    //trace_log($subTag);
-                    $tagType = $subTag['tagType'] ?? null;
-
-                    $tag = $subTag['tag'] . '#' . $i;
-
-                    if ($tagType == 'IMG') {
-                        //trace_log("c'est une image tag : " . $tag);
-                        // $path = $functionRow[$subTag['varName'] . '.path'];
-                        $path = $functionRow[$subTag['varName'] . '.path'] ?? false;
-                        $width = $functionRow[$subTag['varName'] . '.width'] ?? false;
-                        $height = $functionRow[$subTag['varName'] . '.height'] ?? false;
-                        if ($path) {
-                            if (!$width && !$height) {
-                                $this->getTemplateProcessor()->setImageValue($tag, $path);
-                            } else {
-                                $this->getTemplateProcessor()
-                                    ->setImageValue($tag, ['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px'], 1);
-                            }
-                        } else {
-                            // trace_log('pas de path');
-                            //$this->getTemplateProcessor()->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
-                            // trace_log($tag); // deleteblock ne fonctionne pas nlanc à la place
-                            // $this->getTemplateProcessor()->deleteBlock($tag);
-                            $this->getTemplateProcessor()->setValue($tag, "", 1);
-                        }
-                    } elseif ($tagType == 'HTM') {
-                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
-                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
-                        $this->getTemplateProcessor()->setHtmlValue($tag, $value, 1);
-                    } elseif ($tagType == 'MD') {
-                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
-                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
-                        $value = \Markdown::parse($value);
-                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
-                        $this->getTemplateProcessor()->setHtmlValue($tag, $value, 1);
-                    } elseif ($tagType == 'TXT') {
-                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
-                        $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
-                        $value = \Markdown::parse($value);
-                        $value = strip_tags($value);
-                        // $value = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $value), ENT_QUOTES, 'UTF-8');
-                        $this->getTemplateProcessor()->setValue($tag, $value, 1);
-                    } else {
-                        //trace_log("c'est une value tag : " . $tag);
-                        $value = $functionRow[$subTag['varName']] ?? 'Inconnu';
-                        if ($tagType) {
-                            $value = $this->transformValue($value, $tagType);
-                        }
-                        $this->getTemplateProcessor()->setValue($tag, $value, 1);
-                    }
-                }
-                $i++;
-            }
-        }
-
-        //trace_log($this->listImages);
+        
     }
     public function createTwigStrName()
     {
@@ -619,55 +519,9 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             return str_slug($this->getProductor()->name . '-' . $this->getDsName());
         }
         $vars = [
-            'ds' => $this->values,
+            'ds' => $this->getDs()->getValues(),
         ];
         $nameConstruction = \Twig::parse($this->getProductor()->name_construction, $vars);
         return str_slug($nameConstruction);
-    }
-
-    public function transformValue($value, $type)
-    {
-        if ($value == 'Inconnu') {
-            $value = 0;
-        }
-
-        if ($type == 'float') {
-            return number_format($value, 2, ',', ' ');
-        }
-
-        if ($type == 'number' || $type == 'numercic') {
-            return number_format($value, 0, ',', ' ');
-        }
-        if ($type == 'euro') {
-            return number_format($value, 2, ',', ' ') . ' €';
-        }
-        if ($type == 'euro_int') {
-            return number_format($value, 0, ',', ' ') . ' €';
-        }
-        if ($type == 'workflow') {
-            return $this->$dataSource->getWorkflowState();
-        }
-        if (starts_with($type, 'percent') && $value) {
-            $operators = explode("::", $type);
-            $percent = $operators[1];
-            $value = $value * $percent / 100;
-            return number_format($value, 2, ',', ' ') . ' €';
-        }
-        if (starts_with($type, 'multiply') && $value) {
-            $operators = explode("::", $type);
-            $multiply = $operators[1];
-            $value = $value * $multiply;
-            return number_format($value, 2, ',', ' ') . ' €';
-        }
-        if (starts_with($type, 'date') && $value) {
-            $date = new WakaDate();
-            //trace_log($type);
-            //trace_log($value);
-            $dateFinal = $date->localeDate($value, $type);
-            //trace_log($dateFinal);
-            return $dateFinal;
-        } else {
-            return 'Inconnu';
-        }
     }
 }
