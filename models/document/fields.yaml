@@ -15,6 +15,7 @@ tabs:
     icons: 
         waka.worder::document.tab_edit: icon-pencil
         waka.worder::document.tab_options: icon-cog
+        waka.worder::document.tab_temp: icon-cog
     fields:    
         rule_asks:
             span: full
@@ -28,6 +29,59 @@ tabs:
             targetProductor: Document
             full_access: personne
             tab: waka.worder::document.tab_edit
+        test_id:
+            label: waka.worder::document.test_id
+            span: auto
+            type: dropdown
+            placeholder: waka.utils::lang.global.placeholder
+            options: listDataSourceTarget
+            tab: waka.worder::document.tab_options
+        is_lot:
+            label: waka.worder::document.is_lot
+            span: left
+            type: switch
+            default: true
+            default: true
+            tab: waka.worder::document.tab_options
+        is_scope:
+            label: waka.worder::document.is_scope
+            span: left
+            type: switch
+            tab: waka.worder::document.tab_options
+        scopes:
+            label: waka.worder::document.scopes
+            span: full
+            type: scopeslist
+            trigger:
+                action: show
+                field: is_scope
+                condition: checked
+            tab: waka.worder::document.tab_options
+        model_functions:
+            label: waka.worder::document.model_functions
+            span: full
+            type: functionslist
+            tab: waka.worder::document.tab_temp
+        images:
+            label: waka.worder::document.images
+            span: full
+            type: imageslist
+            tab: waka.worder::document.tab_temp
+        has_asks:
+            label: waka.worder::document.has_asks
+            span: left
+            type: switch
+            tab: waka.worder::document.tab_temp
+        asks:
+            label: waka.worder::document.asks
+            span: full
+            type: repeater
+            groups: $/waka/utils/models/config/ask.yaml
+            trigger:
+                action: show
+                field: has_asks
+                condition: checked
+            tab: waka.worder::document.tab_temp
 secondaryTabs:
     fields:
         # info:

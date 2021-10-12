@@ -39,30 +39,29 @@ class WordResolver
 
     public function resolveFncs($wordFncTags, $fncDatas) {
         foreach ($wordFncTags as $fncTag) {
-            //trace_log($fncTag);
+            // trace_log($fncTag);
             // trace_log($fncDatas);
             $functionName = $fncTag['code'];
-            //trace_log($functionName);
+            trace_log($functionName);
             $functionRows = $fncDatas[$functionName];
-            //trace_log('-- functionRows --');
-            //trace_log($functionRows);
+            // trace_log('-- functionRows --');
+            if(is_object($functionRows)) {
+                throw new \SystemException('Attention ! verifiez votre module de fonction ||'.$fncTag['code']. '|| Il ne retourne pas un array');
+            }
             $countFunctionRows = count($functionRows);
             $fncTagName = 'FNC.' . $functionName;
             $this->templateProcessor->cloneBlock($fncTagName, $countFunctionRows, true, true);
             $i = 1; //i permet de creer la cla #i lors du clone row
             foreach ($functionRows as $functionRow) {
-                $functionRow = array_dot($functionRow);
-                //trace_log($functionRow);
+                //$functionRow = array_dot($functionRow);
                 foreach ($fncTag['subTags'] as $subTag) {
-                    //trace_log($subTag);
+                    trace_log($subTag);
                     $finalSubTag = (object) [
                         'tagName' => $subTag['varName'],
                         'tagType' => $subTag['tagType'] ?? null,
                         'tagKey' =>  $subTag['tag'] . '#' . $i,
                     ];
-                    //trace_log($finalSubTag);
                     $fncData = $functionRow[$finalSubTag->tagName];
-                    //trace_log($fncData);
                     $this->findAndResolve($finalSubTag, $fncData);
 
                 }
@@ -103,6 +102,7 @@ class WordResolver
     public function resolveBasicRow($wordTag, $tagData) {
         $tagType = $wordTag->tagType;
         $tagKey = $wordTag->tagKey;
+        trace_log($tagData);
 
         if ($tagType != null) {
             $tagData = $this->transformValue($tagData, $tagType);

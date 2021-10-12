@@ -378,7 +378,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         foreach($asks as $ask) {
             $key = $ask->getCode();
             //trace_log($key);
-            $askResolved = $ask->resolve($srcmodel, 'word', $datas);
+            $askResolved = $ask->resolve($srcmodel, 'twig', $datas);
             $askArray[$key] = $askResolved;
         }
         //trace_log($askArray); // les $this->askResponse sont prioritaire
@@ -477,13 +477,15 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         //trace_log("Model ID dans prepareCreator var : ".$this->modelId);
         $model = $this->getDs()->getModel($this->modelId);
         $values = $this->getDs()->getValues();
+        trace_log('-------------------VALEURS---------------------');
+        trace_log($values);
         $dotedValues = $this->getDs()->getDotedValues($this->modelId, 'ds');
 
         $originalTags = $this->checkTags();
 
         //Nouveau bloc pour nouveaux asks
         if($this->getProductor()->rule_asks()->count()) {
-            $this->askResponse = $this->setRuleAsksResponse($values);
+            $this->askResponse = $this->setRuleAsksResponse(['ds' => $values]);
         } else {
             //Injection des asks s'ils existent dans le model;
             if(!$this->askResponse) {

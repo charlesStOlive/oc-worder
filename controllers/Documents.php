@@ -13,6 +13,7 @@ class Documents extends Controller
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
         'Waka.Utils.Behaviors.BtnsBehavior',
+        'Waka.Utils.Behaviors.SideBarUpdate',
         'Waka.Worder.Behaviors.WordBehavior',
         'Backend.Behaviors.ReorderController',
         'Waka.Utils.Behaviors.DuplicateModel',
@@ -23,6 +24,7 @@ class Documents extends Controller
     public $btnsConfig = 'config_btns.yaml';
     public $duplicateConfig = 'config_duplicate.yaml';
     public $reorderConfig = 'config_reorder.yaml';
+    public $sideBarUpdateConfig = 'config_side_bar_update.yaml';
     //FIN DE LA CONFIG AUTO
 
     public function __construct()
@@ -58,3 +60,4 @@ class Documents extends Controller
     }
         //endKeep/
 }
+

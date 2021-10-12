@@ -22,8 +22,9 @@ return [
     'tab_edit' => 'Editer document',
     'tab_infos' => 'Infos',
     'tab_options' => 'Options',
+    'tab_temp' => 'TEMP',
     'test' => 'Tester',
     'test_id' => 'Modèle de test',
-    'title' => 'Gestion document',
+    'title' => 'Titre du document',
     'update' => 'Modification document'
 ];
