@@ -42,7 +42,7 @@ class WordResolver
             // trace_log($fncTag);
             // trace_log($fncDatas);
             $functionName = $fncTag['code'];
-            trace_log($functionName);
+            //trace_log($functionName);
             $functionRows = $fncDatas[$functionName];
             // trace_log('-- functionRows --');
             if(is_object($functionRows)) {
@@ -55,13 +55,17 @@ class WordResolver
             foreach ($functionRows as $functionRow) {
                 //$functionRow = array_dot($functionRow);
                 foreach ($fncTag['subTags'] as $subTag) {
-                    trace_log($subTag);
+                    //trace_log($subTag);
                     $finalSubTag = (object) [
                         'tagName' => $subTag['varName'],
                         'tagType' => $subTag['tagType'] ?? null,
                         'tagKey' =>  $subTag['tag'] . '#' . $i,
                     ];
-                    $fncData = $functionRow[$finalSubTag->tagName];
+
+                    $fncData = $functionRow[$finalSubTag->tagName] ?? false;
+                    if(!$fncData) {
+                        $fncData = array_get($functionRow, $finalSubTag->tagName);
+                    }
                     $this->findAndResolve($finalSubTag, $fncData);
 
                 }
@@ -102,7 +106,7 @@ class WordResolver
     public function resolveBasicRow($wordTag, $tagData) {
         $tagType = $wordTag->tagType;
         $tagKey = $wordTag->tagKey;
-        trace_log($tagData);
+        //trace_log($tagData);
 
         if ($tagType != null) {
             $tagData = $this->transformValue($tagData, $tagType);
@@ -161,7 +165,7 @@ class WordResolver
             //$this->getTemplateProcessor()->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
             // trace_log($tag); // deleteblock ne fonctionne pas nlanc à la place
             // $this->getTemplateProcessor()->deleteBlock($tag);
-            $this->getTemplateProcessor()->setValue($tag, "", 1);
+            $this->templateProcessor->setValue($tagKey, "", 1);
         }
 
     }
@@ -186,7 +190,8 @@ class WordResolver
             return number_format($value, 0, ',', ' ') . ' €';
         }
         if ($type == 'workflow') {
-            return $this->$dataSource->getWorkflowState();
+            //return $this->$dataSource->getWorkflowState();
+            return "error 194 wordresolver";
         }
         if (starts_with($type, 'percent') && $value) {
             $operators = explode("::", $type);

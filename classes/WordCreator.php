@@ -477,8 +477,8 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         //trace_log("Model ID dans prepareCreator var : ".$this->modelId);
         $model = $this->getDs()->getModel($this->modelId);
         $values = $this->getDs()->getValues();
-        trace_log('-------------------VALEURS---------------------');
-        trace_log($values);
+        //trace_log('-------------------VALEURS---------------------');
+        //trace_log($values);
         $dotedValues = $this->getDs()->getDotedValues($this->modelId, 'ds');
 
         $originalTags = $this->checkTags();

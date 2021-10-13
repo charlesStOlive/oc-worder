@@ -7,17 +7,19 @@ fields:
         label: waka.worder::document.name
         span: left
         required: true
+        permissions: [wcli.worder.admin.*]
     slug:
         label: waka.worder::document.slug
         span: right
         required: true
         preset: name
+        permissions: [wcli.worder.admin.super]
     path:
         label: waka.worder::document.path
         span: left
         type: mediafinder
         required: true
-        permissions: [wcli.worder.admin.*]
+        permissions: [wcli.worder.admin.super]
     data_source:
         label: waka.worder::document.data_source
         span: left
@@ -25,7 +27,8 @@ fields:
         placeholder: waka.utils::lang.global.placeholder
         required: true
         options: listDataSource
-        permissions: [wcli.worder.admin.*]
+        permissions: [wcli.worder.admin.super]
     name_construction:
         label: waka.worder::document.name_construction
         span: auto
+        permissions: [wcli.worder.admin.*]

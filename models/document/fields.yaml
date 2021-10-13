@@ -7,9 +7,11 @@ fields:
         span: full
         type: informfield
         valueFrom: name
+        permissions: [wcli.worder.admin.*]
     name_construction:
         label: waka.worder::document.name_construction
         span: auto
+        permissions: [wcli.worder.admin.*]
 tabs:
     defaultTab: waka.mailer::wakamail.tab_edit
     icons: 
@@ -21,13 +23,15 @@ tabs:
             span: full
             type: askbuilder
             targetProductor: Document
-            full_access: personne
+            full_access: waka.rules.asks.admin
+            permissions: [waka.rules.asks.*]
             tab: waka.worder::document.tab_edit
         rule_fncs:
             span: full
             type: fncbuilder
             targetProductor: Document
-            full_access: personne
+            full_access: waka.rules.fncs.admin
+            permissions: [waka.rules.fncs.*]
             tab: waka.worder::document.tab_edit
         test_id:
             label: waka.worder::document.test_id
@@ -35,6 +39,7 @@ tabs:
             type: dropdown
             placeholder: waka.utils::lang.global.placeholder
             options: listDataSourceTarget
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_options
         is_lot:
             label: waka.worder::document.is_lot
@@ -42,11 +47,13 @@ tabs:
             type: switch
             default: true
             default: true
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_options
         is_scope:
             label: waka.worder::document.is_scope
             span: left
             type: switch
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_options
         scopes:
             label: waka.worder::document.scopes
@@ -56,21 +63,25 @@ tabs:
                 action: show
                 field: is_scope
                 condition: checked
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_options
         model_functions:
             label: waka.worder::document.model_functions
             span: full
             type: functionslist
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_temp
         images:
             label: waka.worder::document.images
             span: full
             type: imageslist
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_temp
         has_asks:
             label: waka.worder::document.has_asks
             span: left
             type: switch
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_temp
         asks:
             label: waka.worder::document.asks
@@ -81,6 +92,7 @@ tabs:
                 action: show
                 field: has_asks
                 condition: checked
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_temp
 secondaryTabs:
     fields:
@@ -91,10 +103,12 @@ secondaryTabs:
         infos:
             span: full
             type: modelinfo
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_infos
             src: waka/worder/models/document/fields_for_side_bar.yaml
         attributs:
             span: full
             type: attributs
             mode: word
+            permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_attributs
