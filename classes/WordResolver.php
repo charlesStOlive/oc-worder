@@ -143,6 +143,7 @@ class WordResolver
         //trace_log('resoudre une image------------------------');
         $tagName = $wordTag->tagName;
         $tagKey = $wordTag->tagKey;
+        //trace_log($tagData);
         // $path = $functionRow[$subTag['varName'] . '.path'] ?? false;
         // $width = $functionRow[$subTag['varName'] . '.width'] ?? false;
         // $height = $functionRow[$subTag['varName'] . '.height'] ?? false;
