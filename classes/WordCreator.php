@@ -382,7 +382,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             $askArray[$key] = $askResolved;
         }
         //trace_log($askArray); // les $this->askResponse sont prioritaire
-        return array_replace($askArray,$this->askResponse);
+        return array_replace($askArray,$this->askResponse ?? []);
         
     }
 
