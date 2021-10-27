@@ -16,6 +16,7 @@ return [
     'name_construction' => 'Construction du nom du fichier',
     'path' => 'Source du document',
     'preview_name' => 'Voir document',
+    'rule_conditions' => 'Conditions',
     'scopes' => 'Restriction',
     'slug' => 'Slug/Code',
     'tab_attributs' => 'Attributs',
@@ -25,6 +26,6 @@ return [
     'tab_temp' => 'TEMP',
     'test' => 'Tester',
     'test_id' => 'Modèle de test',
-    'title' => 'Titre du document',
+    'title' => 'Gestion document',
     'update' => 'Modification document'
 ];

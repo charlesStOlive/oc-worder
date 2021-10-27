@@ -65,6 +65,14 @@ tabs:
                 condition: checked
             permissions: [wcli.worder.admin.*]
             tab: waka.worder::document.tab_options
+        rule_conditions:
+            label: waka.worder::document.rule_conditions
+            span: full
+            type: rulebuilder
+            ruleMode: condition
+            targetProductor: document
+            permissions: [waka.mailer.admin.super]
+            tab: waka.worder::document.tab_options
         model_functions:
             label: waka.worder::document.model_functions
             span: full

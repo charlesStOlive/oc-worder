@@ -122,7 +122,6 @@ class WordResolver
 
     public function resolveMdRow($wordTag, $tagData) {
         $tagKey = $wordTag->tagType;
-        $tagData = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $tagData), ENT_QUOTES, 'UTF-8');
         $tagData = \Markdown::parse($tagData);
         $tagData = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $tagData), ENT_QUOTES, 'UTF-8');
         $this->templateProcessor->setHtmlValue($wordTag->tagKey, $tagData, true);
@@ -131,8 +130,8 @@ class WordResolver
 
     public function resolveHtmToTxtRow($wordTag, $tagData) {
         $tagKey = $wordTag->tagType;
-        $tagData = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $tagData), ENT_QUOTES, 'UTF-8');
         $tagData = \Markdown::parse($tagData);
+        $tagData = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $tagData), ENT_QUOTES, 'UTF-8');
         $tagData = strip_tags($tagData);
         // $tagData = html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n", $tagData), ENT_QUOTES, 'UTF-8');
         $this->templateProcessor->setValue($wordTag->tagKey, $tagData, true);
