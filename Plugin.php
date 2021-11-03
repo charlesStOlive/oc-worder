@@ -49,6 +49,20 @@ class Plugin extends PluginBase
     }
 
     /**
+     * Register model to clean.
+     *
+     * @return void
+     */
+    public function registerModelToClean()
+    {
+        return [
+            'cleanSoftDelete' => [
+                \Waka\Worder\Models\Document::class => 0,
+            ],
+        ];
+    }
+
+    /**
      * Boot method, called right before the request route.
      *
      * @return array
