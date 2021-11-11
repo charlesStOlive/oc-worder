@@ -32,8 +32,15 @@ class WordResolver
                 'tagType' => $tag['tagType'],
                 'tagKey' => $tag['tag'],
             ];
-            $askData = $askDatas[$wordTag->tagName];
-            $this->findAndResolve($wordTag, $askData);
+            $askData = $askDatas[$wordTag->tagName] ?? null;
+            if(!$askData) {
+                //que fait on
+                trace_log("Pas trouvé : ".$wordTag->tagName);
+            } else {
+                 trace_log("trouvé : ".$wordTag->tagName);
+                 $this->findAndResolve($wordTag, $askData);
+            }
+           
         } 
     }
 
@@ -150,12 +157,13 @@ class WordResolver
         $path = $tagData['path'] ?? false;
         $width = $tagData['width'] ?? false;
         $height = $tagData['height'] ?? false;
+        $title = $tagData['title'] ?? false;
 
         //trace_log(['path' => $path, 'width' => $width . 'px', 'height' => $height . 'px']);
 
         
         if ($path) {
-            if (!$width && !$height) {
+            if (!$width or !$height) {
                $this->templateProcessor->setImageValue($tagKey, $path);
             } else {
                 $this->templateProcessor->setImageValue($tagKey, ['path' => $path, 'width' => $width, 'height' => $height], 1);

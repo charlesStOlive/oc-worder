@@ -498,6 +498,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         $wordResolver->resolveRows($wordDsTags, $datas);
         //
         $wordAsks = $originalTags['asks'];
+        trace_log($wordAsks);
         $wordResolver->resolveAsks($wordAsks, $this->askResponse);
 
         $wordFncs = $originalTags['fncs'];
