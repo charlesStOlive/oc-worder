@@ -12,7 +12,7 @@ return [
     'is_lot' => 'Autoriser dans les lots ?',
     'is_scope' => 'A des restrictions',
     'model_functions' => 'Fonctions d\'éditions',
-    'name' => 'Nom document',
+    'name' => 'libellé document',
     'name_construction' => 'Construction du nom du fichier',
     'path' => 'Source du document',
     'preview_name' => 'Voir document',
