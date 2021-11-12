@@ -78,7 +78,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
 
     public function getFncAccepted()
     {
-        return ['info', 'ds', 'asks', 'FNC'];
+        return ['info', 'ds', 'asks', 'FNC', 'FNC_M', 'FNC_IS'];
     }
     public function getTemplateProcessor()
     {
@@ -89,9 +89,9 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     {
         $this->nbErrors = 0;
         $allTags = $this->filterTags($this->getTemplateProcessor()->getVariables());
-        //trace_log($allTags);
+        trace_log($allTags);
         //$this->checkFunctions($allTags['fncs']);
-        $this->checkAsks($allTags['asks']);
+        //$this->checkAsks($allTags['asks']);
         return $allTags;
     }
     /**
@@ -101,52 +101,39 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     {
         $this->deleteInform();
         //tablaux de tags pour les blocs, les injections et les rows
-        $fncs = [];
-        $injections = [];
-        $asks = [];
-        $imageKeys = [];
+        $allTags = [];
+        //Utilisé pour savoir si dans un ensemble de bloc ou non
         $insideBlock = false;
-
-        $fnc_code = [];
+        $insideIs = false;
+        
+        //Instanciation du premier FNC TAG
+        $fncTag = new WordTag('FNC');
+        $fncIs = null;
         $subTags = [];
         //trace_log($tags);
         foreach ($tags as $tag) {
             // Si un / est détécté c'est une fin de bloc. on enregistre les données du bloc mais pas le tag
             //trace_log("Nouveau tag analysé : " . $tag);
-            if (starts_with($tag, '/')) {
-                //trace_log("Fin de tag fnc_code");
-                $fnc_code['subTags'] = $subTags;
-                //trace_log($fnc_code);
-                array_push($fncs, $fnc_code);
+            if (starts_with($tag, '/FNC.')) {
+                $fncTag->addSubTags($subTags);
+                array_push($allTags, $fncTag);
                 $insideBlock = false;
                 //trace_log("---------------------FIN----Inside bloc-------------------");
                 //reinitialisation du fnc_code et des subtags
-                $fnc_code = [];
+                $fncTag = new WordTag('FNC');
                 $subTags = [];
+                //passage au tag suivant
+                continue;
+            } else if (starts_with($tag, '/FNC_IS')) {
+                $insideIs = false;
+                //trace_log("---------------------FIN----Inside bloc-------------------");
                 //passage au tag suivant
                 continue;
             } else {
                 // si on est dans un bloc on enregistre les subpart dans le bloc.
                 if ($insideBlock) {
-                    $tagType = null;
-                    $tagWithoutType = $tag;
-                    $tagTypeExist = str_contains($tag, '*');
-                    if ($tagTypeExist) {
-                        $checkTag = explode('*', $tag);
-                        $tagType = array_pop($checkTag);
-                        $tagWithoutType = $checkTag[0];
-                    }
-                    //trace_log("On est inside un bloc");
-                    $subParts = explode('.', $tagWithoutType);
-                    $fncName = array_shift($subParts);
-                    $varName = implode('.', $subParts);
-
-                    $subTag = [
-                        'tagType' => $tagType,
-                        'tag' => $tag,
-                        'varName' => $varName,
-                        'fncName' => $fncName,
-                    ];
+                    $subTag = new WordTag('FNC_child');
+                    $subTag->decryptTag($tag);
                     array_push($subTags, $subTag);
                     continue;
                 }
@@ -168,77 +155,46 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                 // si le tag commence par le nom de la source
 
                 if ($fncFormat == 'ds' || $fncFormat == 'info') {
-                    //trace_log('le tag commence par le nom de la source');
-                    $tagWithoutType = $tag;
-                    $tagType = null;
-                    $tagTypeExist = str_contains($tag, '*');
-                    if ($tagTypeExist) {
-                        $checkTag = explode('*', $tag);
-                        $tagType = array_pop($checkTag);
-                        $tagWithoutType = $checkTag[0];
-                    }
-                    $tagOK = $this->checkInjection($tagWithoutType);
-                    
-                    //trace_log("tagOk : ".$tagOK);
-                    if ($tagOK) {
-                        $tagObj = [
-                            'tagType' => $tagType,
-                            'varName' => $tagWithoutType,
-                            'tag' => $tag,
-                        ];
-                        array_push($injections, $tagObj);
-                    }
+                    $tagObj = new WordTag('ds');
+                    $tagObj->decryptTag($tag);
+                    array_push($allTags, $tagObj);
+                    continue;
+                }
+                
+                if ($fncFormat == 'asks') {
+                    $tagObj = new WordTag('asks');
+                    $tagObj->decryptTag($tag);
+                    array_push($allTags, $tagObj);
                     continue;
                 }
 
-                //si le tag commence par imagekey
-                // if ($fncFormat == 'IMG') {
-                //     array_push($imageKeys, $tag);
-                //     continue;
-                // }
-                // if ($fncFormat == 'asks') {
-                //     array_push($asks, $tag);
-                //     continue;
-                // }
-                if ($fncFormat == 'asks') {
-                    $tagWithoutType = $tag;
-                    $tagType = null;
-                    $tagTypeExist = str_contains($tag, '*');
-                    if ($tagTypeExist) {
-                        $checkTag = explode('*', $tag);
-                        $tagType = array_pop($checkTag);
-                        $tagWithoutType = $checkTag[0];
-                    }
-                    $explodedTag = explode('.', $tagWithoutType);
-                    $varName = array_pop($explodedTag);
-                    $tagObj = [
-                        'tagType' => $tagType,
-                        'varName' => $varName,
-                        'tag' => $tag,
-                    ];
-                    //trace_log($tagObj);
-                    array_push($asks, $tagObj);
+                if($fncFormat == 'FNC_M') {
+                    $tagObj = new WordTag('FNC_M');
+                    $tagObj->decryptTag($tag);
+                    array_push($allTags, $tagObj);
                     continue;
                 }
-                $fnc_code['code'] = array_shift($parts);
-                //trace_log("nouvelle fonction : " . $fnc_code['code']);
-                if (!$fnc_code) {
+                if($fncFormat == 'FNC_IS') {
+                    $tagObj = new WordTag('FNC_IS');
+                    $tagObj->decryptTag($tag);
+                    array_push($allTags, $tagObj);
+                    continue;
+                }
+                $fncTag->varName = array_shift($parts);
+                //trace_log("nouvelle fonction : " . $fncTag['code']);
+                if (!$fncTag) {
                     $txt = Lang::get('waka.worder::lang.word.processor.bad_format') . ' : ' . $tag;
                     $this->recordInform('warning', $txt);
                     continue;
                 } else {
                     // on commence un bloc
+                    
                     $insideBlock = true;
                     //trace_log("-------------------------Inside bloc-------------------");
                 }
             }
         }
-        return [
-            'fncs' => $fncs,
-            'asks' => $asks,
-            'injections' => $injections,
-            'IMG' => $imageKeys,
-        ];
+        return $allTags;
     }
     /**
      *
@@ -471,7 +427,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         //trace_log($values);
         $dotedValues = $this->getDs()->getDotedValues($this->modelId, 'ds');
 
-        $originalTags = $this->checkTags();
+        $allOriginalTags = $this->checkTags();
 
         //Nouveau bloc pour nouveaux asks
         if($this->getProductor()->rule_asks()->count()) {
@@ -482,29 +438,63 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                 $this->setAsksResponse($model);
             }
         }
-
-        //$model = array_merge($model, [ 'asks' => $this->askResponse]);
-
         //Nouveau bloc pour les new Fncs
         $fncs = [];
         if($this->getProductor()->rule_fncs()->count()) {
             $fncs = $this->setRuleFncsResponse($model);
         }
+        $datas = $dotedValues;
+        $askResponse = $this->askResponse;
 
         $wordResolver = new WordResolver($this->getTemplateProcessor());
         //
-        $wordDsTags = $originalTags['injections'];
-        $datas = $dotedValues;
-        $wordResolver->resolveRows($wordDsTags, $datas);
-        //
-        $wordAsks = $originalTags['asks'];
-        trace_log($wordAsks);
-        $wordResolver->resolveAsks($wordAsks, $this->askResponse);
-
-        $wordFncs = $originalTags['fncs'];
-        $wordResolver->resolveFncs($wordFncs, $fncs);
-
         
+        foreach($allOriginalTags as $tag) {
+            if($tag->resolver == 'ds') {
+                $data = $datas[$tag->varName];
+                $wordResolver->findAndResolve($tag, $data);
+            }
+             if($tag->resolver == 'asks') {
+                $data = $askResponse[$tag->varName] ?? null;
+                if($tag->parent) {
+                    $dotedAskResponse = array_dot($askResponse);
+                    $data = $dotedAskResponse[$tag->varName];
+                } else {
+                    $data = $askResponse[$tag->varName];
+                }
+                $wordResolver->findAndResolve($tag, $data);
+            }
+            if($tag->resolver == 'FNC_IS') {
+
+                $data = $fncs[$tag->varName];
+                trace_log($data);
+                if($data['show']) {
+                    $this->getTemplateProcessor()->cloneBlock($tag->tag);
+                } else {
+                    unset($fncs[$tag->varName]);
+                    $this->getTemplateProcessor()->deleteBlock($tag->tag);
+                }
+            }
+
+            if($tag->resolver == 'FNC') {
+                $data = $fncs[$tag->varName] ?? null;
+                if($data) {
+                    $wordResolver->resolveFnc($tag, $data);
+                }
+                
+            }
+            
+            if($tag->resolver == 'FNC_M') {
+                trace_log($fncs);
+                $dotedFncs = array_dot($fncs);
+                trace_log($dotedFncs);
+                $data = $dotedFncs[$tag->varName] ?? null;
+                if($data) {
+                    $wordResolver->findAndResolve($tag, $data);
+                }
+                
+            }
+        }   
     }
     public function createTwigStrName()
     {

@@ -12,82 +12,74 @@ class WordResolver
         $this->templateProcessor = $templateProcessor;
     }
 
-    public function resolveRows($wordTags, $tagDatas) {
-        foreach ($wordTags as $tag) {
-            $wordTag = (object) [
-                'tagName' => $tag['varName'],
-                'tagType' => $tag['tagType'],
-                'tagKey' => $tag['tag'],
-            ];
-            $tagData = $tagDatas[$wordTag->tagName];
-            $this->findAndResolve($wordTag, $tagData);
+    public function resolveAll() {
+        foreach($allOriginalTags as $tag) {
+        if($tag->resolver == 'ds') {
+            //$wordResolver->resolveRow($tag, $datas);
+            $data = $datas[$tag->varName];
+            $wordResolver->findAndResolve($tag, $data);
+            // trace_log($tag);
+            // trace_log();
+
+
+        }
+            if($tag->resolver == 'asks') {
+            //$wordResolver->resolveRow($tag, $askResponse);
+            //trace_log($tag);
+            $data = $askResponse[$tag->varName] ?? null;
+            if($tag->parent) {
+                $dotedAskResponse = array_dot($askResponse);
+                $data = $dotedAskResponse[$tag->varName];
+                // trace_log( $dotedAskResponse);
+                // trace_log( );
+            } else {
+                $data = $askResponse[$tag->varName];
+            }
+            $wordResolver->findAndResolve($tag, $data);
+        }
+            if($tag->resolver == 'FNC') {
+            //$wordResolver->resolveRow($tag, $fncs);
+            // trace_log($tag);
+            $data = $fncs[$tag->varName];
+            $wordResolver->resolveFnc($tag, $data);
         }
     }
-
-    public function resolveAsks($wordAskTags, $askDatas) {
-        foreach ($wordAskTags as $tag) {
-
-            $wordTag = (object) [
-                'tagName' => $tag['varName'],
-                'tagType' => $tag['tagType'],
-                'tagKey' => $tag['tag'],
-            ];
-            $askData = $askDatas[$wordTag->tagName] ?? null;
-            if(!$askData) {
-                //que fait on
-                trace_log("Pas trouvé : ".$wordTag->tagName);
-            } else {
-                 trace_log("trouvé : ".$wordTag->tagName);
-                 $this->findAndResolve($wordTag, $askData);
-            }
-           
-        } 
     }
 
-    public function resolveFncs($wordFncTags, $fncDatas) {
-        foreach ($wordFncTags as $fncTag) {
+
+
+
+    
+    public function resolveFnc($tag, $data) {
             // trace_log($fncTag);
             // trace_log($fncDatas);
-            $functionName = $fncTag['code'];
+            $functionName = $tag->varName;
             //trace_log($functionName);
-            $functionRows = $fncDatas[$functionName];
-            // trace_log('-- functionRows --');
+            $functionRows = $data['datas'];
+            trace_log('-- functionRows --');
+            trace_log($data);
             if(is_object($functionRows)) {
-                throw new \SystemException('Attention ! verifiez votre module de fonction ||'.$fncTag['code']. '|| Il ne retourne pas un array');
+                throw new \SystemException('Attention ! verifiez votre module de fonction ||'.$tag['code']. '|| Il ne retourne pas un array');
             }
             $countFunctionRows = count($functionRows);
-            $fncTagName = 'FNC.' . $functionName;
-            $this->templateProcessor->cloneBlock($fncTagName, $countFunctionRows, true, true);
+            $tagName = 'FNC.' . $functionName;
+            $this->templateProcessor->cloneBlock($tagName, $countFunctionRows, true, true);
             $i = 1; //i permet de creer la cla #i lors du clone row
             foreach ($functionRows as $functionRow) {
                 //$functionRow = array_dot($functionRow);
-                foreach ($fncTag['subTags'] as $subTag) {
-                    //trace_log($subTag);
-                    $finalSubTag = (object) [
-                        'tagName' => $subTag['varName'],
-                        'tagType' => $subTag['tagType'] ?? null,
-                        'tagKey' =>  $subTag['tag'] . '#' . $i,
-                    ];
-
-                    $fncData = $functionRow[$finalSubTag->tagName] ?? false;
+                foreach ($tag->subTags as $subTag) {
+                    $subTag->tagKey =  $subTag->tag . '#' . $i;
+                    $fncData = $functionRow[$subTag->varName] ?? false;
                     if(!$fncData) {
-                        $fncData = array_get($functionRow, $finalSubTag->tagName);
+                        $fncData = array_get($functionRow, $subTag->varName);
                     }
-                    $this->findAndResolve($finalSubTag, $fncData);
+                    $this->findAndResolve($subTag, $fncData);
 
                 }
                 $i++;
             }
-            
             //
-            // $askData = $askDatas[$wordTag->tagName];
-            // $this->findAndResolve($wordTag, $askData);
-        } 
     }
-
-
-
-
 
     public function findAndResolve($wordTag, $tagData) {
         $tagType = $wordTag->tagType;
@@ -111,14 +103,12 @@ class WordResolver
     }
 
     public function resolveBasicRow($wordTag, $tagData) {
-        $tagType = $wordTag->tagType;
-        $tagKey = $wordTag->tagKey;
         //trace_log($tagData);
 
-        if ($tagType != null) {
-            $tagData = $this->transformValue($tagData, $tagType);
+        if ($wordTag->tagType != null) {
+            $tagData = $this->transformValue($tagData, $wordTag->tagType);
         }
-        $this->templateProcessor->setValue($tagKey, $tagData);
+        $this->templateProcessor->setValue($wordTag->tagKey, $tagData);
     }
 
     public function resolveHtmRow($wordTag, $tagData) {
@@ -146,14 +136,6 @@ class WordResolver
     }
 
     public function resolveImgRow($wordTag, $tagData) {
-        //trace_log('resoudre une image------------------------');
-        $tagName = $wordTag->tagName;
-        $tagKey = $wordTag->tagKey;
-        //trace_log($tagData);
-        // $path = $functionRow[$subTag['varName'] . '.path'] ?? false;
-        // $width = $functionRow[$subTag['varName'] . '.width'] ?? false;
-        // $height = $functionRow[$subTag['varName'] . '.height'] ?? false;
-        //
         $path = $tagData['path'] ?? false;
         $width = $tagData['width'] ?? false;
         $height = $tagData['height'] ?? false;
@@ -164,9 +146,9 @@ class WordResolver
         
         if ($path) {
             if (!$width or !$height) {
-               $this->templateProcessor->setImageValue($tagKey, $path);
+               $this->templateProcessor->setImageValue($wordTag->tagKey, $path);
             } else {
-                $this->templateProcessor->setImageValue($tagKey, ['path' => $path, 'width' => $width, 'height' => $height], 1);
+                $this->templateProcessor->setImageValue($wordTag->tagKey, ['path' => $path, 'width' => $width, 'height' => $height], 1);
             }
         } else {
             // trace_log('pas de path');
