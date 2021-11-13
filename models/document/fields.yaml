@@ -20,6 +20,7 @@ tabs:
         waka.worder::document.tab_temp: icon-cog
     fields:    
         rule_asks:
+            label: waka.worder::document.rule_asks
             span: full
             type: askbuilder
             targetProductor: Document
@@ -27,6 +28,7 @@ tabs:
             permissions: [waka.rules.asks.*]
             tab: waka.worder::document.tab_edit
         rule_fncs:
+            label: waka.worder::document.rule_fncs
             span: full
             type: fncbuilder
             targetProductor: Document

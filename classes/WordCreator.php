@@ -78,7 +78,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
 
     public function getFncAccepted()
     {
-        return ['info', 'ds', 'asks', 'FNC', 'FNC_M', 'FNC_IS'];
+        return ['info', 'ds', 'asks', 'FNC', 'FNC_M', 'IS_FNC', 'IS_DS'];
     }
     public function getTemplateProcessor()
     {
@@ -89,7 +89,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     {
         $this->nbErrors = 0;
         $allTags = $this->filterTags($this->getTemplateProcessor()->getVariables());
-        trace_log($allTags);
+        //trace_log($allTags);
         //$this->checkFunctions($allTags['fncs']);
         //$this->checkAsks($allTags['asks']);
         return $allTags;
@@ -124,7 +124,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                 $subTags = [];
                 //passage au tag suivant
                 continue;
-            } else if (starts_with($tag, '/FNC_IS')) {
+            } else if (starts_with($tag, '/IS_')) {
                 $insideIs = false;
                 //trace_log("---------------------FIN----Inside bloc-------------------");
                 //passage au tag suivant
@@ -174,8 +174,14 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                     array_push($allTags, $tagObj);
                     continue;
                 }
-                if($fncFormat == 'FNC_IS') {
-                    $tagObj = new WordTag('FNC_IS');
+                if($fncFormat == 'IS_FNC') {
+                    $tagObj = new WordTag('IS_FNC');
+                    $tagObj->decryptTag($tag);
+                    array_push($allTags, $tagObj);
+                    continue;
+                }
+                if($fncFormat == 'IS_DS') {
+                    $tagObj = new WordTag('IS_DS');
                     $tagObj->decryptTag($tag);
                     array_push($allTags, $tagObj);
                     continue;
@@ -450,6 +456,18 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         //
         
         foreach($allOriginalTags as $tag) {
+            //trace_log("Tag : ".$tag->tagKey." : ".$tag->resolver);
+            if($tag->resolver == 'IS_DS') {
+                $data = $datas[$tag->varName] ?? null;
+                //trace_log('IS_DS');
+                //trace_log($tag->tag);
+                if($data) {
+                    $this->getTemplateProcessor()->cloneBlock($tag->tag);
+                } else {
+                    unset($datas[$tag->varName]);
+                    $this->getTemplateProcessor()->deleteBlock($tag->tag);
+                }
+            }
             if($tag->resolver == 'ds') {
                 $data = $datas[$tag->varName];
                 $wordResolver->findAndResolve($tag, $data);
@@ -464,10 +482,8 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                 }
                 $wordResolver->findAndResolve($tag, $data);
             }
-            if($tag->resolver == 'FNC_IS') {
-
+            if($tag->resolver == 'IS_FNC') {
                 $data = $fncs[$tag->varName];
-                trace_log($data);
                 if($data['show']) {
                     $this->getTemplateProcessor()->cloneBlock($tag->tag);
                 } else {
@@ -485,9 +501,9 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             }
             
             if($tag->resolver == 'FNC_M') {
-                trace_log($fncs);
+                //trace_log($fncs);
                 $dotedFncs = array_dot($fncs);
-                trace_log($dotedFncs);
+                //trace_log($dotedFncs);
                 $data = $dotedFncs[$tag->varName] ?? null;
                 if($data) {
                     $wordResolver->findAndResolve($tag, $data);

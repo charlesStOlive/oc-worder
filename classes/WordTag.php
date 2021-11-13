@@ -33,7 +33,7 @@ class WordTag
             $tagType = array_pop($checkTag);
             $tagWithoutType = $checkTag[0];
         }
-        if($this->resolver == 'FNC' or $this->resolver == 'FNC_child' or $this->resolver == 'FNC_M' or $this->resolver == 'FNC_IS') {
+        if($this->resolver == 'FNC' or $this->resolver == 'FNC_child' or $this->resolver == 'FNC_M' or $this->resolver == 'IS_FNC' or $this->resolver == 'IS_DS') {
             $subParts = explode('.', $tagWithoutType);
             $fncName = array_shift($subParts);
             $this->fncName = $data['fncName'] ?? null;

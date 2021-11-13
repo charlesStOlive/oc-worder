@@ -16,7 +16,9 @@ return [
     'name_construction' => 'Construction du nom du fichier',
     'path' => 'Source du document',
     'preview_name' => 'Voir document',
+    'rule_asks' => 'Champs éditables',
     'rule_conditions' => 'Conditions',
+    'rule_fncs' => 'Fonctions éditables',
     'scopes' => 'Restriction',
     'slug' => 'Slug/Code',
     'tab_attributs' => 'Attributs',
@@ -26,6 +28,6 @@ return [
     'tab_temp' => 'TEMP',
     'test' => 'Tester',
     'test_id' => 'Modèle de test',
-    'title' => 'Gestion document',
+    'title' => 'Titre du document',
     'update' => 'Modification document'
 ];

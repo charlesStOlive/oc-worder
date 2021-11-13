@@ -56,8 +56,8 @@ class WordResolver
             $functionName = $tag->varName;
             //trace_log($functionName);
             $functionRows = $data['datas'];
-            trace_log('-- functionRows --');
-            trace_log($data);
+            //trace_log('-- functionRows --');
+            //trace_log($data);
             if(is_object($functionRows)) {
                 throw new \SystemException('Attention ! verifiez votre module de fonction ||'.$tag['code']. '|| Il ne retourne pas un array');
             }
