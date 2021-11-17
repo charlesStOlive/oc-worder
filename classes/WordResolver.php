@@ -155,7 +155,7 @@ class WordResolver
             //$this->getTemplateProcessor()->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
             // trace_log($tag); // deleteblock ne fonctionne pas nlanc à la place
             // $this->getTemplateProcessor()->deleteBlock($tag);
-            $this->templateProcessor->setValue($tagKey, "", 1);
+            $this->templateProcessor->setValue($wordTag->tagKey, "", 1);
         }
 
     }
