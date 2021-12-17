@@ -12,8 +12,6 @@ attributes:
         label: waka.worder::document.data_source
     name_construction:
         label: waka.worder::document.name_construction
-    is_scope:
-        label: waka.worder::document.is_scope
     updated_at:
         label: waka.utils::lang.global.updated_at
         type: date-medium

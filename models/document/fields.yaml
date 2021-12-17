@@ -2,11 +2,14 @@
 #  Form Field Definitions
 # ===================================
 fields:
-    title:
-        label: waka.worder::document.title
-        span: full
-        type: informfield
-        valueFrom: name
+    state:
+        label: waka.worder::document.state
+        span: right
+        type: balloon-selector
+        required: true
+        default: Brouillon
+        options: listStates
+        default: Actif
         permissions: [waka.worder.admin.*]
     name_construction:
         label: waka.worder::document.name_construction
@@ -51,22 +54,6 @@ tabs:
             default: true
             permissions: [waka.worder.admin.*]
             tab: waka.worder::document.tab_options
-        is_scope:
-            label: waka.worder::document.is_scope
-            span: left
-            type: switch
-            permissions: [waka.worder.admin.*]
-            tab: waka.worder::document.tab_options
-        scopes:
-            label: waka.worder::document.scopes
-            span: full
-            type: scopeslist
-            trigger:
-                action: show
-                field: is_scope
-                condition: checked
-            permissions: [waka.worder.admin.*]
-            tab: waka.worder::document.tab_options
         rule_conditions:
             label: waka.worder::document.rule_conditions
             span: full
@@ -75,35 +62,6 @@ tabs:
             targetProductor: document
             permissions: [waka.mailer.admin.super]
             tab: waka.worder::document.tab_options
-        model_functions:
-            label: waka.worder::document.model_functions
-            span: full
-            type: functionslist
-            permissions: [waka.worder.admin.*]
-            tab: waka.worder::document.tab_temp
-        images:
-            label: waka.worder::document.images
-            span: full
-            type: imageslist
-            permissions: [waka.worder.admin.*]
-            tab: waka.worder::document.tab_temp
-        has_asks:
-            label: waka.worder::document.has_asks
-            span: left
-            type: switch
-            permissions: [waka.worder.admin.*]
-            tab: waka.worder::document.tab_temp
-        asks:
-            label: waka.worder::document.asks
-            span: full
-            type: repeater
-            groups: $/waka/utils/models/config/ask.yaml
-            trigger:
-                action: show
-                field: has_asks
-                condition: checked
-            permissions: [waka.worder.admin.*]
-            tab: waka.worder::document.tab_temp
 secondaryTabs:
     fields:
         # info:

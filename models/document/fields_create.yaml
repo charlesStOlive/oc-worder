@@ -8,6 +8,15 @@ fields:
         span: left
         required: true
         permissions: [waka.worder.admin.*]
+    state:
+        label: waka.worder::document.state
+        span: right
+        type: balloon-selector
+        required: true
+        default: Brouillon
+        options: listStates
+        default: Actif
+        permissions: [waka.worder.admin.*]
     slug:
         label: waka.worder::document.slug
         span: right

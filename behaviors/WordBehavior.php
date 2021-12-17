@@ -15,11 +15,16 @@ class WordBehavior extends ControllerBehavior
 
     protected $wordBehaviorWidget;
     protected $askDataWidget;
+    public $errors;
 
     public function __construct($controller)
     {
         parent::__construct($controller);
         $this->wordBehaviorWidget = $this->createWordBehaviorWidget();
+        $this->errors = [];
+        \Event::listen('waka.utils::conditions.error', function ($error) {
+            array_push($this->errors, $error);
+        });
     }
 
     /**
@@ -39,6 +44,7 @@ class WordBehavior extends ControllerBehavior
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
+        $this->vars['errors'] = $this->errors;
         $this->vars['modelClass'] = $modelClass;
 
         if($options) {
@@ -60,6 +66,7 @@ class WordBehavior extends ControllerBehavior
 
         $this->vars['options'] = $options;
         $this->vars['modelId'] = $modelId;
+        $this->vars['errors'] = $this->errors;
         $this->vars['modelClass'] = $modelClass;
 
         if($options) {

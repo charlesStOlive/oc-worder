@@ -139,6 +139,9 @@ class Document extends Model
     /**
      * LISTS
      **/
+    public function listStates() {
+        return \Config::get('waka.utils::basic_state');
+    }
 
     /**
      * GETTERS
@@ -147,6 +150,10 @@ class Document extends Model
     /**
      * SCOPES
      */
+    public function scopeActive($query) {
+        return $query->where('state', 'Actif');
+
+    }
 
     /**
      * SETTERS

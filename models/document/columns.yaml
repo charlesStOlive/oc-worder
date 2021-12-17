@@ -6,6 +6,9 @@ columns:
     name:
         label: waka.worder::document.name
         searchable: true
+    state:
+        label: waka.worder::document.state
+        searchable: true
     slug:
         label: waka.worder::document.slug
         searchable: true
@@ -18,11 +21,6 @@ columns:
         searchable: true
     is_lot:
         label: waka.worder::document.is_lot
-        type: switch
-        searchable: false
-        sortable: true
-    is_scope:
-        label: waka.worder::document.is_scope
         type: switch
         searchable: false
         sortable: true
