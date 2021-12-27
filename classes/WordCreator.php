@@ -417,7 +417,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
 
     public function checkConditions()//Ancienement checkScopes
     {
-        $conditions = new \Waka\Utils\Classes\Conditions($this->getProductor(), $this->ds->model);
+        $conditions = new \Waka\Utils\Classes\Conditions($this->getProductor(), $this->getDs()->getmodel());
         return $conditions->checkConditions();
     }
 
