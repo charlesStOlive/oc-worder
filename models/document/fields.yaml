@@ -26,7 +26,7 @@ tabs:
             label: waka.worder::document.rule_asks
             span: full
             type: askbuilder
-            targetProductor: Document
+            targetProductor: document
             full_access: waka.rules.asks.admin
             permissions: [waka.rules.asks.*]
             tab: waka.worder::document.tab_edit
