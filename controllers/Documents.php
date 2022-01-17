@@ -26,15 +26,13 @@ class Documents extends Controller
     public $reorderConfig = 'config_reorder.yaml';
     public $sideBarUpdateConfig = 'config_side_bar_update.yaml';
     //FIN DE LA CONFIG AUTO
-
+    //startKeep/
     public function __construct()
     {
         parent::__construct();
         BackendMenu::setContext('October.System', 'system', 'settings');
         SettingsManager::setContext('Waka.Worder', 'Documents');
     }
-
-    //startKeep/
 
     public function update($id)
     {

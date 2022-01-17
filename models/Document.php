@@ -37,6 +37,7 @@ class Document extends Model
     public $rules = [
         'name' => 'required',
         'slug' => 'required',
+        'state' => 'required',
         'path' => 'required',
         'data_source' => 'required',
     ];
@@ -50,6 +51,7 @@ class Document extends Model
     public $attributesToDs = [
     ];
 
+
     /**
      * @var array Attributes to be cast to native types
      */
@@ -59,9 +61,6 @@ class Document extends Model
      * @var array Attributes to be cast to JSON
      */
     protected $jsonable = [
-        'model_functions',
-        'images',
-        'asks',
         'scopes',
     ];
 
