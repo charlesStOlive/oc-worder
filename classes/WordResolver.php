@@ -16,7 +16,7 @@ class WordResolver
         foreach($allOriginalTags as $tag) {
         if($tag->resolver == 'ds') {
             //$wordResolver->resolveRow($tag, $datas);
-            $data = $datas[$tag->varName];
+            $data = array_get($datas, $tag->varName);
             $wordResolver->findAndResolve($tag, $data);
             // trace_log($tag);
             // trace_log();
@@ -28,12 +28,13 @@ class WordResolver
             //trace_log($tag);
             $data = $askResponse[$tag->varName] ?? null;
             if($tag->parent) {
-                $dotedAskResponse = array_dot($askResponse);
-                $data = $dotedAskResponse[$tag->varName];
+                //TODO if $tag->parent inutile ?
+                //$dotedAskResponse = array_dot($askResponse);
+                $data = array_get($askResponse, $tag->varName);
                 // trace_log( $dotedAskResponse);
                 // trace_log( );
             } else {
-                $data = $askResponse[$tag->varName];
+                $data = array_get($askResponse, $tag->varName);
             }
             $wordResolver->findAndResolve($tag, $data);
         }

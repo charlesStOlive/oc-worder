@@ -429,15 +429,16 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         //trace_log("Model ID dans prepareCreator var : ".$this->modelId);
         $model = $this->getDs()->getModel($this->modelId);
         $values = $this->getDs()->getValues();
-        //trace_log('-------------------VALEURS---------------------');
-        //trace_log($values);
-        $dotedValues = $this->getDs()->getDotedValues($this->modelId, 'ds');
+
+        $model = [
+            'ds' => $values,
+        ];
 
         $allOriginalTags = $this->checkTags();
 
         //Nouveau bloc pour nouveaux asks
         if($this->getProductor()->rule_asks()->count()) {
-            $this->askResponse = $this->setRuleAsksResponse(['ds' => $values]);
+           $this->askResponse = $this->setRuleAsksResponse($model);
         } else {
             //Injection des asks s'ils existent dans le model;
             if(!$this->askResponse) {
@@ -445,21 +446,21 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             }
         }
         //Nouveau bloc pour les new Fncs
-        $fncs = [];
         if($this->getProductor()->rule_fncs()->count()) {
             $fncs = $this->setRuleFncsResponse($model);
+            $model = array_merge($model, [ 'fncs' => $fncs]);
         }
-        $datas = $dotedValues;
-        $askResponse = $this->askResponse;
+        //$datas = $dotedValues;
+        $model = array_merge($model, [ 'asks' => $this->askResponse]);
 
         $wordResolver = new WordResolver($this->getTemplateProcessor());
         //
         
         foreach($allOriginalTags as $tag) {
-            //trace_log("Tag : ".$tag->tagKey." : ".$tag->resolver);
+            trace_log("Tag : ".$tag->tagKey." : ".$tag->resolver);
             if($tag->resolver == 'IS_DS') {
                 $data = $datas[$tag->varName] ?? null;
-                //trace_log('IS_DS');
+                trace_log('IS_DS');
                 //trace_log($tag->tag);
                 if($data) {
                     $this->getTemplateProcessor()->cloneBlock($tag->tag);
@@ -468,20 +469,11 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
                     $this->getTemplateProcessor()->deleteBlock($tag->tag);
                 }
             }
-            if($tag->resolver == 'ds') {
-                $data = $datas[$tag->varName];
+            if($tag->resolver == 'ds' || $tag->resolver == 'asks') {
+                $data = array_get($model, $tag->varName);
                 $wordResolver->findAndResolve($tag, $data);
             }
-             if($tag->resolver == 'asks') {
-                $data = $askResponse[$tag->varName] ?? null;
-                if($tag->parent) {
-                    $dotedAskResponse = array_dot($askResponse);
-                    $data = $dotedAskResponse[$tag->varName];
-                } else {
-                    $data = $askResponse[$tag->varName];
-                }
-                $wordResolver->findAndResolve($tag, $data);
-            }
+            
             if($tag->resolver == 'IS_FNC') {
                 $data = $fncs[$tag->varName];
                 if($data['show']) {
@@ -494,6 +486,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
 
             if($tag->resolver == 'FNC') {
                 $data = $fncs[$tag->varName] ?? null;
+                trace_log($data);
                 if($data) {
                     $wordResolver->resolveFnc($tag, $data);
                 }
@@ -501,10 +494,11 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             }
             
             if($tag->resolver == 'FNC_M') {
-                //trace_log($fncs);
-                $dotedFncs = array_dot($fncs);
+                trace_log("FNC_M");
+                trace_log($fncs);
+                //$dotedFncs = array_dot($fncs);
                 //trace_log($dotedFncs);
-                $data = $dotedFncs[$tag->varName] ?? null;
+                $data = $fncs[$tag->varName] ?? null;
                 if($data) {
                     $wordResolver->findAndResolve($tag, $data);
                 }

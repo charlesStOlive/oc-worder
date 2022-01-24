@@ -38,17 +38,19 @@ class WordTag
             $fncName = array_shift($subParts);
             $this->fncName = $data['fncName'] ?? null;
             $this->varName = implode('.', $subParts);
-        } else if($this->resolver == 'asks') {
-            $parent = null;
-            $explodedTag = explode('.', $tagWithoutType);
-            //On supprimer le nom du ask
-            array_shift($explodedTag);
-            if(count($explodedTag) > 1) {
-                $this->parent = $explodedTag[0];
-            }
-            $this->varName = implode('.', $explodedTag);
-        }
+        } 
+        // else if($this->resolver == 'asks') {
+        //     $parent = null;
+        //     $explodedTag = explode('.', $tagWithoutType);
+        //     //On supprimer le nom du ask
+        //     array_shift($explodedTag);
+        //     if(count($explodedTag) > 1) {
+        //         $this->parent = $explodedTag[0];
+        //     }
+        //     $this->varName = implode('.', $explodedTag);
+        // }
         else {
+            trace_log("tagWithoutType ".$tagWithoutType);
             $this->varName = $tagWithoutType;
         }
         //
