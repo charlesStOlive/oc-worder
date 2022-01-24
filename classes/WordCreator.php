@@ -11,28 +11,17 @@ use Waka\Utils\Classes\WakaDate;
 use Waka\Worder\Models\Document;
 use \PhpOffice\PhpWord\TemplateProcessor;
 use Waka\Utils\Classes\TmpFiles;
-
-class WordCreator extends \Winter\Storm\Extension\Extendable
+use Waka\Utils\Classes\ProductorCreator;
+class WordCreator extends ProductorCreator
 {
 
-    public static $document;
-    public static $ds;
+    
     public static $templateProcessor;
-
-    public $values;
-    public $modelId;
-    //public $bloc_types;
-    //public $AllBlocs;
     public $increment;
     public $fncFormatAccepted;
-    public $dataSource;
-    public $dataSourceName;
-    public $sector;
     public $apiBlocs;
     public $originalTags;
     public $nbErrors;
-
-    public $askResponse;
 
     public function __construct()
     {
@@ -45,45 +34,33 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         if (!$document) {
             throw new ApplicationException(Lang::get('waka.worder::lang.word.processor.id_not_exist'));
         }
-        self::$document = Document::find($document_id);
-        self::$ds = \DataSources::find(self::$document->data_source);
-        self::setTemplateProcessor();
+        self::$productor = Document::find($document_id);
+        self::$ds = \DataSources::find(self::$productor->data_source);
 
         return new self;
     }
     public static function setTemplateProcessor()
     {
-        $existe = Storage::exists('media' . self::$document->path);
+        $existe = Storage::exists('media' . self::$productor->path);
         if (!$existe) {
             throw new ApplicationException(Lang::get('waka.worder::lang.word.processor.document_not_exist'));
         }
 
-        $document_path = storage_path('app/media' . self::$document->path);
+        $document_path = storage_path('app/media' . self::$productor->path);
         self::$templateProcessor = new TemplateProcessor($document_path);
         //trace_log(self::$templateProcessor);
-    }
-    public function getProductor()
-    {
-        return self::$document;
-    }
-    public function getDs()
-    {
-        return self::$ds;
-    }
-    public function getDsName()
-    {
-        //trace_log($this->getDs());
-        return $this->getDs()->code;
-    }
-
-    public function getFncAccepted()
-    {
-        return ['info', 'ds', 'asks', 'FNC', 'FNC_M', 'IS_FNC', 'IS_DS'];
     }
     public function getTemplateProcessor()
     {
         return self::$templateProcessor;
     }
+    
+
+    public function getFncAccepted()
+    {
+        return ['info', 'ds', 'asks', 'FNC', 'FNC_M', 'IS_FNC', 'IS_DS'];
+    }
+    
 
     public function checkTags()
     {
@@ -203,25 +180,23 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         return $allTags;
     }
     /**
-     *
+     * TODO corriger
      */
     public function checkInjection($tag)
     {
-        $modelVarArray = $this->getDs()->getDotedValues(null, 'ds');
-        //trace_log($modelVarArray);
-        if (!array_key_exists($tag, $modelVarArray)) {
-            $txt = Lang::get('waka.worder::lang.word.processor.field_not_existe') . ' : ' . $tag;
-            $this->recordInform('problem', $txt);
-            return false;
-        } else {
-            return true;
-        }
+        // $modelVarArray = $this->getDs()->getDotedValues(null, 'ds');
+        // //trace_log($modelVarArray);
+        // if (!array_key_exists($tag, $modelVarArray)) {
+        //     $txt = Lang::get('waka.worder::lang.word.processor.field_not_existe') . ' : ' . $tag;
+        //     $this->recordInform('problem', $txt);
+        //     return false;
+        // } else {
+        //     return true;
+        // }
+        return true;
     }
 
-    public function getAsksByCode() {
-        return $this->getProductor()->rule_asks->keyBy('code');
-
-    }
+    
 
     public function checkAsks($tags)
     {
@@ -231,7 +206,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             return false;
         }
         //Recherche des asks recuperation du code et transformation en array avec uniquement le code.
-        $docAsksCode = $this->getProductor()->rule_asks->pluck('code')->toArray();
+        $docAsksCode = self::$productor->rule_asks->pluck('code')->toArray();
         //
         //trace_log($docAsksCode);
         foreach($tags as $tag) {
@@ -243,37 +218,6 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             }
         }
     }
-    /**
-     *
-     */
-    // public function checkFunctions($wordFncs)
-    // {
-    //     if (!$wordFncs) {
-    //         return;
-    //     }
-    //     //trace_log($wordFncs);
-    //     //trace_log("check function");
-    //     $docFncs = $this->getProductor()->model_functions;
-    //     $docFncsCodes = [];
-    //     //si il y a deja des fonctions, on va les checker et les mettre à jour
-    //     if (is_countable($docFncs)) {
-    //         foreach ($docFncs as $docFnc) {
-    //             array_push($docFncsCodes, $docFnc['collectionCode']);
-    //         }
-    //     }
-    //     //trace_log($docFncsCodes);
-    //     $i = 1;
-    //     foreach ($wordFncs as $wordFnc) {
-    //         $fncCode = $wordFnc['code'] ?? false;
-    //         if (!$fncCode) {
-    //             $this->recordInform('problem', Lang::get("Une fonction n'a pas de code"));
-    //         } elseif (!in_array($wordFnc['code'], $docFncsCodes)) {
-    //             $txt = "La fonction " . $wordFnc['code'] . " du word n'est pas déclaré, veuillez la créer";
-    //             $this->recordInform('problem', $txt);
-    //             $i++;
-    //         }
-    //     }
-    // }
     /**
      *
      */
@@ -294,11 +238,11 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     public function recordInform($type, $message)
     {
         $this->nbErrors++;
-        $this->getProductor()->record_inform($type, $message);
+        self::$productor->record_inform($type, $message);
     }
     public function errors()
     {
-        return $this->getProductor()->has_informs();
+        return self::$productor->has_informs();
     }
     public function checkDocument()
     {
@@ -312,64 +256,13 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     }
     public function deleteInform()
     {
-        $this->getProductor()->delete_informs();
+        self::$productor->delete_informs();
     }
 
     /**
      * ********************************Partie liée à la création de document**********************************
      */
-    public function setModelId($modelId)
-    {
-        $this->modelId = $modelId;
-        $this->getDs()->instanciateModel($modelId);
-        return $this;
-    }
-
-    public function setModelTest()
-    {
-        $this->modelId = $this->getProductor()->test_id;
-        $this->getDs()->instanciateModel($modelId);
-        return $this;
-    }
-
-    public function setRuleAsksResponse($datas = [])
-    {
-        $askArray = [];
-        $srcmodel = $this->getDs()->getModel($this->modelId);
-        $asks = $this->getProductor()->rule_asks()->get();
-        foreach($asks as $ask) {
-            $key = $ask->getCode();
-            //trace_log($key);
-            $askResolved = $ask->resolve($srcmodel, 'twig', $datas);
-            $askArray[$key] = $askResolved;
-        }
-        //trace_log($askArray); // les $this->askResponse sont prioritaire
-        return array_replace($askArray,$this->askResponse ?? []);
-        
-    }
-
-    //BEBAVIOR AJOUTE LES REPOSES ??
-    public function setAsksResponse($datas = [])
-    {
-        $this->askResponse = $this->getDs()->getAsksFromData($datas, $this->getProductor()->asks);
-        return $this;
-    }
-
-    public function setRuleFncsResponse()
-    {
-        $fncArray = [];
-        $srcmodel = $this->getDs()->getModel($this->modelId);
-        $fncs = $this->getProductor()->rule_fncs()->get();
-        foreach($fncs as $fnc) {
-            $key = $fnc->getCode();
-            //trace_log('key of the function');
-            $fncResolved = $fnc->resolve($srcmodel,$this->getDs()->code);
-            $fncArray[$key] = $fncResolved;
-        }
-        //trace_log($fncArray);
-        return $fncArray;
-        
-    }
+    
 
     public function renderWord()
     {
@@ -383,7 +276,6 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
     public function renderTemp()
     {
         // reinitialisation du template processor si il y a une boucle !
-        $this->setTemplateProcessor();
         $this->prepareCreatorVars();
         $name = $this->createTwigStrName();
         $filePath = $this->getTemplateProcessor()->save();
@@ -393,8 +285,7 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
 
     public function renderCloud($lot = false)
     {
-        // reinitialisation du template processor si il y a une boucle !
-        $this->setTemplateProcessor();
+        // reinitialisation du template process
         $this->prepareCreatorVars();
         $name = $this->createTwigStrName();
 
@@ -415,90 +306,65 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
         $cloudSystem->put($path.'/'.$name.'.docx', $output);
     }
 
-    public function checkConditions()//Ancienement checkScopes
-    {
-        $conditions = new \Waka\Utils\Classes\Conditions($this->getProductor(), $this->getDs()->getmodel());
-        return $conditions->checkConditions();
-    }
-
     /**
      *
      */
     public function prepareCreatorVars()
     {
-        //trace_log("Model ID dans prepareCreator var : ".$this->modelId);
-        $model = $this->getDs()->getModel($this->modelId);
-        $values = $this->getDs()->getValues();
-
-        $model = [
-            'ds' => $values,
-        ];
-
-        $allOriginalTags = $this->checkTags();
-
-        //Nouveau bloc pour nouveaux asks
-        if($this->getProductor()->rule_asks()->count()) {
-           $this->askResponse = $this->setRuleAsksResponse($model);
-        } else {
-            //Injection des asks s'ils existent dans le model;
-            if(!$this->askResponse) {
-                $this->setAsksResponse($model);
-            }
-        }
-        //Nouveau bloc pour les new Fncs
-        if($this->getProductor()->rule_fncs()->count()) {
-            $fncs = $this->setRuleFncsResponse($model);
-            $model = array_merge($model, [ 'fncs' => $fncs]);
-        }
-        //$datas = $dotedValues;
-        $model = array_merge($model, [ 'asks' => $this->askResponse]);
-
-        $wordResolver = new WordResolver($this->getTemplateProcessor());
-        //
         
+        $this->setTemplateProcessor();
+        $allOriginalTags = $this->checkTags();
+        $wordResolver = new WordResolver($this->getTemplateProcessor());
+        $model = $this->getProductorVars();
+        //
         foreach($allOriginalTags as $tag) {
-            trace_log("Tag : ".$tag->tagKey." : ".$tag->resolver);
+            // trace_log("Objet tag");
+            // trace_log($tag);
+            //trace_log("Tag->tagKey : ".$tag->tagKey." tag->resolver: ".$tag->resolver." tag->varName: ".$tag->varName);
+            //TODO NE MARCHE PAS --------------------------
             if($tag->resolver == 'IS_DS') {
-                $data = $datas[$tag->varName] ?? null;
-                trace_log('IS_DS');
-                //trace_log($tag->tag);
-                if($data) {
+                $data = array_get($model, $tag->varName);
+                // trace_log('IS_DS---------');
+                // trace_log($tag);
+                // trace_log($data);
+                // trace_log('--------------FIN IS_DS');
+                if(!empty($data)) {
+                    //trace_log('je trouve une data');
                     $this->getTemplateProcessor()->cloneBlock($tag->tag);
                 } else {
-                    unset($datas[$tag->varName]);
+                    //trace_log("je ne trouve pas de data : ".$tag->tag);
+                    array_forget($model, $tag->varName);
                     $this->getTemplateProcessor()->deleteBlock($tag->tag);
                 }
             }
+            if($tag->resolver == 'IS_FNC') {
+                $data = array_get($model, 'fncs.'.$tag->varName);
+                if($data['show']) {
+                    $this->getTemplateProcessor()->cloneBlock($tag->tag);
+                } else {
+                    array_forget($model, $tag->varName);
+                    $this->getTemplateProcessor()->deleteBlock($tag->tag);
+                }
+            }
+
             if($tag->resolver == 'ds' || $tag->resolver == 'asks') {
                 $data = array_get($model, $tag->varName);
                 $wordResolver->findAndResolve($tag, $data);
             }
             
-            if($tag->resolver == 'IS_FNC') {
-                $data = $fncs[$tag->varName];
-                if($data['show']) {
-                    $this->getTemplateProcessor()->cloneBlock($tag->tag);
-                } else {
-                    unset($fncs[$tag->varName]);
-                    $this->getTemplateProcessor()->deleteBlock($tag->tag);
-                }
-            }
+            
 
             if($tag->resolver == 'FNC') {
-                $data = $fncs[$tag->varName] ?? null;
-                trace_log($data);
+                $data = array_get($model, 'fncs.'.$tag->varName);
                 if($data) {
                     $wordResolver->resolveFnc($tag, $data);
                 }
-                
             }
             
             if($tag->resolver == 'FNC_M') {
-                trace_log("FNC_M");
-                trace_log($fncs);
-                //$dotedFncs = array_dot($fncs);
-                //trace_log($dotedFncs);
-                $data = $fncs[$tag->varName] ?? null;
+                // trace_log("FNC_M");
+                // trace_log($tag->varName);
+                $data = array_get($model, 'fncs.'.$tag->varName);
                 if($data) {
                     $wordResolver->findAndResolve($tag, $data);
                 }
@@ -506,15 +372,5 @@ class WordCreator extends \Winter\Storm\Extension\Extendable
             }
         }   
     }
-    public function createTwigStrName()
-    {
-        if (!$this->getProductor()->name_construction) {
-            return str_slug($this->getProductor()->name . '-' . $this->getDsName());
-        }
-        $vars = [
-            'ds' => $this->getDs()->getValues(),
-        ];
-        $nameConstruction = \Twig::parse($this->getProductor()->name_construction, $vars);
-        return str_slug($nameConstruction);
-    }
+    
 }

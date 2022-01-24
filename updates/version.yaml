@@ -21,3 +21,6 @@
 1.4.0:
     - "Ajout du champs state"
     - create_documents_table_u140.php
+1.5.0:
+    - "Changement du nm output_name"
+    - create_documents_table_u150.php

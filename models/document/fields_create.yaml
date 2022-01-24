@@ -37,7 +37,7 @@ fields:
         required: true
         options: listDataSource
         permissions: [waka.worder.admin.super]
-    name_construction:
-        label: waka.worder::document.name_construction
+    output_name:
+        label: waka.worder::document.output_name
         span: auto
         permissions: [waka.worder.admin.*]

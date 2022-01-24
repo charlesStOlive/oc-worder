@@ -11,8 +11,8 @@ fields:
         options: listStates
         default: Actif
         permissions: [waka.worder.admin.*]
-    name_construction:
-        label: waka.worder::document.name_construction
+    output_name:
+        label: waka.worder::document.output_name
         span: auto
         permissions: [waka.worder.admin.*]
 tabs:

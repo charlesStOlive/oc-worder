@@ -8,7 +8,7 @@ return [
     'form_name' => 'Gestion document',
     'is_lot' => 'Autoriser dans les lots ?',
     'name' => 'libellé document',
-    'name_construction' => 'Construction du nom du fichier',
+    'output_name' => 'Construction du nom du fichier',
     'path' => 'Source du document',
     'preview_name' => 'Voir document',
     'rule_asks' => 'Champs éditables',

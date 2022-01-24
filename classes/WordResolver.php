@@ -67,7 +67,6 @@ class WordResolver
             $this->templateProcessor->cloneBlock($tagName, $countFunctionRows, true, true);
             $i = 1; //i permet de creer la cla #i lors du clone row
             foreach ($functionRows as $functionRow) {
-                //$functionRow = array_dot($functionRow);
                 foreach ($tag->subTags as $subTag) {
                     $subTag->tagKey =  $subTag->tag . '#' . $i;
                     $fncData = $functionRow[$subTag->varName] ?? false;
