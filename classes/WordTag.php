@@ -50,7 +50,7 @@ class WordTag
         //     $this->varName = implode('.', $explodedTag);
         // }
         else {
-            trace_log("tagWithoutType ".$tagWithoutType);
+            //trace_log("tagWithoutType ".$tagWithoutType);
             $this->varName = $tagWithoutType;
         }
         //

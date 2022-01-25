@@ -29,6 +29,7 @@ tabs:
             targetProductor: document
             full_access: waka.rules.asks.admin
             ruleMode: ask
+            showAttributes: true
             permissions: [waka.rules.asks.*]
             tab: waka.worder::document.tab_edit
         rule_fncs:
@@ -80,5 +81,6 @@ secondaryTabs:
             span: full
             type: attributs
             mode: word
+            permissions: [waka.worder.admin.*]
             editPermissions: [waka.worder.admin.*]
             tab: waka.worder::document.tab_attributs
