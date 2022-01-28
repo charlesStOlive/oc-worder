@@ -22,6 +22,7 @@ class WordCreator extends ProductorCreator
     public $apiBlocs;
     public $originalTags;
     public $nbErrors;
+    public $resolveContext = 'word';
 
     public function __construct()
     {
