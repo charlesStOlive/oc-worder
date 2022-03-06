@@ -1,0 +1,28 @@
+<?php
+return [
+    'check' => 'Check',
+    'courriers' => 'Document management',
+    'create' => 'Create Document',
+    'data_source' => 'Data Source',
+    'edit' => 'Edit document',
+    'form_name' => 'Document management',
+    'is_lot' => 'Allow in batches?',
+    'name' => 'document wording',
+    'output_name' => 'File name construction',
+    'path' => 'Document source',
+    'preview_name' => 'See document',
+    'rule_asks' => 'Editable fields',
+    'rule_conditions' => 'Conditions',
+    'rule_fncs' => 'Editable functions',
+    'slug' => 'Slug/Code',
+    'state' => 'State',
+    'tab_attributs' => 'Attributes',
+    'tab_edit' => 'Edit document',
+    'tab_infos' => 'Info',
+    'tab_options' => 'Options',
+    'tab_temp' => 'TEMP',
+    'test' => 'Test',
+    'test_id' => 'Testing model',
+    'title' => 'Document title',
+    'update' => 'Document modification '
+];

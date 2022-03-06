@@ -2,7 +2,7 @@
 return [
     'btns' => [
         'word' => [
-            'label' => 'Créer word',
+            'label' => 'waka.worder::document.create',
             'class' => 'btn-secondary',
             'ajaxCaller' => 'onLoadWordBehaviorPopupForm',
             'ajaxInlineCaller' => 'onLoadWordBehaviorContentForm',
