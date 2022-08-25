@@ -9,7 +9,6 @@ fields:
         required: true
         default: Brouillon
         options: listStates
-        default: Actif
         permissions: [waka.worder.admin.*]
     output_name:
         label: waka.worder::document.output_name
@@ -53,7 +52,6 @@ tabs:
             label: waka.worder::document.is_lot
             span: left
             type: switch
-            default: true
             default: true
             permissions: [waka.worder.admin.*]
             tab: waka.worder::document.tab_options
