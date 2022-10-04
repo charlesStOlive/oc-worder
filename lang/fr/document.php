@@ -3,7 +3,6 @@ return [
     'check' => 'Verifier',
     'courriers' => 'Gestion document',
     'create' => 'Créer document',
-    'data_source' => 'Data Source',
     'edit' => 'Editer document',
     'form_name' => 'Gestion document',
     'is_lot' => 'Autoriser dans les lots ?',
@@ -22,7 +21,7 @@ return [
     'tab_options' => 'Options',
     'tab_temp' => 'TEMP',
     'test' => 'Tester',
-    'test_id' => 'Modèle de test',
-    'title' => 'Titre du document',
-    'update' => 'Modification document'
+    'title' => 'Gestion document',
+    'update' => 'Modification document',
+    'waka_session' => 'Clef pour LP'
 ];

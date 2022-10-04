@@ -13,6 +13,7 @@ class Document extends Model
     use \Winter\Storm\Database\Traits\Sortable;
     use \Waka\Utils\Classes\Traits\DataSourceHelpers;
     use \Waka\Informer\Classes\Traits\InformerTrait;
+    use \Waka\Session\Classes\Traits\WakaSessionTrait;
 
 
     /**
@@ -39,7 +40,6 @@ class Document extends Model
         'slug' => 'required',
         'state' => 'required',
         'path' => 'required',
-        'data_source' => 'required',
     ];
 
     public $customMessages = [
@@ -84,6 +84,12 @@ class Document extends Model
         'deleted_at',
     ];
 
+/**
+    * @var array Spécifié le type d'export à utiliser pour chaque champs
+    */
+    public $importExportConfig = [
+    ]; 
+
     /**
      * @var array Relations
      */
@@ -99,8 +105,14 @@ class Document extends Model
     ];
     public $belongsToMany = [
     ];        
-    public $morphTo = [];
+    public $morphTo = [
+    ];
     public $morphOne = [
+        'waka_session' => [
+            'Waka\Session\Models\WakaSession',
+            'name' => 'sessioneable',
+            'delete' => true
+        ],
     ];
     public $morphMany = [
         'rule_asks' => [

@@ -8,8 +8,6 @@ attributes:
         label: waka.worder::document.name
     slug:
         label: waka.worder::document.slug
-    data_source:
-        label: waka.worder::document.data_source
     output_name:
         label: waka.worder::document.output_name
     updated_at:
