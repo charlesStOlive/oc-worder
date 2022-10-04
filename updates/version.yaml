@@ -24,3 +24,7 @@
 1.5.0:
     - "Changement du nm output_name"
     - create_documents_table_u150.php
+1.6.0:
+    - "Transfert des données datasource dans session  + Suppresion des anciens data_source"
+    - change_documents_table_u160.php
+    - create_documents_table_u160.php

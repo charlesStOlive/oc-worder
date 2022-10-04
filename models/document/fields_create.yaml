@@ -13,9 +13,8 @@ fields:
         span: right
         type: balloon-selector
         required: true
-        default: Brouillon
         options: listStates
-        default: Actif
+        default: Brouillon
         permissions: [waka.worder.admin.*]
     slug:
         label: waka.worder::document.slug
@@ -28,14 +27,6 @@ fields:
         span: left
         type: mediafinder
         required: true
-        permissions: [waka.worder.admin.super]
-    data_source:
-        label: waka.worder::document.data_source
-        span: left
-        type: dropdown
-        placeholder: waka.utils::lang.global.placeholder
-        required: true
-        options: listDataSource
         permissions: [waka.worder.admin.super]
     output_name:
         label: waka.worder::document.output_name

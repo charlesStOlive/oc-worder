@@ -7,8 +7,8 @@ fields:
         span: right
         type: balloon-selector
         required: true
-        default: Brouillon
         options: listStates
+        default: Brouillon
         permissions: [waka.worder.admin.*]
     output_name:
         label: waka.worder::document.output_name
@@ -40,18 +40,11 @@ tabs:
             ruleMode: fnc
             permissions: [waka.rules.fncs.*]
             tab: waka.worder::document.tab_edit
-        test_id:
-            label: waka.worder::document.test_id
-            span: auto
-            type: dropdown
-            placeholder: waka.utils::lang.global.placeholder
-            options: listDataSourceTarget
-            permissions: [waka.worder.admin.*]
-            tab: waka.worder::document.tab_options
         is_lot:
             label: waka.worder::document.is_lot
             span: left
             type: switch
+            default: true
             default: true
             permissions: [waka.worder.admin.*]
             tab: waka.worder::document.tab_options
@@ -79,6 +72,12 @@ secondaryTabs:
             span: full
             type: attributs
             mode: word
-            permissions: [waka.worder.admin.*]
             editPermissions: [waka.worder.admin.*]
             tab: waka.worder::document.tab_attributs
+        waka_session:
+            label: waka.worder::document.waka_session
+            span: full
+            type: partial
+            path: field_waka_session
+            permissions: [waka.mailer.admin.super]
+            tab: waka.worder::document.tab_session
