@@ -45,7 +45,6 @@ tabs:
             span: left
             type: switch
             default: true
-            default: true
             permissions: [waka.worder.admin.*]
             tab: waka.worder::document.tab_options
         rule_conditions:
@@ -56,6 +55,13 @@ tabs:
             targetProductor: document
             permissions: [waka.mailer.admin.super]
             tab: waka.worder::document.tab_options
+        waka_session:
+            label: waka.worder::document.waka_session
+            span: full
+            type: partial
+            path: field_waka_session
+            permissions: [waka.mailer.admin.super]
+            tab: waka.worder::document.tab_session
 secondaryTabs:
     fields:
         # info:
@@ -74,10 +80,3 @@ secondaryTabs:
             mode: word
             editPermissions: [waka.worder.admin.*]
             tab: waka.worder::document.tab_attributs
-        waka_session:
-            label: waka.worder::document.waka_session
-            span: full
-            type: partial
-            path: field_waka_session
-            permissions: [waka.mailer.admin.super]
-            tab: waka.worder::document.tab_session

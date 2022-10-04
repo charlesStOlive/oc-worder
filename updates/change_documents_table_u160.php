@@ -15,7 +15,6 @@ class ChangeDocumentsTableU160 extends Migration
             $ds = $document->data_source;
             $testId = $document->test_id;
             if($ds) {
-                trace_log('il y a du ds');
                 $wakaSession = new WakaSession();
                 $wakaSession->data_source = $ds;
                 $wakaSession->ds_id_test = $testId;

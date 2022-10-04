@@ -19,6 +19,7 @@ return [
     'tab_edit' => 'Editer document',
     'tab_infos' => 'Infos',
     'tab_options' => 'Options',
+    'tab_session' => 'Session',
     'tab_temp' => 'TEMP',
     'test' => 'Tester',
     'title' => 'Gestion document',

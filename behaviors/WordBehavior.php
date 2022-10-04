@@ -11,8 +11,6 @@ use Session;
 
 class WordBehavior extends ControllerBehavior
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
-
     protected $wordBehaviorWidget;
     protected $askDataWidget;
     public $errors;
@@ -125,21 +123,6 @@ class WordBehavior extends ControllerBehavior
             return false;
         }
     }
-    /**
-     * Cette fonction est utilisé lors du test depuis le controller document.
-     */
-    public function onLoadWordBehaviorForm()
-    {
-        $productorId = post('productorId');
-        $documentTestId = Document::find($productorId)->test_id;
-        if ($documentTestId) {
-            $modelId = $documentTestId;
-            //trace_log($modelId);
-            return Redirect::to('/backend/waka/worder/documents/makeword/?productorId=' . $productorId . '&modelId=' . $modelId);
-        } else {
-            throw new \ValidationException(['error' => "Choisissez un modèle de test"]);
-        }
-    }
     public function makeword()
     {
         $productorId = \Input::get('productorId');
@@ -147,6 +130,20 @@ class WordBehavior extends ControllerBehavior
         $asks = Session::pull('word_asks_'.$modelId);
         return WordCreator::find($productorId)->setModelId($modelId)->setAsksResponse($asks)->renderWord();
     }
+    /**
+     * Cette fonction est utilisé lors du test depuis le controller document.
+     */
+    public function onLoadWordBehaviorForm()
+    {
+        $productorId = post('productorId');
+        return Redirect::to('/backend/waka/worder/documents/maketest/?productorId=' . $productorId);
+    }
+    public function maketest()
+    {
+        $productorId = \Input::get('productorId');
+        return WordCreator::find($productorId)->setModelTest()->setAsksResponse([])->renderWord();
+    }
+    
 
     public function onLoadWordCheck()
     {

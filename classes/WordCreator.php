@@ -36,8 +36,6 @@ class WordCreator extends ProductorCreator
             throw new ApplicationException(Lang::get('waka.worder::lang.word.processor.id_not_exist'));
         }
         self::$productor = Document::find($document_id);
-        self::$ds = \DataSources::find(self::$productor->data_source);
-
         return new self;
     }
     public static function setTemplateProcessor()
