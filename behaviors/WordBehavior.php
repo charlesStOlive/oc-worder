@@ -78,12 +78,12 @@ class WordBehavior extends ControllerBehavior
 
     public function onSelectWord() {
         $productorId = post('productorId');
-        $modelClass = post('modelClass');
         $modelId = post('modelId');
-        $wakaPdf = Document::find($productorId);
-        $ds = \DataSources::findByClass($modelClass);
-        $asks = $ds->getProductorAsks('Waka\Worder\Models\Document',$productorId, $modelId);
+        $productor = WordCreator::find($productorId)->setModelId($modelId);
+
+
         $askDataWidget = $this->createAskDataWidget();
+        $asks = $productor->getProductorAsks();
         $askDataWidget->addFields($asks);
         $this->vars['askDataWidget'] = $askDataWidget;
         return [

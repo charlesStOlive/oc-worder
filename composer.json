@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "phpoffice/phpword": "dev-waka"
+        "phpoffice/phpword": "dev-waka2"
     },
     "scripts": {
         "post-create-project-cmd": [

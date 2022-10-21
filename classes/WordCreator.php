@@ -296,10 +296,10 @@ class WordCreator extends ProductorCreator
 
         $path = [];
         if ($lot) {
-            $path = 'lots';
+            $path = str_slug($lot);
         } else {
             $folderOrg = new \Waka\Cloud\Classes\FolderOrganisation();
-            $path = $folderOrg->getPath($this->getDs()->model);
+            $path = $folderOrg->getPath($this->productorDsQuery);
         }
         //trace_log($path.'/'.$name.'.docx');
         $cloudSystem->put($path.'/'.$name.'.docx', $output);
@@ -323,10 +323,6 @@ class WordCreator extends ProductorCreator
             //TODO NE MARCHE PAS --------------------------
             if($tag->resolver == 'IS_DS') {
                 $data = array_get($model, $tag->varName);
-                // trace_log('IS_DS---------');
-                // trace_log($tag);
-                // trace_log($data);
-                // trace_log('--------------FIN IS_DS');
                 if(!empty($data)) {
                     //trace_log('je trouve une data');
                     $this->getTemplateProcessor()->cloneBlock($tag->tag);

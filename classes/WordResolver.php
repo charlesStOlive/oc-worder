@@ -12,44 +12,6 @@ class WordResolver
         $this->templateProcessor = $templateProcessor;
     }
 
-    public function resolveAll() {
-        foreach($allOriginalTags as $tag) {
-        if($tag->resolver == 'ds') {
-            //$wordResolver->resolveRow($tag, $datas);
-            $data = array_get($datas, $tag->varName);
-            $wordResolver->findAndResolve($tag, $data);
-            // trace_log($tag);
-            // trace_log();
-
-
-        }
-            if($tag->resolver == 'asks') {
-            //$wordResolver->resolveRow($tag, $askResponse);
-            //trace_log($tag);
-            $data = $askResponse[$tag->varName] ?? null;
-            if($tag->parent) {
-                //TODO if $tag->parent inutile ?
-                //$dotedAskResponse = array_dot($askResponse);
-                $data = array_get($askResponse, $tag->varName);
-                // trace_log( $dotedAskResponse);
-                // trace_log( );
-            } else {
-                $data = array_get($askResponse, $tag->varName);
-            }
-            $wordResolver->findAndResolve($tag, $data);
-        }
-            if($tag->resolver == 'FNC') {
-            //$wordResolver->resolveRow($tag, $fncs);
-            // trace_log($tag);
-            $data = $fncs[$tag->varName];
-            $wordResolver->resolveFnc($tag, $data);
-        }
-    }
-    }
-
-
-
-
     
     public function resolveFnc($tag, $data) {
             // trace_log($fncTag);
@@ -181,7 +143,7 @@ class WordResolver
         }
         if ($type == 'workflow') {
             //return $this->$dataSource->getWorkflowState();
-            return "error 194 wordresolver";
+            return "error 146 wordresolver";
         }
         if (starts_with($type, 'percent') && $value) {
             $operators = explode("::", $type);
