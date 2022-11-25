@@ -15,6 +15,7 @@ class Plugin extends PluginBase
     public $require = [
         'Waka.Utils',
         'Waka.Informer',
+        'Waka.Session',
     ];
 
     /**
