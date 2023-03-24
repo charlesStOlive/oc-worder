@@ -5,9 +5,6 @@ return [
         'title' => 'Contenu',
         'documents' => 'Words',
         'documents_description' => 'Gestion des modèles words',
-        // 'bloc_name' => 'Blocs',
-        // 'bloc_type' => 'types de blocs',
-        // 'bloc_type_description' => 'Administration des types de blocs et exemples',
         'settings_category' => 'Wakaari Modèle',
     ],
     'bloc' => [
@@ -100,28 +97,4 @@ return [
             'no_image' => "L'image ou le montage n'existe pas",
         ],
     ],
-    'contents' => [
-        'linkedphoto' => [
-            'image' => "Choisissez une image",
-            'image_placeholder' => "--Choisissez une image--",
-            'width' => "Largeur (mm)",
-            'height' => "Hauteur (mm) ",
-            'width_explication' => "165 mm est la largeur du contenu par défaut",
-            'keep_ratio' => "Conserver le ration",
-            'unit' => "Unité",
-        ],
-        'mediastextes' => [
-            'data_prompt' => "Créer un pararaphe texte + photo",
-            'value' => "Texte",
-            'path' => "Choisir une image",
-            'Jump' => "Ajouter un second saut de paragraphe",
-        ],
-        'textes' => [
-            'data_prompt' => "Créer un pararaphe de texte",
-            'value' => "Texte",
-            'Jump' => "Ajouter un second saut de paragraphe",
-        ],
-
-    ],
-
 ];
