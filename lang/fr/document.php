@@ -12,7 +12,7 @@ return [
     "rule_asks" => "Champs éditables",
     "rule_conditions" => "Conditions",
     "rule_fncs" => "Fonctions éditables",
-    "slug" => "Slug\/Code",
+    "slug" => "Slug ou Code",
     "state" => "État",
     "tab_attributs" => "Attributs",
     "tab_edit" => "Editer document",
