@@ -8,8 +8,7 @@ return [
             "self" => "Fonction de restriction liée à l'id de ce modèle ?",
             "target" => "Relation de la cible",
             "target_com" => "Ecrire le nom de la relation les relations parentes ne sont pas disponible"
-        ],
-        "title" => "Créer un document Word"
+        ]
     ],
     "menu" => [
         "bloc_type" => "Type de bloc",
@@ -19,6 +18,7 @@ return [
         "settings_category" => "Wakaari Modèle"
     ],
     "word" => [
+        "error" => null,
         "processor" => [
             "bad_format" => "Fromat du tag incorrect",
             "bad_tag" => "Le type de tag est incorrect",
