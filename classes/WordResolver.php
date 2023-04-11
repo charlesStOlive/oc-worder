@@ -107,12 +107,25 @@ class WordResolver
 
         
         if ($path) {
-            if (!$width or !$height) {
-               $this->templateProcessor->setImageValue($wordTag->tagKey, $path);
-            } else {
-                $this->templateProcessor->setImageValue($wordTag->tagKey, ['path' => $path, 'width' => $width, 'height' => $height], 1);
+            trace_log($path);
+            try {
+                if (!$width or !$height) {
+                    $this->templateProcessor->setImageValue($wordTag->tagKey, $path);
+                } else {
+                    $this->templateProcessor->setImageValue($wordTag->tagKey, ['path' => $path, 'width' => $width, 'height' => $height], 1);
+                }
+            } catch(\Exception $ex) {
+                trace_log('Error Processing image');
+                trace_log($ex->getMessage());
             }
+            
         } else {
+            // trace_log('pas de path');
+            //$this->getTemplateProcessor()->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
+            // trace_log($tag); // deleteblock ne fonctionne pas nlanc à la place
+            // $this->getTemplateProcessor()->deleteBlock($tag);
+            $this->templateProcessor->setValue($wordTag->tagKey, "", 1);
+        }
             // trace_log('pas de path');
             //$this->getTemplateProcessor()->setValue($tag, Lang::get("waka.worder::lang.word.error.no_image"), 1);
             // trace_log($tag); // deleteblock ne fonctionne pas nlanc à la place
