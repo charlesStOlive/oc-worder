@@ -107,7 +107,7 @@ class WordResolver
 
         
         if ($path) {
-            trace_log($path);
+            //trace_log($path);
             try {
                 if (!$width or !$height) {
                     $this->templateProcessor->setImageValue($wordTag->tagKey, $path);
@@ -115,8 +115,8 @@ class WordResolver
                     $this->templateProcessor->setImageValue($wordTag->tagKey, ['path' => $path, 'width' => $width, 'height' => $height], 1);
                 }
             } catch(\Exception $ex) {
-                trace_log('Error Processing image');
-                trace_log($ex->getMessage());
+                //trace_log('Error Processing image');
+                //trace_log($ex->getMessage());
             }
             
         } else {
